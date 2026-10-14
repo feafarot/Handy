@@ -461,6 +461,25 @@
         "cancel": "Zrušit",
         "selectToEdit": "Vyberte výše prompt, abyste zobrazili a upravili jeho podrobnosti.",
         "createFirst": "Klikněte nahoře na 'Vytvořit nový prompt' a vytvořte svůj první prompt pro následné zpracování."
+      },
+      "appContext": {
+        "title": "Kontext aplikace",
+        "enabled": {
+          "label": "Použít kontext aplikace",
+          "description": "Při diktování s následným zpracováním se model dozví, do které aplikace a okna diktujete, aby mohl sladit jména, pojmy a styl. Vše zachycené se odesílá poskytovateli následného zpracování."
+        },
+        "focusedText": {
+          "label": "Zahrnout text u kurzoru",
+          "description": "Zahrne také text kolem kurzoru v poli, do kterého píšete. Pole pro hesla se přeskakují."
+        },
+        "screenText": {
+          "label": "Číst okno, když je potřeba",
+          "description": "Pokud pole obsahuje málo textu nebo žádný, přečte se viditelný text okna pomocí OCR přímo v zařízení."
+        },
+        "preload": {
+          "label": "Předem načíst během mluvení",
+          "description": "Odešle kontext modelu ještě během mluvení, aby ho měl lokální server jako Ollama nebo llama.cpp připravený, až domluvíte. Přidává jeden požadavek navíc na každé diktování."
+        }
       }
     },
     "history": {

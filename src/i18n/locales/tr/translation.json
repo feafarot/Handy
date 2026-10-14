@@ -461,6 +461,25 @@
         "cancel": "İptal",
         "selectToEdit": "Ayrıntılarını görüntülemek ve düzenlemek için yukarıdan bir prompt seçin.",
         "createFirst": "İlk son işlem promptunuzu oluşturmak için yukarıdaki “Yeni Prompt Oluştur” seçeneğine tıklayın."
+      },
+      "appContext": {
+        "title": "Uygulama Bağlamı",
+        "enabled": {
+          "label": "Uygulama Bağlamını Kullan",
+          "description": "Son işlemle dikte ederken, modele hangi uygulamaya ve pencereye dikte ettiğiniz bildirilir; böylece adları, terimleri ve üslubu doğru tutturabilir. Yakalanan her şey son işlem sağlayıcınıza gönderilir."
+        },
+        "focusedText": {
+          "label": "İmlecin Yakınındaki Metni Dahil Et",
+          "description": "Yazdığınız alanda imlecin çevresindeki metni de dahil eder. Parola alanları atlanır."
+        },
+        "screenText": {
+          "label": "Gerektiğinde Pencereyi Oku",
+          "description": "Alanda çok az metin varsa veya hiç yoksa, pencerede görünen metin cihaz üzerinde OCR ile okunur."
+        },
+        "preload": {
+          "label": "Konuşurken Önceden Yükle",
+          "description": "Siz henüz konuşurken bağlamı modele gönderir; böylece durduğunuzda Ollama veya llama.cpp gibi yerel bir sunucu hazır olur. Her dikte için bir ek istek ekler."
+        }
       }
     },
     "history": {

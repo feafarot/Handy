@@ -461,6 +461,25 @@
         "cancel": "Abbrechen",
         "selectToEdit": "Wähle oben einen Prompt aus, um dessen Details anzuzeigen und zu bearbeiten.",
         "createFirst": "Klicke oben auf 'Neuen Prompt erstellen', um deinen ersten Nachbearbeitungs-Prompt zu erstellen."
+      },
+      "appContext": {
+        "title": "App-Kontext",
+        "enabled": {
+          "label": "App-Kontext verwenden",
+          "description": "Beim Diktieren mit Nachbearbeitung erfährt das Modell, in welche App und welches Fenster du diktierst, damit es Namen, Begriffe und Stil trifft. Alles Erfasste wird an deinen Nachbearbeitungsanbieter gesendet."
+        },
+        "focusedText": {
+          "label": "Text am Cursor einbeziehen",
+          "description": "Bezieht auch den Text rund um den Cursor in dem Feld ein, in das du schreibst. Passwortfelder werden übersprungen."
+        },
+        "screenText": {
+          "label": "Fenster bei Bedarf lesen",
+          "description": "Enthält das Feld wenig oder keinen Text, wird der sichtbare Text des Fensters per OCR auf dem Gerät gelesen."
+        },
+        "preload": {
+          "label": "Beim Sprechen vorladen",
+          "description": "Sendet den Kontext schon während du sprichst an das Modell, damit ein lokaler Server wie Ollama oder llama.cpp bereit ist, wenn du aufhörst. Fügt pro Diktat eine zusätzliche Anfrage hinzu."
+        }
       }
     },
     "history": {

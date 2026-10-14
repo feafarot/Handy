@@ -461,6 +461,25 @@
         "cancel": "Cancelar",
         "selectToEdit": "Selecione um prompt acima para visualizar e editar seus detalhes.",
         "createFirst": "Clique em 'Criar Novo Prompt' acima para criar seu primeiro prompt de pós-processamento."
+      },
+      "appContext": {
+        "title": "Contexto do Aplicativo",
+        "enabled": {
+          "label": "Usar o Contexto do Aplicativo",
+          "description": "Ao ditar com pós-processamento, o modelo sabe em qual aplicativo e janela você está ditando, para acertar nomes, termos e estilo. Tudo o que é capturado é enviado ao seu provedor de pós-processamento."
+        },
+        "focusedText": {
+          "label": "Incluir o Texto Perto do Cursor",
+          "description": "Inclui também o texto ao redor do cursor no campo em que você está digitando. Campos de senha são ignorados."
+        },
+        "screenText": {
+          "label": "Ler a Janela Quando Necessário",
+          "description": "Se o campo tiver pouco ou nenhum texto, o texto visível da janela é lido com OCR no dispositivo."
+        },
+        "preload": {
+          "label": "Pré-carregar Enquanto Fala",
+          "description": "Envia o contexto ao modelo enquanto você ainda fala, para que um servidor local como Ollama ou llama.cpp esteja pronto quando você parar. Adiciona uma solicitação extra por ditado."
+        }
       }
     },
     "history": {

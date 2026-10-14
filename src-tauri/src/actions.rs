@@ -1,3 +1,4 @@
+use crate::app_context::{self, AppContext, CaptureOptions, CaptureSession};
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 use crate::apple_intelligence;
 use crate::audio_feedback::{play_feedback_sound, play_feedback_sound_blocking, SoundType};
@@ -7,7 +8,9 @@ use crate::managers::history::HistoryManager;
 use crate::managers::model::ModelManager;
 use crate::managers::transcription::StreamWorkKind;
 use crate::managers::transcription::TranscriptionManager;
-use crate::settings::{get_settings, AppSettings, OverlayStyle, APPLE_INTELLIGENCE_PROVIDER_ID};
+use crate::settings::{
+    get_settings, AppSettings, OverlayStyle, PostProcessProvider, APPLE_INTELLIGENCE_PROVIDER_ID,
+};
 use crate::shortcut;
 use crate::tray::{set_tray_state, TrayIconState};
 use crate::utils::{
@@ -18,7 +21,7 @@ use log::{debug, error, warn};
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::future::Future;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex, PoisonError};
 use std::time::{Duration, Instant};
 use tauri::Manager;
 use tauri::{AppHandle, Emitter};
@@ -56,6 +59,32 @@ pub trait ShortcutAction: Send + Sync {
 // Transcribe Action
 struct TranscribeAction {
     post_process: bool,
+    /// App context being captured for the current recording, handed from
+    /// `start` to `stop`.
+    app_context: Mutex<Option<CaptureSession>>,
+}
+
+impl TranscribeAction {
+    fn new(post_process: bool) -> Self {
+        Self {
+            post_process,
+            app_context: Mutex::new(None),
+        }
+    }
+
+    fn set_app_context(&self, session: Option<CaptureSession>) {
+        *self
+            .app_context
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner) = session;
+    }
+
+    fn take_app_context(&self) -> Option<CaptureSession> {
+        self.app_context
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .take()
+    }
 }
 
 /// Field name for structured output JSON schema
@@ -81,8 +110,14 @@ fn strip_think_block(s: &str) -> &str {
 
 /// Build a system prompt from the user's prompt template.
 /// Removes `${output}` placeholder since the transcription is sent as the user message.
-fn build_system_prompt(prompt_template: &str) -> String {
-    prompt_template.replace("${output}", "").trim().to_string()
+/// The app context, when captured, follows the prompt so the prompt stays a
+/// stable prefix that a local server can reuse across dictations.
+fn build_system_prompt(prompt_template: &str, app_context: Option<&str>) -> String {
+    let prompt = prompt_template.replace("${output}", "").trim().to_string();
+    match app_context {
+        Some(app_context) => format!("{prompt}\n\n{app_context}"),
+        None => prompt,
+    }
 }
 
 /// Returns `true` when a transcription has no meaningful content to
@@ -118,82 +153,135 @@ fn should_use_streaming_overlay(style: OverlayStyle, is_streaming: bool) -> bool
     style == OverlayStyle::Live && is_streaming
 }
 
-async fn post_process_transcription(settings: &AppSettings, transcription: &str) -> Option<String> {
+/// Everything a post-processing request needs, resolved from settings.
+struct PostProcessRequest {
+    provider: PostProcessProvider,
+    model: String,
+    prompt: String,
+    api_key: String,
+    disable_reasoning: bool,
+}
+
+impl PostProcessRequest {
+    fn from_settings(settings: &AppSettings) -> Option<Self> {
+        let provider = match settings.active_post_process_provider().cloned() {
+            Some(provider) => provider,
+            None => {
+                debug!("Post-processing enabled but no provider is selected");
+                return None;
+            }
+        };
+
+        let model = settings
+            .post_process_models
+            .get(&provider.id)
+            .cloned()
+            .unwrap_or_default();
+
+        if model.trim().is_empty() {
+            debug!(
+                "Post-processing skipped because provider '{}' has no model configured",
+                provider.id
+            );
+            return None;
+        }
+
+        let selected_prompt_id = match &settings.post_process_selected_prompt_id {
+            Some(id) => id.clone(),
+            None => {
+                debug!("Post-processing skipped because no prompt is selected");
+                return None;
+            }
+        };
+
+        let prompt = match settings
+            .post_process_prompts
+            .iter()
+            .find(|prompt| prompt.id == selected_prompt_id)
+        {
+            Some(prompt) => prompt.prompt.clone(),
+            None => {
+                debug!(
+                    "Post-processing skipped because prompt '{}' was not found",
+                    selected_prompt_id
+                );
+                return None;
+            }
+        };
+
+        if prompt.trim().is_empty() {
+            debug!("Post-processing skipped because the selected prompt is empty");
+            return None;
+        }
+
+        let api_key = settings
+            .post_process_api_keys
+            .get(&provider.id)
+            .cloned()
+            .unwrap_or_default();
+
+        // Ask these providers to skip reasoning/thinking — post-processing rarely
+        // benefits from it and it adds seconds of latency. llm_client picks the
+        // field the endpoint understands and retries without it if rejected.
+        let disable_reasoning = matches!(provider.id.as_str(), "custom" | "openrouter");
+
+        Some(Self {
+            provider,
+            model,
+            prompt,
+            api_key,
+            disable_reasoning,
+        })
+    }
+
+    /// The system message `post_process_transcription` sends for this app
+    /// context. Structured-output requests already carry the prompt as the
+    /// system message, so the context is appended to it; legacy requests put
+    /// prompt and transcription in the user message, so the context is the
+    /// whole system message. Cache priming must send exactly this.
+    fn context_system_prompt(&self, app_context: &str) -> String {
+        if self.provider.supports_structured_output {
+            build_system_prompt(&self.prompt, Some(app_context))
+        } else {
+            app_context.to_string()
+        }
+    }
+}
+
+async fn post_process_transcription(
+    settings: &AppSettings,
+    transcription: &str,
+    app_context: Option<&AppContext>,
+) -> Option<String> {
     if is_blank_transcription(transcription) {
         debug!("Post-processing skipped because the transcription is empty");
         return None;
     }
 
-    let provider = match settings.active_post_process_provider().cloned() {
-        Some(provider) => provider,
-        None => {
-            debug!("Post-processing enabled but no provider is selected");
-            return None;
-        }
-    };
-
-    let model = settings
-        .post_process_models
-        .get(&provider.id)
-        .cloned()
-        .unwrap_or_default();
-
-    if model.trim().is_empty() {
-        debug!(
-            "Post-processing skipped because provider '{}' has no model configured",
-            provider.id
-        );
-        return None;
-    }
-
-    let selected_prompt_id = match &settings.post_process_selected_prompt_id {
-        Some(id) => id.clone(),
-        None => {
-            debug!("Post-processing skipped because no prompt is selected");
-            return None;
-        }
-    };
-
-    let prompt = match settings
-        .post_process_prompts
-        .iter()
-        .find(|prompt| prompt.id == selected_prompt_id)
-    {
-        Some(prompt) => prompt.prompt.clone(),
-        None => {
-            debug!(
-                "Post-processing skipped because prompt '{}' was not found",
-                selected_prompt_id
-            );
-            return None;
-        }
-    };
-
-    if prompt.trim().is_empty() {
-        debug!("Post-processing skipped because the selected prompt is empty");
-        return None;
-    }
+    let request = PostProcessRequest::from_settings(settings)?;
+    let PostProcessRequest {
+        provider,
+        model,
+        prompt,
+        api_key,
+        disable_reasoning,
+    } = &request;
+    let app_context = app_context.map(AppContext::to_prompt);
 
     debug!(
-        "Starting LLM post-processing with provider '{}' (model: {})",
-        provider.id, model
+        "Starting LLM post-processing with provider '{}' (model: {}, app context: {} chars)",
+        provider.id,
+        model,
+        app_context.as_ref().map_or(0, String::len)
     );
-
-    let api_key = settings
-        .post_process_api_keys
-        .get(&provider.id)
-        .cloned()
-        .unwrap_or_default();
-
-    // Ask these providers to skip reasoning/thinking — post-processing rarely
-    // benefits from it and it adds seconds of latency. llm_client picks the
-    // field the endpoint understands and retries without it if rejected.
-    let disable_reasoning = matches!(provider.id.as_str(), "custom" | "openrouter");
 
     if provider.supports_structured_output {
         debug!("Using structured outputs for provider '{}'", provider.id);
 
-        let system_prompt = build_system_prompt(&prompt);
+        let system_prompt = match &app_context {
+            Some(app_context) => request.context_system_prompt(app_context),
+            None => build_system_prompt(prompt, None),
+        };
         let user_content = transcription.to_string();
 
         // Handle Apple Intelligence separately since it uses native Swift APIs
@@ -254,13 +342,13 @@ async fn post_process_transcription(settings: &AppSettings, transcription: &str)
         });
 
         match crate::llm_client::send_chat_completion_with_schema(
-            &provider,
+            provider,
             api_key.clone(),
-            &model,
+            model,
             user_content,
             Some(system_prompt),
             Some(json_schema),
-            disable_reasoning,
+            *disable_reasoning,
         )
         .await
         {
@@ -311,12 +399,15 @@ async fn post_process_transcription(settings: &AppSettings, transcription: &str)
     let processed_prompt = prompt.replace("${output}", transcription);
     debug!("Processed prompt length: {} chars", processed_prompt.len());
 
+    // The app context, if any, goes in as the system message: the prompt
+    // usually opens with the transcription, so this is the only stable prefix.
     match crate::llm_client::send_chat_completion(
-        &provider,
-        api_key,
-        &model,
+        provider,
+        api_key.clone(),
+        model,
         processed_prompt,
-        disable_reasoning,
+        app_context,
+        *disable_reasoning,
     )
     .await
     {
@@ -354,6 +445,7 @@ pub(crate) async fn process_transcription_output(
     app: &AppHandle,
     transcription: &str,
     post_process: bool,
+    app_context: Option<CaptureSession>,
 ) -> ProcessedTranscription {
     let settings = get_settings(app);
     let mut final_text = transcription.to_string();
@@ -361,7 +453,13 @@ pub(crate) async fn process_transcription_output(
     let mut post_process_prompt: Option<String> = None;
 
     if post_process {
-        if let Some(processed_text) = post_process_transcription(&settings, &final_text).await {
+        let app_context = match app_context {
+            Some(session) => session.finish().await,
+            None => None,
+        };
+        if let Some(processed_text) =
+            post_process_transcription(&settings, &final_text, app_context.as_ref()).await
+        {
             post_processed_text = Some(processed_text.clone());
             final_text = processed_text;
 
@@ -382,6 +480,40 @@ pub(crate) async fn process_transcription_output(
         post_processed_text,
         post_process_prompt,
     }
+}
+
+/// Builds the request that primes a local server's prompt cache with the
+/// captured app context while the user is still speaking.
+fn app_context_preload(settings: &AppSettings) -> Option<app_context::Preload> {
+    if !settings.app_context_preload {
+        return None;
+    }
+    let request = PostProcessRequest::from_settings(settings)?;
+    if request.provider.id == APPLE_INTELLIGENCE_PROVIDER_ID {
+        return None;
+    }
+
+    Some(Box::new(move |context: &AppContext| {
+        let system_prompt = request.context_system_prompt(&context.to_prompt());
+        Some(tauri::async_runtime::spawn(async move {
+            let started = Instant::now();
+            match crate::llm_client::prime_prompt_cache(
+                &request.provider,
+                request.api_key.clone(),
+                &request.model,
+                system_prompt,
+                request.disable_reasoning,
+            )
+            .await
+            {
+                Ok(()) => debug!(
+                    "Primed the LLM prompt cache with app context in {:?}",
+                    started.elapsed()
+                ),
+                Err(e) => debug!("Priming the LLM prompt cache failed: {}", e),
+            }
+        }))
+    }))
 }
 
 impl ShortcutAction for TranscribeAction {
@@ -426,6 +558,19 @@ impl ShortcutAction for TranscribeAction {
         let plan_started = Instant::now();
         let settings = get_settings(app);
         let is_always_on = settings.always_on_microphone;
+
+        // Capture what the user is dictating into while they speak; the
+        // post-processing step after transcription picks it up.
+        self.set_app_context(
+            (self.post_process && settings.app_context_enabled && app_context::SUPPORTED).then(
+                || {
+                    CaptureSession::start(
+                        CaptureOptions::from_settings(&settings),
+                        app_context_preload(&settings),
+                    )
+                },
+            ),
+        );
 
         let selected_model_info = app
             .state::<Arc<ModelManager>>()
@@ -534,6 +679,7 @@ impl ShortcutAction for TranscribeAction {
         } else {
             // Starting failed (for example due to blocked microphone permissions).
             // Revert UI state so we don't stay stuck in the recording overlay.
+            self.set_app_context(None);
             tm.cancel_stream();
             utils::hide_recording_overlay(app);
             set_tray_state(app, TrayIconState::Idle);
@@ -594,6 +740,7 @@ impl ShortcutAction for TranscribeAction {
 
         let binding_id = binding_id.to_string(); // Clone binding_id for the async task
         let post_process = self.post_process;
+        let app_context = self.take_app_context();
         let cancel_generation = rm.cancel_generation();
 
         tauri::async_runtime::spawn(async move {
@@ -699,7 +846,12 @@ impl ShortcutAction for TranscribeAction {
                                 }
                             }
                             let Some(processed) = complete_unless_cancelled(
-                                process_transcription_output(&ah, &transcription, post_process),
+                                process_transcription_output(
+                                    &ah,
+                                    &transcription,
+                                    post_process,
+                                    app_context,
+                                ),
                                 || rm.was_cancelled_since(cancel_generation),
                             )
                             .await
@@ -854,13 +1006,11 @@ pub static ACTION_MAP: Lazy<HashMap<String, Arc<dyn ShortcutAction>>> = Lazy::ne
     let mut map = HashMap::new();
     map.insert(
         "transcribe".to_string(),
-        Arc::new(TranscribeAction {
-            post_process: false,
-        }) as Arc<dyn ShortcutAction>,
+        Arc::new(TranscribeAction::new(false)) as Arc<dyn ShortcutAction>,
     );
     map.insert(
         "transcribe_with_post_process".to_string(),
-        Arc::new(TranscribeAction { post_process: true }) as Arc<dyn ShortcutAction>,
+        Arc::new(TranscribeAction::new(true)) as Arc<dyn ShortcutAction>,
     );
     map.insert(
         "cancel".to_string(),

@@ -530,6 +530,22 @@ pub struct AppSettings {
     /// `overlay_position` (position `none` → style `None`).
     #[serde(default = "default_overlay_style")]
     pub overlay_style: OverlayStyle,
+    /// Capture the foreground app and window title when dictating with
+    /// post-processing and give them to the LLM as context. See `app_context`.
+    #[serde(default)]
+    pub app_context_enabled: bool,
+    /// With app context on, also read the text around the cursor in the
+    /// focused field through the accessibility API.
+    #[serde(default = "default_app_context_focused_text")]
+    pub app_context_focused_text: bool,
+    /// With app context on, OCR the foreground window when the focused field
+    /// has little or no text to offer.
+    #[serde(default = "default_app_context_screen_text")]
+    pub app_context_screen_text: bool,
+    /// Send the captured context to the LLM while the user is still speaking
+    /// so a local server can load the model and cache the prompt prefix.
+    #[serde(default)]
+    pub app_context_preload: bool,
 }
 
 fn default_model() -> String {
@@ -591,6 +607,14 @@ fn default_overlay_style() -> OverlayStyle {
     return OverlayStyle::None;
     #[cfg(not(target_os = "linux"))]
     return OverlayStyle::Live;
+}
+
+fn default_app_context_focused_text() -> bool {
+    true
+}
+
+fn default_app_context_screen_text() -> bool {
+    true
 }
 
 fn default_vad_enabled() -> bool {
@@ -993,6 +1017,10 @@ pub fn get_default_settings() -> AppSettings {
         vad_enabled: default_vad_enabled(),
         vad_backend: VadBackend::default(),
         overlay_style: default_overlay_style(),
+        app_context_enabled: false,
+        app_context_focused_text: default_app_context_focused_text(),
+        app_context_screen_text: default_app_context_screen_text(),
+        app_context_preload: false,
     }
 }
 

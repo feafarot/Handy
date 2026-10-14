@@ -461,6 +461,25 @@
         "cancel": "Anuluj",
         "selectToEdit": "Wybierz prompt powyżej, aby zobaczyć i edytować jego szczegóły.",
         "createFirst": "Kliknij 'Utwórz nowy prompt' powyżej, aby utworzyć pierwszy prompt postprocessingu."
+      },
+      "appContext": {
+        "title": "Kontekst aplikacji",
+        "enabled": {
+          "label": "Używaj kontekstu aplikacji",
+          "description": "Podczas dyktowania z postprocesem model wie, w której aplikacji i oknie dyktujesz, aby dopasować nazwy, terminy i styl. Wszystko, co zostanie przechwycone, trafia do dostawcy postprocesu."
+        },
+        "focusedText": {
+          "label": "Uwzględnij tekst przy kursorze",
+          "description": "Uwzględnia też tekst wokół kursora w polu, w którym piszesz. Pola haseł są pomijane."
+        },
+        "screenText": {
+          "label": "Czytaj okno w razie potrzeby",
+          "description": "Jeśli pole zawiera mało tekstu lub jest puste, widoczny tekst okna jest odczytywany przez OCR na urządzeniu."
+        },
+        "preload": {
+          "label": "Wstępne ładowanie podczas mówienia",
+          "description": "Wysyła kontekst do modelu, gdy jeszcze mówisz, aby lokalny serwer, taki jak Ollama lub llama.cpp, był gotowy, gdy skończysz. Dodaje jedno dodatkowe żądanie na dyktowanie."
+        }
       }
     },
     "history": {

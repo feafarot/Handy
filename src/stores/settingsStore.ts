@@ -163,6 +163,14 @@ const settingUpdaters: {
     commands.changeMuteWhileRecordingSetting(value as boolean),
   append_trailing_space: (value) =>
     commands.changeAppendTrailingSpaceSetting(value as boolean),
+  app_context_enabled: (value) =>
+    commands.changeAppContextEnabledSetting(value as boolean),
+  app_context_focused_text: (value) =>
+    commands.changeAppContextFocusedTextSetting(value as boolean),
+  app_context_screen_text: (value) =>
+    commands.changeAppContextScreenTextSetting(value as boolean),
+  app_context_preload: (value) =>
+    commands.changeAppContextPreloadSetting(value as boolean),
   log_level: (value) => commands.setLogLevel(value as any),
   app_language: (value) => commands.changeAppLanguageSetting(value as string),
   theme: (value) => commands.changeThemeSetting(value as string),

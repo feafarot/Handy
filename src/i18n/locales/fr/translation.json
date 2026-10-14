@@ -461,6 +461,25 @@
         "cancel": "Annuler",
         "selectToEdit": "Sélectionnez un prompt ci-dessus pour voir et modifier ses détails.",
         "createFirst": "Cliquez sur 'Créer un nouveau prompt' ci-dessus pour créer votre premier prompt de post-traitement."
+      },
+      "appContext": {
+        "title": "Contexte de l'application",
+        "enabled": {
+          "label": "Utiliser le contexte de l'application",
+          "description": "Lors d'une dictée avec post-traitement, le modèle sait dans quelle application et quelle fenêtre vous dictez, afin de respecter les noms, les termes et le style. Tout ce qui est capturé est envoyé à votre fournisseur de post-traitement."
+        },
+        "focusedText": {
+          "label": "Inclure le texte près du curseur",
+          "description": "Inclut aussi le texte autour du curseur dans le champ où vous écrivez. Les champs de mot de passe sont ignorés."
+        },
+        "screenText": {
+          "label": "Lire la fenêtre si nécessaire",
+          "description": "Si le champ contient peu ou pas de texte, le texte visible de la fenêtre est lu par OCR sur l'appareil."
+        },
+        "preload": {
+          "label": "Précharger pendant la dictée",
+          "description": "Envoie le contexte au modèle pendant que vous parlez encore, pour qu'un serveur local comme Ollama ou llama.cpp soit prêt quand vous arrêtez. Ajoute une requête supplémentaire par dictée."
+        }
       }
     },
     "history": {

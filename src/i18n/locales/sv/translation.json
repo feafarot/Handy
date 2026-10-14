@@ -461,6 +461,25 @@
         "cancel": "Avbryt",
         "selectToEdit": "Välj en prompt ovan för att visa och redigera dess detaljer.",
         "createFirst": "Klicka på 'Skapa ny prompt' ovan för att skapa din första prompt för efterbearbetning."
+      },
+      "appContext": {
+        "title": "Appkontext",
+        "enabled": {
+          "label": "Använd appkontext",
+          "description": "När du dikterar med efterbearbetning får modellen veta vilken app och vilket fönster du dikterar i, så att den kan träffa namn, termer och stil. Allt som samlas in skickas till din leverantör för efterbearbetning."
+        },
+        "focusedText": {
+          "label": "Ta med text vid markören",
+          "description": "Ta också med texten runt markören i fältet du skriver i. Lösenordsfält hoppas över."
+        },
+        "screenText": {
+          "label": "Läs fönstret vid behov",
+          "description": "Om fältet har lite eller ingen text läses fönstrets synliga text med OCR på enheten."
+        },
+        "preload": {
+          "label": "Förladda medan du pratar",
+          "description": "Skicka kontexten till modellen medan du fortfarande pratar, så att en lokal server som Ollama eller llama.cpp är redo när du slutar. Lägger till en extra förfrågan per diktering."
+        }
       }
     },
     "history": {

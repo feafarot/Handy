@@ -461,6 +461,25 @@
         "cancel": "Annuleren",
         "selectToEdit": "Selecteer hierboven een prompt om de details te bekijken en te bewerken.",
         "createFirst": "Klik hierboven op 'Nieuwe prompt maken' om je eerste naverwerkingsprompt aan te maken."
+      },
+      "appContext": {
+        "title": "App-context",
+        "enabled": {
+          "label": "App-context gebruiken",
+          "description": "Bij dicteren met naverwerking weet het model in welke app en welk venster je dicteert, zodat het namen, termen en stijl goed kan treffen. Alles wat wordt vastgelegd, gaat naar je naverwerkingsprovider."
+        },
+        "focusedText": {
+          "label": "Tekst bij de cursor meenemen",
+          "description": "Neem ook de tekst rond de cursor mee in het veld waarin je typt. Wachtwoordvelden worden overgeslagen."
+        },
+        "screenText": {
+          "label": "Venster lezen als dat nodig is",
+          "description": "Als het veld weinig of geen tekst bevat, wordt de zichtbare tekst van het venster gelezen met OCR op het apparaat."
+        },
+        "preload": {
+          "label": "Vooraf laden tijdens het spreken",
+          "description": "Stuur de context naar het model terwijl je nog spreekt, zodat een lokale server zoals Ollama of llama.cpp klaar is als je stopt. Voegt per dictaat één extra verzoek toe."
+        }
       }
     },
     "history": {

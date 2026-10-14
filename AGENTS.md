@@ -64,6 +64,7 @@ Handy is a cross-platform desktop speech-to-text application built with Tauri 2.
 - `audio_toolkit/` - Low-level audio processing:
   - `audio/` - Recording sink (VAD, levels, live streaming feed), output devices, WAV I/O
   - `vad/` - Voice Activity Detection (Silero VAD)
+- `app_context/` - Captures the foreground app, text near the cursor and window OCR as post-processing context (Windows only so far; other platforms plug in a `platform` module)
 - `commands/` - Tauri command handlers for frontend communication
 - `cli.rs` - CLI argument definitions (clap derive)
 - `shortcut.rs` - Global keyboard shortcut handling

@@ -461,6 +461,25 @@
         "cancel": "Cancel",
         "selectToEdit": "Select a prompt above to view and edit its details.",
         "createFirst": "Click 'Create New Prompt' above to create your first post-processing prompt."
+      },
+      "appContext": {
+        "title": "App Context",
+        "enabled": {
+          "label": "Use App Context",
+          "description": "When dictating with post-processing, tell the model which app and window you are dictating into, so it can match names, terms and style. Everything captured is sent to your post-processing provider."
+        },
+        "focusedText": {
+          "label": "Include Text Near the Cursor",
+          "description": "Also include the text around the cursor in the field you are typing into. Password fields are skipped."
+        },
+        "screenText": {
+          "label": "Read the Window When Needed",
+          "description": "If the field has little or no text, read the visible text of the window with on-device OCR."
+        },
+        "preload": {
+          "label": "Preload While Speaking",
+          "description": "Send the context to the model while you are still speaking, so a local server such as Ollama or llama.cpp has it ready when you stop. Adds one extra request per dictation."
+        }
       }
     },
     "history": {
