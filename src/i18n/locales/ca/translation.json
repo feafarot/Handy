@@ -461,6 +461,25 @@
         "cancel": "Cancel·leu",
         "selectToEdit": "Seleccioneu una indicació more amunt per veure'n i editar-ne els detalls.",
         "createFirst": "Feu clic a «Creeu una indicació nova» més amunt per crear la primera indicació de postprocessament."
+      },
+      "appContext": {
+        "title": "Context de l'aplicació",
+        "enabled": {
+          "label": "Utilitza el context de l'aplicació",
+          "description": "En dictar amb postprocessament, el model sap a quina aplicació i finestra esteu dictant, perquè pugui encertar noms, termes i estil. Tot el que es captura s'envia al proveïdor de postprocessament."
+        },
+        "focusedText": {
+          "label": "Inclou el text proper al cursor",
+          "description": "Inclou també el text al voltant del cursor al camp on escriviu. Els camps de contrasenya s'ometen."
+        },
+        "screenText": {
+          "label": "Llegeix la finestra quan calgui",
+          "description": "Si el camp té poc o cap text, es llegeix el text visible de la finestra amb OCR al dispositiu."
+        },
+        "preload": {
+          "label": "Precàrrega mentre parleu",
+          "description": "Envia el context al model mentre encara parleu, perquè un servidor local com Ollama o llama.cpp el tingui a punt quan pareu. Afegeix una sol·licitud extra per dictat."
+        }
       }
     },
     "history": {

@@ -20,7 +20,9 @@ import { ApiKeyField } from "../PostProcessingSettingsApi/ApiKeyField";
 import { ModelSelect } from "../PostProcessingSettingsApi/ModelSelect";
 import { usePostProcessProviderState } from "../PostProcessingSettingsApi/usePostProcessProviderState";
 import { ShortcutInput } from "../ShortcutInput";
+import { AppContextSettings } from "../AppContext";
 import { useSettings } from "../../../hooks/useSettings";
+import { useOsType } from "../../../hooks/useOsType";
 
 const PostProcessingSettingsApiComponent: React.FC = () => {
   const { t } = useTranslation();
@@ -426,6 +428,8 @@ PostProcessingSettingsPrompts.displayName = "PostProcessingSettingsPrompts";
 
 export const PostProcessingSettings: React.FC = () => {
   const { t } = useTranslation();
+  // App context capture is only implemented on Windows so far.
+  const supportsAppContext = useOsType() === "windows";
 
   return (
     <div className="max-w-3xl w-full mx-auto space-y-6">
@@ -444,6 +448,12 @@ export const PostProcessingSettings: React.FC = () => {
       <SettingsGroup title={t("settings.postProcessing.prompts.title")}>
         <PostProcessingSettingsPrompts />
       </SettingsGroup>
+
+      {supportsAppContext && (
+        <SettingsGroup title={t("settings.postProcessing.appContext.title")}>
+          <AppContextSettings descriptionMode="tooltip" grouped={true} />
+        </SettingsGroup>
+      )}
     </div>
   );
 };

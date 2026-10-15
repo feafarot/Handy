@@ -461,6 +461,25 @@
         "cancel": "Batal",
         "selectToEdit": "Pilih prompt di atas untuk melihat dan mengedit detailnya.",
         "createFirst": "Klik 'Buat Prompt Baru' di atas untuk membuat prompt pascaproses pertama Anda."
+      },
+      "appContext": {
+        "title": "Konteks Aplikasi",
+        "enabled": {
+          "label": "Gunakan Konteks Aplikasi",
+          "description": "Saat mendikte dengan pascaproses, model diberi tahu aplikasi dan jendela tempat Anda mendikte, agar bisa menyesuaikan nama, istilah, dan gaya. Semua yang ditangkap dikirim ke penyedia pascaproses Anda."
+        },
+        "focusedText": {
+          "label": "Sertakan Teks di Dekat Kursor",
+          "description": "Sertakan juga teks di sekitar kursor pada kolom tempat Anda mengetik. Kolom kata sandi dilewati."
+        },
+        "screenText": {
+          "label": "Baca Jendela Bila Perlu",
+          "description": "Jika kolom berisi sedikit atau tanpa teks, teks yang terlihat di jendela dibaca dengan OCR di perangkat."
+        },
+        "preload": {
+          "label": "Muat Lebih Awal Saat Berbicara",
+          "description": "Kirim konteks ke model selagi Anda masih berbicara, agar server lokal seperti Ollama atau llama.cpp sudah siap saat Anda berhenti. Menambah satu permintaan tambahan per dikte."
+        }
       }
     },
     "history": {

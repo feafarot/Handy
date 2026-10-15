@@ -116,6 +116,8 @@ struct ChatCompletionRequest {
     stream: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     response_format: Option<ResponseFormat>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_tokens: Option<u32>,
     #[serde(flatten)]
     reasoning: ReasoningParams,
 }
@@ -302,6 +304,7 @@ pub async fn send_chat_completion(
     api_key: String,
     model: &str,
     prompt: String,
+    system_prompt: Option<String>,
     disable_reasoning: bool,
 ) -> Result<Option<String>, String> {
     send_chat_completion_with_schema(
@@ -309,11 +312,36 @@ pub async fn send_chat_completion(
         api_key,
         model,
         prompt,
-        None,
+        system_prompt,
         None,
         disable_reasoning,
     )
     .await
+}
+
+/// Send a throwaway one-token request carrying `system_prompt`, so a local
+/// server (llama.cpp, Ollama) loads the model and caches the prompt prefix
+/// before the real request with the same system prompt arrives. The user
+/// message is left empty: everything before it is the reusable prefix.
+pub async fn prime_prompt_cache(
+    provider: &PostProcessProvider,
+    api_key: String,
+    model: &str,
+    system_prompt: String,
+    disable_reasoning: bool,
+) -> Result<(), String> {
+    send_chat_completion_request(
+        provider,
+        api_key,
+        model,
+        String::new(),
+        Some(system_prompt),
+        None,
+        disable_reasoning,
+        Some(1),
+    )
+    .await
+    .map(|_| ())
 }
 
 /// Send a chat completion request with structured output support.
@@ -334,6 +362,30 @@ pub async fn send_chat_completion_with_schema(
     system_prompt: Option<String>,
     json_schema: Option<Value>,
     disable_reasoning: bool,
+) -> Result<Option<String>, String> {
+    send_chat_completion_request(
+        provider,
+        api_key,
+        model,
+        user_content,
+        system_prompt,
+        json_schema,
+        disable_reasoning,
+        None,
+    )
+    .await
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn send_chat_completion_request(
+    provider: &PostProcessProvider,
+    api_key: String,
+    model: &str,
+    user_content: String,
+    system_prompt: Option<String>,
+    json_schema: Option<Value>,
+    disable_reasoning: bool,
+    max_tokens: Option<u32>,
 ) -> Result<Option<String>, String> {
     let base_url = provider.base_url.trim_end_matches('/');
     let url = format!("{}/chat/completions", base_url);
@@ -384,6 +436,7 @@ pub async fn send_chat_completion_with_schema(
         messages,
         stream: false,
         response_format,
+        max_tokens,
         reasoning,
     };
 
@@ -573,6 +626,7 @@ mod tests {
             }],
             stream: false,
             response_format: None,
+            max_tokens: None,
             reasoning,
         };
         serde_json::to_value(&request).unwrap()

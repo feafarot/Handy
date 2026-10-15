@@ -461,6 +461,25 @@
         "cancel": "Annuller",
         "selectToEdit": "Vælg en prompt ovenfor for at se og redigere dens detaljer.",
         "createFirst": "Klik på 'Opret ny prompt' ovenfor for at oprette din første efterbehandlingsprompt."
+      },
+      "appContext": {
+        "title": "App-kontekst",
+        "enabled": {
+          "label": "Brug app-kontekst",
+          "description": "Når du dikterer med efterbehandling, får modellen at vide, hvilken app og hvilket vindue du dikterer i, så den kan ramme navne, termer og stil. Alt det indsamlede sendes til din udbyder af efterbehandling."
+        },
+        "focusedText": {
+          "label": "Medtag tekst ved markøren",
+          "description": "Medtag også teksten omkring markøren i det felt, du skriver i. Adgangskodefelter springes over."
+        },
+        "screenText": {
+          "label": "Læs vinduet efter behov",
+          "description": "Hvis feltet har lidt eller ingen tekst, læses vinduets synlige tekst med OCR på enheden."
+        },
+        "preload": {
+          "label": "Forudindlæs mens du taler",
+          "description": "Send konteksten til modellen, mens du stadig taler, så en lokal server som Ollama eller llama.cpp har den klar, når du stopper. Tilføjer én ekstra forespørgsel per diktering."
+        }
       }
     },
     "history": {

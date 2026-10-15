@@ -461,6 +461,25 @@
         "cancel": "Hủy",
         "selectToEdit": "Chọn một prompt ở trên để xem và chỉnh sửa chi tiết.",
         "createFirst": "Nhấn 'Tạo Prompt mới' ở trên để tạo prompt xử lý sau đầu tiên của bạn."
+      },
+      "appContext": {
+        "title": "Ngữ cảnh ứng dụng",
+        "enabled": {
+          "label": "Dùng ngữ cảnh ứng dụng",
+          "description": "Khi đọc chính tả có xử lý sau, mô hình được biết bạn đang đọc vào ứng dụng và cửa sổ nào, để khớp tên, thuật ngữ và văn phong. Mọi thứ thu thập được đều gửi tới nhà cung cấp xử lý sau của bạn."
+        },
+        "focusedText": {
+          "label": "Kèm văn bản gần con trỏ",
+          "description": "Kèm cả văn bản quanh con trỏ trong ô bạn đang nhập. Các ô mật khẩu sẽ được bỏ qua."
+        },
+        "screenText": {
+          "label": "Đọc cửa sổ khi cần",
+          "description": "Nếu ô có ít hoặc không có văn bản, văn bản hiển thị trong cửa sổ sẽ được đọc bằng OCR ngay trên thiết bị."
+        },
+        "preload": {
+          "label": "Tải trước khi đang nói",
+          "description": "Gửi ngữ cảnh tới mô hình khi bạn vẫn đang nói, để máy chủ cục bộ như Ollama hoặc llama.cpp sẵn sàng khi bạn dừng. Thêm một yêu cầu cho mỗi lần đọc chính tả."
+        }
       }
     },
     "history": {

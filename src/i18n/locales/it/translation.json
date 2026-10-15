@@ -461,6 +461,25 @@
         "cancel": "Annulla",
         "selectToEdit": "Scegli un prompt qui sopra per visualizzare o modificare i dettagli.",
         "createFirst": "Clicca 'Crea un nuovo prompt' qui sopra per creare il tuo primo prompt di post-elaborazione."
+      },
+      "appContext": {
+        "title": "Contesto dell'App",
+        "enabled": {
+          "label": "Usa il Contesto dell'App",
+          "description": "Quando detti con la post-elaborazione, il modello sa in quale app e finestra stai dettando, così può rispettare nomi, termini e stile. Tutto ciò che viene acquisito è inviato al tuo provider di post-elaborazione."
+        },
+        "focusedText": {
+          "label": "Includi il Testo Vicino al Cursore",
+          "description": "Includi anche il testo attorno al cursore nel campo in cui stai scrivendo. I campi password vengono saltati."
+        },
+        "screenText": {
+          "label": "Leggi la Finestra Quando Serve",
+          "description": "Se il campo contiene poco o nessun testo, il testo visibile della finestra viene letto con l'OCR sul dispositivo."
+        },
+        "preload": {
+          "label": "Precarica Mentre Parli",
+          "description": "Invia il contesto al modello mentre stai ancora parlando, così un server locale come Ollama o llama.cpp è pronto quando ti fermi. Aggiunge una richiesta in più per dettatura."
+        }
       }
     },
     "history": {
