@@ -16,7 +16,8 @@
     "postProcessing": "Efterbearbetning",
     "history": "Historik",
     "debug": "Felsökning",
-    "about": "Om"
+    "about": "Om",
+    "meetings": "Möten"
   },
   "onboarding": {
     "subtitle": "För att komma igång, välj en transkriptionsmodell",
@@ -743,5 +744,67 @@
     "learnMore": "Så här löser du det",
     "recorderBlocked": "Det går inte att spela in kortkommandon just nu — macOS Secure Input blockerar tangenthändelser. Lös varningen om Secure Input först.",
     "dismiss": "Avfärda"
+  },
+  "meetings": {
+    "title": "Möten",
+    "defaultTitle": "Möte {{date}}",
+    "recorder": {
+      "titleLabel": "Mötets titel",
+      "start": "Starta inspelning",
+      "stop": "Stoppa",
+      "finishing": "Transkriberar den sista delen…",
+      "listening": "Lyssnar. Transkriptionen visas här medan folk pratar.",
+      "micOnly": "Bara din mikrofon spelas in.",
+      "startError": "Inspelningen kunde inte starta: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Spela in andra deltagare",
+      "description": "Spela även in det datorn spelar upp, till exempel samtalsljudet, så att även de andra transkriberas."
+    },
+    "speaker": {
+      "you": "Du",
+      "others": "Andra",
+      "numbered": "Talare {{number}}"
+    },
+    "list": {
+      "title": "Tidigare möten",
+      "empty": "Inga möten ännu.",
+      "interrupted": "Avbrutet"
+    },
+    "detail": {
+      "back": "Alla möten",
+      "loading": "Läser in…",
+      "empty": "Inget transkriberades under det här mötet.",
+      "copy": "Kopiera transkription",
+      "copyError": "Transkriptionen kunde inte kopieras.",
+      "openFolder": "Öppna ljudmappen",
+      "delete": "Radera möte",
+      "confirmDelete": "Klicka igen för att radera",
+      "deleteError": "Mötet kunde inte raderas."
+    },
+    "speakers": {
+      "title": "Talare",
+      "identify": "Identifiera talare",
+      "identifying": "Identifierar talare…",
+      "downloading": "Laddar ned talarmodellerna…",
+      "failed": "Kunde inte identifiera talarna: {{error}}",
+      "retry": "Försök igen",
+      "none": "Inga andra talare hittades.",
+      "rename": "Namnge den här talaren"
+    },
+    "autoNotes": {
+      "label": "Skriv anteckningar när ett möte slutar",
+      "description": "Sammanfattar mötet, besluten och uppgifterna med modellen som är inställd under Efterbearbetning."
+    },
+    "notes": {
+      "title": "Anteckningar",
+      "write": "Skriv anteckningar",
+      "rewrite": "Skriv om anteckningarna",
+      "writing": "Skriver anteckningar…",
+      "writingPart": "Skriver anteckningar… ({{done}}/{{total}})",
+      "failed": "Kunde inte skriva anteckningarna: {{error}}",
+      "copy": "Kopiera anteckningar",
+      "empty": "Inga anteckningar än."
+    }
   }
 }

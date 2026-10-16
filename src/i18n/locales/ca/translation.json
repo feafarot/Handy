@@ -16,7 +16,8 @@
     "postProcessing": "Postprocessament",
     "history": "Historial",
     "debug": "Depuració",
-    "about": "Quant a"
+    "about": "Quant a",
+    "meetings": "Reunions"
   },
   "onboarding": {
     "subtitle": "Per començar, trieu un model de transcripció",
@@ -743,5 +744,67 @@
     "learnMore": "Com es resol",
     "recorderBlocked": "Ara no se'n poden enregistrar dreceres: l'entrada segura del macOS bloca els esdeveniments de tecla. Resol primer l'avís d'entrada segura.",
     "dismiss": "Descarta"
+  },
+  "meetings": {
+    "title": "Reunions",
+    "defaultTitle": "Reunió {{date}}",
+    "recorder": {
+      "titleLabel": "Títol de la reunió",
+      "start": "Comença a gravar",
+      "stop": "Atura",
+      "finishing": "S'està transcrivint l'última part…",
+      "listening": "Escoltant. La transcripció apareix aquí mentre la gent parla.",
+      "micOnly": "Només s'està gravant el vostre micròfon.",
+      "startError": "No s'ha pogut començar a gravar: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Grava els altres participants",
+      "description": "Grava també el que reprodueix l'ordinador, com l'àudio de la trucada, perquè també es transcrigui el que diuen els altres."
+    },
+    "speaker": {
+      "you": "Vós",
+      "others": "Altres",
+      "numbered": "Parlant {{number}}"
+    },
+    "list": {
+      "title": "Reunions anteriors",
+      "empty": "Encara no hi ha reunions.",
+      "interrupted": "Interrompuda"
+    },
+    "detail": {
+      "back": "Totes les reunions",
+      "loading": "S'està carregant…",
+      "empty": "No s'ha transcrit res en aquesta reunió.",
+      "copy": "Copia la transcripció",
+      "copyError": "No s'ha pogut copiar la transcripció.",
+      "openFolder": "Obre la carpeta d'àudio",
+      "delete": "Suprimeix la reunió",
+      "confirmDelete": "Feu clic de nou per suprimir",
+      "deleteError": "No s'ha pogut suprimir la reunió."
+    },
+    "speakers": {
+      "title": "Parlants",
+      "identify": "Identifica els parlants",
+      "identifying": "S'estan identificant els parlants…",
+      "downloading": "S'estan baixant els models de parlants…",
+      "failed": "No s'han pogut identificar els parlants: {{error}}",
+      "retry": "Torna-ho a provar",
+      "none": "No s'han trobat altres parlants.",
+      "rename": "Posa nom a aquest parlant"
+    },
+    "autoNotes": {
+      "label": "Escriu notes quan acabi la reunió",
+      "description": "Resumeix la reunió, les decisions i les tasques amb el model configurat a Postprocessament."
+    },
+    "notes": {
+      "title": "Notes",
+      "write": "Escriu les notes",
+      "rewrite": "Torna a escriure les notes",
+      "writing": "S'estan escrivint les notes…",
+      "writingPart": "S'estan escrivint les notes… ({{done}}/{{total}})",
+      "failed": "No s'han pogut escriure les notes: {{error}}",
+      "copy": "Copia les notes",
+      "empty": "Encara no hi ha notes."
+    }
   }
 }

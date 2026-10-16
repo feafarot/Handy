@@ -16,7 +16,8 @@
     "postProcessing": "Post Process",
     "history": "History",
     "debug": "Debug",
-    "about": "About"
+    "about": "About",
+    "meetings": "Meetings"
   },
   "onboarding": {
     "subtitle": "To get started, choose a transcription model",
@@ -743,5 +744,67 @@
     "learnMore": "How to fix",
     "recorderBlocked": "Can't record shortcuts right now — macOS Secure Input is blocking key events. Resolve the Secure Input warning first.",
     "dismiss": "Dismiss"
+  },
+  "meetings": {
+    "title": "Meetings",
+    "defaultTitle": "Meeting {{date}}",
+    "recorder": {
+      "titleLabel": "Meeting title",
+      "start": "Start recording",
+      "stop": "Stop",
+      "finishing": "Transcribing the last part…",
+      "listening": "Listening. The transcript appears here as people speak.",
+      "micOnly": "Only your microphone is being recorded.",
+      "startError": "Couldn't start recording: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Record Other Participants",
+      "description": "Also record what your computer plays, such as call audio, so other people's speech is transcribed too."
+    },
+    "speaker": {
+      "you": "You",
+      "others": "Others",
+      "numbered": "Speaker {{number}}"
+    },
+    "list": {
+      "title": "Past Meetings",
+      "empty": "No meetings yet.",
+      "interrupted": "Interrupted"
+    },
+    "detail": {
+      "back": "All meetings",
+      "loading": "Loading…",
+      "empty": "Nothing was transcribed in this meeting.",
+      "copy": "Copy transcript",
+      "copyError": "Couldn't copy the transcript.",
+      "openFolder": "Open audio folder",
+      "delete": "Delete meeting",
+      "confirmDelete": "Click again to delete",
+      "deleteError": "Couldn't delete the meeting."
+    },
+    "speakers": {
+      "title": "Speakers",
+      "identify": "Identify speakers",
+      "identifying": "Identifying speakers…",
+      "downloading": "Downloading the speaker models…",
+      "failed": "Couldn't identify the speakers: {{error}}",
+      "retry": "Try again",
+      "none": "No other speakers were found.",
+      "rename": "Name this speaker"
+    },
+    "autoNotes": {
+      "label": "Write Notes When a Meeting Ends",
+      "description": "Summarizes the meeting, its decisions and action items with the model set up in Post Process."
+    },
+    "notes": {
+      "title": "Notes",
+      "write": "Write notes",
+      "rewrite": "Rewrite notes",
+      "writing": "Writing notes…",
+      "writingPart": "Writing notes… ({{done}}/{{total}})",
+      "failed": "Couldn't write the notes: {{error}}",
+      "copy": "Copy notes",
+      "empty": "No notes yet."
+    }
   }
 }

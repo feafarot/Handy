@@ -16,7 +16,8 @@
     "postProcessing": "後處理",
     "history": "歷史紀錄",
     "debug": "偵錯",
-    "about": "關於"
+    "about": "關於",
+    "meetings": "會議"
   },
   "onboarding": {
     "subtitle": "首先，請選擇一種模型",
@@ -743,5 +744,67 @@
     "learnMore": "如何解決",
     "recorderBlocked": "目前無法錄製快捷鍵——macOS 的 Secure Input 正在阻擋按鍵事件。請先解決 Secure Input 警告。",
     "dismiss": "關閉"
+  },
+  "meetings": {
+    "title": "會議",
+    "defaultTitle": "會議 {{date}}",
+    "recorder": {
+      "titleLabel": "會議標題",
+      "start": "開始錄音",
+      "stop": "停止",
+      "finishing": "正在轉寫最後一部分…",
+      "listening": "正在聆聽。大家說話時，轉寫內容會顯示在這裡。",
+      "micOnly": "只錄製你的麥克風。",
+      "startError": "無法開始錄音：{{error}}"
+    },
+    "systemAudio": {
+      "label": "錄製其他與會者",
+      "description": "同時錄製電腦播放的聲音（例如通話音訊），以便轉寫其他人的發言。"
+    },
+    "speaker": {
+      "you": "你",
+      "others": "其他人",
+      "numbered": "發言者 {{number}}"
+    },
+    "list": {
+      "title": "過去的會議",
+      "empty": "還沒有會議。",
+      "interrupted": "已中斷"
+    },
+    "detail": {
+      "back": "所有會議",
+      "loading": "載入中…",
+      "empty": "這次會議沒有轉寫到任何內容。",
+      "copy": "複製轉寫內容",
+      "copyError": "無法複製轉寫內容。",
+      "openFolder": "開啟音訊資料夾",
+      "delete": "刪除會議",
+      "confirmDelete": "再次點擊以刪除",
+      "deleteError": "無法刪除會議。"
+    },
+    "speakers": {
+      "title": "發言者",
+      "identify": "辨識發言者",
+      "identifying": "正在辨識發言者…",
+      "downloading": "正在下載發言者模型…",
+      "failed": "無法辨識發言者：{{error}}",
+      "retry": "重試",
+      "none": "找不到其他發言者。",
+      "rename": "為此發言者命名"
+    },
+    "autoNotes": {
+      "label": "會議結束時撰寫紀要",
+      "description": "使用「後處理」中設定的模型，摘要會議內容、決定與待辦事項。"
+    },
+    "notes": {
+      "title": "紀要",
+      "write": "撰寫紀要",
+      "rewrite": "重新撰寫紀要",
+      "writing": "正在撰寫紀要…",
+      "writingPart": "正在撰寫紀要…（{{done}}/{{total}}）",
+      "failed": "無法撰寫紀要：{{error}}",
+      "copy": "複製紀要",
+      "empty": "還沒有紀要。"
+    }
   }
 }

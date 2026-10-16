@@ -15,6 +15,7 @@ mod helpers;
 mod input;
 mod llm_client;
 mod managers;
+mod meeting;
 mod memory;
 mod overlay;
 mod paste_tx;
@@ -207,6 +208,9 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     );
     let history_manager =
         Arc::new(HistoryManager::new(app_handle).expect("Failed to initialize history manager"));
+    let meeting_manager = Arc::new(
+        meeting::MeetingManager::new(app_handle).expect("Failed to initialize meeting manager"),
+    );
 
     // Apply accelerator preferences before any model loads
     managers::transcription::apply_accelerator_settings(app_handle);
@@ -216,6 +220,7 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(model_manager.clone());
     app_handle.manage(transcription_manager.clone());
     app_handle.manage(history_manager.clone());
+    app_handle.manage(meeting_manager);
     app_handle.manage(tray::TrayState::new());
 
     // Note: Shortcuts are NOT initialized here.
@@ -772,12 +777,30 @@ pub fn run(cli_args: CliArgs) {
             commands::history::retry_history_entry_transcription,
             commands::history::update_history_limit,
             commands::history::update_recording_retention_period,
+            commands::meeting::start_meeting,
+            commands::meeting::stop_meeting,
+            commands::meeting::get_meeting_state,
+            commands::meeting::list_meetings,
+            commands::meeting::get_meeting,
+            commands::meeting::rename_meeting,
+            commands::meeting::delete_meeting,
+            commands::meeting::identify_meeting_speakers,
+            commands::meeting::rename_meeting_speaker,
+            commands::meeting::write_meeting_notes,
+            commands::meeting::open_meeting_folder,
+            commands::meeting::is_meeting_system_audio_supported,
+            commands::meeting::change_meeting_system_audio_setting,
+            commands::meeting::change_meeting_auto_notes_setting,
             helpers::clamshell::is_laptop,
         ])
         .events(collect_events![
             managers::history::HistoryUpdatePayload,
             managers::transcription::StreamTextEvent,
             managers::transcription::StreamPhaseEvent,
+            meeting::MeetingStateEvent,
+            meeting::MeetingSegmentEvent,
+            meeting::MeetingSpeakersEvent,
+            meeting::MeetingNotesEvent,
         ]);
 
     #[cfg(debug_assertions)] // <- Only export on non-release builds
@@ -1104,8 +1127,6 @@ pub fn run(cli_args: CliArgs) {
     #[cfg(target_os = "macos")]
     apply_startup_activation_policy(&mut app, headless_mode);
 
-    // `app` is only used by the macOS arm.
-    #[cfg_attr(not(target_os = "macos"), allow(unused_variables))]
     app.run(|app, event| match &event {
         #[cfg(target_os = "macos")]
         tauri::RunEvent::Reopen { .. } => {
@@ -1124,6 +1145,8 @@ pub fn run(cli_args: CliArgs) {
             }
             show_main_window(app);
         }
+        // A meeting still recording keeps its audio files intact.
+        tauri::RunEvent::Exit => meeting::shutdown(app),
         // No transcription teardown on exit: transcribe.cpp runs only in the
         // worker process, which exits by itself as soon as this process's end
         // of its stdin closes, even if it is hung. Waiting on an unload here

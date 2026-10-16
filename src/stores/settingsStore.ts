@@ -171,6 +171,10 @@ const settingUpdaters: {
     commands.changeAppContextScreenTextSetting(value as boolean),
   app_context_preload: (value) =>
     commands.changeAppContextPreloadSetting(value as boolean),
+  meeting_system_audio: (value) =>
+    commands.changeMeetingSystemAudioSetting(value as boolean),
+  meeting_auto_notes: (value) =>
+    commands.changeMeetingAutoNotesSetting(value as boolean),
   log_level: (value) => commands.setLogLevel(value as any),
   app_language: (value) => commands.changeAppLanguageSetting(value as string),
   theme: (value) => commands.changeThemeSetting(value as string),

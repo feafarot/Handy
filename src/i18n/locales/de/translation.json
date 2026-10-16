@@ -16,7 +16,8 @@
     "postProcessing": "Nachbearbeitung",
     "history": "Verlauf",
     "debug": "Debug",
-    "about": "Info"
+    "about": "Info",
+    "meetings": "Meetings"
   },
   "onboarding": {
     "subtitle": "Wähle ein Transkriptionsmodell, um loszulegen",
@@ -743,5 +744,67 @@
     "learnMore": "So behebst du das",
     "recorderBlocked": "Tastenkürzel können gerade nicht aufgezeichnet werden — macOS Secure Input blockiert Tastenereignisse. Behebe zuerst die Secure-Input-Warnung.",
     "dismiss": "Ausblenden"
+  },
+  "meetings": {
+    "title": "Meetings",
+    "defaultTitle": "Meeting {{date}}",
+    "recorder": {
+      "titleLabel": "Titel des Meetings",
+      "start": "Aufnahme starten",
+      "stop": "Stopp",
+      "finishing": "Der letzte Teil wird transkribiert…",
+      "listening": "Hört zu. Die Transkription erscheint hier, während gesprochen wird.",
+      "micOnly": "Nur dein Mikrofon wird aufgenommen.",
+      "startError": "Aufnahme konnte nicht gestartet werden: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Andere Teilnehmer aufnehmen",
+      "description": "Nimmt auch auf, was dein Computer abspielt, etwa den Ton des Anrufs, damit auch die anderen transkribiert werden."
+    },
+    "speaker": {
+      "you": "Du",
+      "others": "Andere",
+      "numbered": "Sprecher {{number}}"
+    },
+    "list": {
+      "title": "Frühere Meetings",
+      "empty": "Noch keine Meetings.",
+      "interrupted": "Unterbrochen"
+    },
+    "detail": {
+      "back": "Alle Meetings",
+      "loading": "Wird geladen…",
+      "empty": "In diesem Meeting wurde nichts transkribiert.",
+      "copy": "Transkription kopieren",
+      "copyError": "Transkription konnte nicht kopiert werden.",
+      "openFolder": "Audio-Ordner öffnen",
+      "delete": "Meeting löschen",
+      "confirmDelete": "Zum Löschen erneut klicken",
+      "deleteError": "Meeting konnte nicht gelöscht werden."
+    },
+    "speakers": {
+      "title": "Sprecher",
+      "identify": "Sprecher erkennen",
+      "identifying": "Sprecher werden erkannt…",
+      "downloading": "Sprechermodelle werden heruntergeladen…",
+      "failed": "Sprecher konnten nicht erkannt werden: {{error}}",
+      "retry": "Erneut versuchen",
+      "none": "Keine weiteren Sprecher gefunden.",
+      "rename": "Diesen Sprecher benennen"
+    },
+    "autoNotes": {
+      "label": "Notizen nach dem Meeting schreiben",
+      "description": "Fasst das Meeting, Entscheidungen und Aufgaben mit dem unter Nachbearbeitung eingerichteten Modell zusammen."
+    },
+    "notes": {
+      "title": "Notizen",
+      "write": "Notizen schreiben",
+      "rewrite": "Notizen neu schreiben",
+      "writing": "Notizen werden geschrieben…",
+      "writingPart": "Notizen werden geschrieben… ({{done}}/{{total}})",
+      "failed": "Notizen konnten nicht geschrieben werden: {{error}}",
+      "copy": "Notizen kopieren",
+      "empty": "Noch keine Notizen."
+    }
   }
 }

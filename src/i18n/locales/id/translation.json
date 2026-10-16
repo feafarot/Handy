@@ -16,7 +16,8 @@
     "postProcessing": "Pascaproses",
     "history": "Riwayat",
     "debug": "Debug",
-    "about": "Tentang"
+    "about": "Tentang",
+    "meetings": "Rapat"
   },
   "onboarding": {
     "subtitle": "Untuk memulai, pilih model transkripsi",
@@ -743,5 +744,67 @@
     "learnMore": "Cara memperbaiki",
     "recorderBlocked": "Pintasan tidak dapat direkam saat ini — macOS Secure Input memblokir peristiwa tombol. Selesaikan peringatan Secure Input terlebih dahulu.",
     "dismiss": "Tutup"
+  },
+  "meetings": {
+    "title": "Rapat",
+    "defaultTitle": "Rapat {{date}}",
+    "recorder": {
+      "titleLabel": "Judul rapat",
+      "start": "Mulai merekam",
+      "stop": "Berhenti",
+      "finishing": "Mentranskripsi bagian terakhir…",
+      "listening": "Mendengarkan. Transkrip muncul di sini saat orang berbicara.",
+      "micOnly": "Hanya mikrofon Anda yang direkam.",
+      "startError": "Tidak dapat mulai merekam: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Rekam peserta lain",
+      "description": "Rekam juga apa yang diputar komputer Anda, seperti audio panggilan, agar ucapan orang lain juga ditranskripsi."
+    },
+    "speaker": {
+      "you": "Anda",
+      "others": "Lainnya",
+      "numbered": "Pembicara {{number}}"
+    },
+    "list": {
+      "title": "Rapat sebelumnya",
+      "empty": "Belum ada rapat.",
+      "interrupted": "Terputus"
+    },
+    "detail": {
+      "back": "Semua rapat",
+      "loading": "Memuat…",
+      "empty": "Tidak ada yang ditranskripsi dalam rapat ini.",
+      "copy": "Salin transkrip",
+      "copyError": "Tidak dapat menyalin transkrip.",
+      "openFolder": "Buka folder audio",
+      "delete": "Hapus rapat",
+      "confirmDelete": "Klik lagi untuk menghapus",
+      "deleteError": "Tidak dapat menghapus rapat."
+    },
+    "speakers": {
+      "title": "Pembicara",
+      "identify": "Kenali pembicara",
+      "identifying": "Mengenali pembicara…",
+      "downloading": "Mengunduh model pembicara…",
+      "failed": "Tidak dapat mengenali pembicara: {{error}}",
+      "retry": "Coba lagi",
+      "none": "Tidak ditemukan pembicara lain.",
+      "rename": "Beri nama pembicara ini"
+    },
+    "autoNotes": {
+      "label": "Tulis catatan saat rapat selesai",
+      "description": "Merangkum rapat, keputusan, dan tugasnya dengan model yang diatur di Pascaproses."
+    },
+    "notes": {
+      "title": "Catatan",
+      "write": "Tulis catatan",
+      "rewrite": "Tulis ulang catatan",
+      "writing": "Menulis catatan…",
+      "writingPart": "Menulis catatan… ({{done}}/{{total}})",
+      "failed": "Tidak dapat menulis catatan: {{error}}",
+      "copy": "Salin catatan",
+      "empty": "Belum ada catatan."
+    }
   }
 }

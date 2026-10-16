@@ -16,7 +16,8 @@
     "postProcessing": "Post-Elaborazione",
     "history": "Cronologia",
     "debug": "Debug",
-    "about": "Informazioni"
+    "about": "Informazioni",
+    "meetings": "Riunioni"
   },
   "onboarding": {
     "subtitle": "Per cominciare, scegli un modello di riconoscimento vocale",
@@ -743,5 +744,67 @@
     "learnMore": "Come risolvere",
     "recorderBlocked": "Non è possibile registrare scorciatoie in questo momento: Secure Input di macOS sta bloccando gli eventi dei tasti. Risolvi prima l'avviso di Secure Input.",
     "dismiss": "Ignora"
+  },
+  "meetings": {
+    "title": "Riunioni",
+    "defaultTitle": "Riunione {{date}}",
+    "recorder": {
+      "titleLabel": "Titolo della riunione",
+      "start": "Avvia registrazione",
+      "stop": "Ferma",
+      "finishing": "Trascrizione dell'ultima parte…",
+      "listening": "In ascolto. La trascrizione compare qui mentre le persone parlano.",
+      "micOnly": "Viene registrato solo il tuo microfono.",
+      "startError": "Impossibile avviare la registrazione: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Registra gli altri partecipanti",
+      "description": "Registra anche ciò che il computer riproduce, come l'audio della chiamata, per trascrivere anche gli altri."
+    },
+    "speaker": {
+      "you": "Tu",
+      "others": "Altri",
+      "numbered": "Interlocutore {{number}}"
+    },
+    "list": {
+      "title": "Riunioni passate",
+      "empty": "Ancora nessuna riunione.",
+      "interrupted": "Interrotta"
+    },
+    "detail": {
+      "back": "Tutte le riunioni",
+      "loading": "Caricamento…",
+      "empty": "In questa riunione non è stato trascritto nulla.",
+      "copy": "Copia trascrizione",
+      "copyError": "Impossibile copiare la trascrizione.",
+      "openFolder": "Apri cartella audio",
+      "delete": "Elimina riunione",
+      "confirmDelete": "Fai clic di nuovo per eliminare",
+      "deleteError": "Impossibile eliminare la riunione."
+    },
+    "speakers": {
+      "title": "Interlocutori",
+      "identify": "Identifica gli interlocutori",
+      "identifying": "Identificazione degli interlocutori…",
+      "downloading": "Download dei modelli degli interlocutori…",
+      "failed": "Impossibile identificare gli interlocutori: {{error}}",
+      "retry": "Riprova",
+      "none": "Nessun altro interlocutore trovato.",
+      "rename": "Dai un nome a questo interlocutore"
+    },
+    "autoNotes": {
+      "label": "Scrivi le note a fine riunione",
+      "description": "Riassume la riunione, le decisioni e le attività con il modello configurato in Post-Elaborazione."
+    },
+    "notes": {
+      "title": "Note",
+      "write": "Scrivi le note",
+      "rewrite": "Riscrivi le note",
+      "writing": "Scrittura delle note…",
+      "writingPart": "Scrittura delle note… ({{done}}/{{total}})",
+      "failed": "Impossibile scrivere le note: {{error}}",
+      "copy": "Copia le note",
+      "empty": "Ancora nessuna nota."
+    }
   }
 }

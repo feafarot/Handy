@@ -16,7 +16,8 @@
     "postProcessing": "Naverwerking",
     "history": "Geschiedenis",
     "debug": "Probleemoplossing",
-    "about": "Over Handy"
+    "about": "Over Handy",
+    "meetings": "Vergaderingen"
   },
   "onboarding": {
     "subtitle": "Kies een transcriptiemodel om aan de slag te gaan",
@@ -743,5 +744,67 @@
     "learnMore": "Hoe je dit oplost",
     "recorderBlocked": "Sneltoetsen kunnen nu niet worden opgenomen — Secure Input van macOS blokkeert toetsgebeurtenissen. Los eerst de Secure Input-waarschuwing op.",
     "dismiss": "Sluiten"
+  },
+  "meetings": {
+    "title": "Vergaderingen",
+    "defaultTitle": "Vergadering {{date}}",
+    "recorder": {
+      "titleLabel": "Titel van de vergadering",
+      "start": "Opname starten",
+      "stop": "Stoppen",
+      "finishing": "Laatste deel wordt getranscribeerd…",
+      "listening": "Aan het luisteren. Het transcript verschijnt hier terwijl mensen praten.",
+      "micOnly": "Alleen je microfoon wordt opgenomen.",
+      "startError": "Opname kon niet starten: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Andere deelnemers opnemen",
+      "description": "Neem ook op wat je computer afspeelt, zoals het geluid van het gesprek, zodat ook de anderen worden getranscribeerd."
+    },
+    "speaker": {
+      "you": "Jij",
+      "others": "Anderen",
+      "numbered": "Spreker {{number}}"
+    },
+    "list": {
+      "title": "Eerdere vergaderingen",
+      "empty": "Nog geen vergaderingen.",
+      "interrupted": "Onderbroken"
+    },
+    "detail": {
+      "back": "Alle vergaderingen",
+      "loading": "Laden…",
+      "empty": "Er is niets getranscribeerd in deze vergadering.",
+      "copy": "Transcript kopiëren",
+      "copyError": "Transcript kon niet worden gekopieerd.",
+      "openFolder": "Audiomap openen",
+      "delete": "Vergadering verwijderen",
+      "confirmDelete": "Klik nogmaals om te verwijderen",
+      "deleteError": "Vergadering kon niet worden verwijderd."
+    },
+    "speakers": {
+      "title": "Sprekers",
+      "identify": "Sprekers herkennen",
+      "identifying": "Sprekers worden herkend…",
+      "downloading": "Sprekermodellen worden gedownload…",
+      "failed": "Kan de sprekers niet herkennen: {{error}}",
+      "retry": "Opnieuw proberen",
+      "none": "Geen andere sprekers gevonden.",
+      "rename": "Deze spreker een naam geven"
+    },
+    "autoNotes": {
+      "label": "Notities schrijven als een vergadering eindigt",
+      "description": "Vat de vergadering, besluiten en actiepunten samen met het model dat bij Naverwerking is ingesteld."
+    },
+    "notes": {
+      "title": "Notities",
+      "write": "Notities schrijven",
+      "rewrite": "Notities opnieuw schrijven",
+      "writing": "Notities worden geschreven…",
+      "writingPart": "Notities worden geschreven… ({{done}}/{{total}})",
+      "failed": "Kan de notities niet schrijven: {{error}}",
+      "copy": "Notities kopiëren",
+      "empty": "Nog geen notities."
+    }
   }
 }
