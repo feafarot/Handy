@@ -16,7 +16,8 @@
     "postProcessing": "Xử lý sau",
     "history": "Lịch sử",
     "debug": "Gỡ lỗi",
-    "about": "Giới thiệu"
+    "about": "Giới thiệu",
+    "meetings": "Cuộc họp"
   },
   "onboarding": {
     "subtitle": "Để bắt đầu, hãy chọn một mô hình chuyển đổi giọng nói",
@@ -743,5 +744,67 @@
     "learnMore": "Cách khắc phục",
     "recorderBlocked": "Hiện không thể ghi phím tắt — Secure Input của macOS đang chặn các sự kiện phím. Hãy xử lý cảnh báo Secure Input trước.",
     "dismiss": "Bỏ qua"
+  },
+  "meetings": {
+    "title": "Cuộc họp",
+    "defaultTitle": "Cuộc họp {{date}}",
+    "recorder": {
+      "titleLabel": "Tiêu đề cuộc họp",
+      "start": "Bắt đầu ghi",
+      "stop": "Dừng",
+      "finishing": "Đang chép lời phần cuối…",
+      "listening": "Đang nghe. Bản chép lời xuất hiện ở đây khi mọi người nói.",
+      "micOnly": "Chỉ đang ghi micrô của bạn.",
+      "startError": "Không thể bắt đầu ghi: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Ghi những người tham gia khác",
+      "description": "Ghi cả âm thanh máy tính phát ra, như âm thanh cuộc gọi, để lời của người khác cũng được chép lại."
+    },
+    "speaker": {
+      "you": "Bạn",
+      "others": "Người khác",
+      "numbered": "Người nói {{number}}"
+    },
+    "list": {
+      "title": "Các cuộc họp trước",
+      "empty": "Chưa có cuộc họp nào.",
+      "interrupted": "Bị gián đoạn"
+    },
+    "detail": {
+      "back": "Tất cả cuộc họp",
+      "loading": "Đang tải…",
+      "empty": "Không có gì được chép lời trong cuộc họp này.",
+      "copy": "Sao chép bản chép lời",
+      "copyError": "Không thể sao chép bản chép lời.",
+      "openFolder": "Mở thư mục âm thanh",
+      "delete": "Xóa cuộc họp",
+      "confirmDelete": "Nhấp lần nữa để xóa",
+      "deleteError": "Không thể xóa cuộc họp."
+    },
+    "speakers": {
+      "title": "Người nói",
+      "identify": "Nhận diện người nói",
+      "identifying": "Đang nhận diện người nói…",
+      "downloading": "Đang tải xuống mô hình người nói…",
+      "failed": "Không thể nhận diện người nói: {{error}}",
+      "retry": "Thử lại",
+      "none": "Không tìm thấy người nói nào khác.",
+      "rename": "Đặt tên cho người nói này"
+    },
+    "autoNotes": {
+      "label": "Viết ghi chú khi cuộc họp kết thúc",
+      "description": "Tóm tắt cuộc họp, các quyết định và việc cần làm bằng mô hình đã thiết lập trong Xử lý sau."
+    },
+    "notes": {
+      "title": "Ghi chú",
+      "write": "Viết ghi chú",
+      "rewrite": "Viết lại ghi chú",
+      "writing": "Đang viết ghi chú…",
+      "writingPart": "Đang viết ghi chú… ({{done}}/{{total}})",
+      "failed": "Không thể viết ghi chú: {{error}}",
+      "copy": "Sao chép ghi chú",
+      "empty": "Chưa có ghi chú."
+    }
   }
 }

@@ -16,7 +16,8 @@
     "postProcessing": "Post proceso",
     "history": "Historial",
     "debug": "Depuración",
-    "about": "Acerca de"
+    "about": "Acerca de",
+    "meetings": "Reuniones"
   },
   "onboarding": {
     "subtitle": "Para comenzar, elige un modelo de transcripción",
@@ -743,5 +744,67 @@
     "learnMore": "Cómo solucionarlo",
     "recorderBlocked": "Ahora mismo no se pueden grabar atajos: Secure Input de macOS está bloqueando los eventos de teclado. Resuelve primero el aviso de Secure Input.",
     "dismiss": "Descartar"
+  },
+  "meetings": {
+    "title": "Reuniones",
+    "defaultTitle": "Reunión {{date}}",
+    "recorder": {
+      "titleLabel": "Título de la reunión",
+      "start": "Empezar a grabar",
+      "stop": "Detener",
+      "finishing": "Transcribiendo la última parte…",
+      "listening": "Escuchando. La transcripción aparece aquí mientras la gente habla.",
+      "micOnly": "Solo se está grabando tu micrófono.",
+      "startError": "No se pudo empezar a grabar: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Grabar a los demás participantes",
+      "description": "Graba también lo que reproduce tu ordenador, como el audio de la llamada, para transcribir también a los demás."
+    },
+    "speaker": {
+      "you": "Tú",
+      "others": "Otros",
+      "numbered": "Hablante {{number}}"
+    },
+    "list": {
+      "title": "Reuniones anteriores",
+      "empty": "Aún no hay reuniones.",
+      "interrupted": "Interrumpida"
+    },
+    "detail": {
+      "back": "Todas las reuniones",
+      "loading": "Cargando…",
+      "empty": "No se transcribió nada en esta reunión.",
+      "copy": "Copiar transcripción",
+      "copyError": "No se pudo copiar la transcripción.",
+      "openFolder": "Abrir carpeta de audio",
+      "delete": "Eliminar reunión",
+      "confirmDelete": "Haz clic de nuevo para eliminar",
+      "deleteError": "No se pudo eliminar la reunión."
+    },
+    "speakers": {
+      "title": "Hablantes",
+      "identify": "Identificar hablantes",
+      "identifying": "Identificando hablantes…",
+      "downloading": "Descargando los modelos de hablantes…",
+      "failed": "No se pudo identificar a los hablantes: {{error}}",
+      "retry": "Reintentar",
+      "none": "No se encontraron otros hablantes.",
+      "rename": "Poner nombre a este hablante"
+    },
+    "autoNotes": {
+      "label": "Escribir notas al terminar la reunión",
+      "description": "Resume la reunión, sus decisiones y tareas con el modelo configurado en Post proceso."
+    },
+    "notes": {
+      "title": "Notas",
+      "write": "Escribir notas",
+      "rewrite": "Reescribir notas",
+      "writing": "Escribiendo notas…",
+      "writingPart": "Escribiendo notas… ({{done}}/{{total}})",
+      "failed": "No se pudieron escribir las notas: {{error}}",
+      "copy": "Copiar notas",
+      "empty": "Todavía no hay notas."
+    }
   }
 }

@@ -546,6 +546,13 @@ pub struct AppSettings {
     /// so a local server can load the model and cache the prompt prefix.
     #[serde(default)]
     pub app_context_preload: bool,
+    /// Record system audio (the other participants) alongside the microphone
+    /// in meetings, where the platform supports it. See `meeting`.
+    #[serde(default = "default_meeting_system_audio")]
+    pub meeting_system_audio: bool,
+    /// Write notes with the post-processing LLM once a meeting ends.
+    #[serde(default = "default_meeting_auto_notes")]
+    pub meeting_auto_notes: bool,
 }
 
 fn default_model() -> String {
@@ -614,6 +621,14 @@ fn default_app_context_focused_text() -> bool {
 }
 
 fn default_app_context_screen_text() -> bool {
+    true
+}
+
+fn default_meeting_system_audio() -> bool {
+    true
+}
+
+fn default_meeting_auto_notes() -> bool {
     true
 }
 
@@ -1021,6 +1036,8 @@ pub fn get_default_settings() -> AppSettings {
         app_context_focused_text: default_app_context_focused_text(),
         app_context_screen_text: default_app_context_screen_text(),
         app_context_preload: false,
+        meeting_system_audio: default_meeting_system_audio(),
+        meeting_auto_notes: default_meeting_auto_notes(),
     }
 }
 

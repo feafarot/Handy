@@ -16,7 +16,8 @@
     "postProcessing": "后处理",
     "history": "历史记录",
     "debug": "调试",
-    "about": "关于"
+    "about": "关于",
+    "meetings": "会议"
   },
   "onboarding": {
     "subtitle": "请选择一个转录模型以开始使用",
@@ -743,5 +744,67 @@
     "learnMore": "如何解决",
     "recorderBlocked": "当前无法录制快捷键——macOS 的 Secure Input 正在阻止按键事件。请先解决 Secure Input 警告。",
     "dismiss": "关闭"
+  },
+  "meetings": {
+    "title": "会议",
+    "defaultTitle": "会议 {{date}}",
+    "recorder": {
+      "titleLabel": "会议标题",
+      "start": "开始录音",
+      "stop": "停止",
+      "finishing": "正在转写最后一部分…",
+      "listening": "正在聆听。大家说话时，转写内容会显示在这里。",
+      "micOnly": "只录制你的麦克风。",
+      "startError": "无法开始录音：{{error}}"
+    },
+    "systemAudio": {
+      "label": "录制其他参会者",
+      "description": "同时录制电脑播放的声音（例如通话音频），以便转写其他人的发言。"
+    },
+    "speaker": {
+      "you": "你",
+      "others": "其他人",
+      "numbered": "发言人 {{number}}"
+    },
+    "list": {
+      "title": "以往会议",
+      "empty": "还没有会议。",
+      "interrupted": "已中断"
+    },
+    "detail": {
+      "back": "所有会议",
+      "loading": "加载中…",
+      "empty": "这次会议没有转写到任何内容。",
+      "copy": "复制转写内容",
+      "copyError": "无法复制转写内容。",
+      "openFolder": "打开音频文件夹",
+      "delete": "删除会议",
+      "confirmDelete": "再次点击以删除",
+      "deleteError": "无法删除会议。"
+    },
+    "speakers": {
+      "title": "发言人",
+      "identify": "识别发言人",
+      "identifying": "正在识别发言人…",
+      "downloading": "正在下载发言人模型…",
+      "failed": "无法识别发言人：{{error}}",
+      "retry": "重试",
+      "none": "未找到其他发言人。",
+      "rename": "为此发言人命名"
+    },
+    "autoNotes": {
+      "label": "会议结束时撰写纪要",
+      "description": "使用“后处理”中设置的模型总结会议内容、决定和待办事项。"
+    },
+    "notes": {
+      "title": "纪要",
+      "write": "撰写纪要",
+      "rewrite": "重新撰写纪要",
+      "writing": "正在撰写纪要…",
+      "writingPart": "正在撰写纪要…（{{done}}/{{total}}）",
+      "failed": "无法撰写纪要：{{error}}",
+      "copy": "复制纪要",
+      "empty": "还没有纪要。"
+    }
   }
 }

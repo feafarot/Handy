@@ -16,7 +16,8 @@
     "postProcessing": "Efterbehandling",
     "history": "Historik",
     "debug": "Fejlfinding",
-    "about": "Om"
+    "about": "Om",
+    "meetings": "Møder"
   },
   "onboarding": {
     "subtitle": "For at komme i gang skal du vælge en transskriptionsmodel",
@@ -743,5 +744,67 @@
     "learnMore": "Sådan løser du det",
     "recorderBlocked": "Genveje kan ikke optages lige nu — macOS Secure Input blokerer tastehændelser. Løs advarslen om Secure Input først.",
     "dismiss": "Afvis"
+  },
+  "meetings": {
+    "title": "Møder",
+    "defaultTitle": "Møde {{date}}",
+    "recorder": {
+      "titleLabel": "Mødets titel",
+      "start": "Start optagelse",
+      "stop": "Stop",
+      "finishing": "Transskriberer den sidste del…",
+      "listening": "Lytter. Transskriptionen vises her, mens folk taler.",
+      "micOnly": "Kun din mikrofon optages.",
+      "startError": "Optagelsen kunne ikke starte: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Optag andre deltagere",
+      "description": "Optag også det, din computer afspiller, fx lyden fra opkaldet, så de andres tale også bliver transskriberet."
+    },
+    "speaker": {
+      "you": "Dig",
+      "others": "Andre",
+      "numbered": "Taler {{number}}"
+    },
+    "list": {
+      "title": "Tidligere møder",
+      "empty": "Ingen møder endnu.",
+      "interrupted": "Afbrudt"
+    },
+    "detail": {
+      "back": "Alle møder",
+      "loading": "Indlæser…",
+      "empty": "Intet blev transskriberet i dette møde.",
+      "copy": "Kopiér transskription",
+      "copyError": "Transskriptionen kunne ikke kopieres.",
+      "openFolder": "Åbn lydmappen",
+      "delete": "Slet møde",
+      "confirmDelete": "Klik igen for at slette",
+      "deleteError": "Mødet kunne ikke slettes."
+    },
+    "speakers": {
+      "title": "Talere",
+      "identify": "Identificer talere",
+      "identifying": "Identificerer talere…",
+      "downloading": "Downloader talermodellerne…",
+      "failed": "Kunne ikke identificere talerne: {{error}}",
+      "retry": "Prøv igen",
+      "none": "Der blev ikke fundet andre talere.",
+      "rename": "Navngiv denne taler"
+    },
+    "autoNotes": {
+      "label": "Skriv noter, når et møde slutter",
+      "description": "Opsummerer mødet, beslutninger og opgaver med modellen, der er sat op under Efterbehandling."
+    },
+    "notes": {
+      "title": "Noter",
+      "write": "Skriv noter",
+      "rewrite": "Skriv noter igen",
+      "writing": "Skriver noter…",
+      "writingPart": "Skriver noter… ({{done}}/{{total}})",
+      "failed": "Kunne ikke skrive noterne: {{error}}",
+      "copy": "Kopiér noter",
+      "empty": "Ingen noter endnu."
+    }
   }
 }

@@ -16,7 +16,8 @@
     "postProcessing": "後処理",
     "history": "履歴",
     "debug": "デバッグ",
-    "about": "概要"
+    "about": "概要",
+    "meetings": "会議"
   },
   "onboarding": {
     "subtitle": "開始するには、文字起こしのモデルを選択してください",
@@ -743,5 +744,67 @@
     "learnMore": "解決方法",
     "recorderBlocked": "現在ショートカットを記録できません。macOS の Secure Input がキーイベントをブロックしています。先に Secure Input の警告を解消してください。",
     "dismiss": "閉じる"
+  },
+  "meetings": {
+    "title": "会議",
+    "defaultTitle": "会議 {{date}}",
+    "recorder": {
+      "titleLabel": "会議のタイトル",
+      "start": "録音を開始",
+      "stop": "停止",
+      "finishing": "最後の部分を文字起こし中…",
+      "listening": "聞き取り中です。話すと文字起こしがここに表示されます。",
+      "micOnly": "マイクのみを録音しています。",
+      "startError": "録音を開始できませんでした: {{error}}"
+    },
+    "systemAudio": {
+      "label": "他の参加者を録音",
+      "description": "通話の音声など、パソコンで再生される音も録音し、他の人の発言も文字起こしします。"
+    },
+    "speaker": {
+      "you": "あなた",
+      "others": "他の参加者",
+      "numbered": "話者 {{number}}"
+    },
+    "list": {
+      "title": "過去の会議",
+      "empty": "まだ会議はありません。",
+      "interrupted": "中断"
+    },
+    "detail": {
+      "back": "すべての会議",
+      "loading": "読み込み中…",
+      "empty": "この会議では何も文字起こしされませんでした。",
+      "copy": "文字起こしをコピー",
+      "copyError": "文字起こしをコピーできませんでした。",
+      "openFolder": "音声フォルダーを開く",
+      "delete": "会議を削除",
+      "confirmDelete": "もう一度クリックして削除",
+      "deleteError": "会議を削除できませんでした。"
+    },
+    "speakers": {
+      "title": "話者",
+      "identify": "話者を識別",
+      "identifying": "話者を識別しています…",
+      "downloading": "話者モデルをダウンロードしています…",
+      "failed": "話者を識別できませんでした: {{error}}",
+      "retry": "再試行",
+      "none": "ほかの話者は見つかりませんでした。",
+      "rename": "この話者に名前を付ける"
+    },
+    "autoNotes": {
+      "label": "会議の終了時にメモを作成",
+      "description": "後処理で設定したモデルで、会議の内容・決定事項・タスクを要約します。"
+    },
+    "notes": {
+      "title": "メモ",
+      "write": "メモを作成",
+      "rewrite": "メモを作り直す",
+      "writing": "メモを作成しています…",
+      "writingPart": "メモを作成しています… ({{done}}/{{total}})",
+      "failed": "メモを作成できませんでした: {{error}}",
+      "copy": "メモをコピー",
+      "empty": "まだメモはありません。"
+    }
   }
 }

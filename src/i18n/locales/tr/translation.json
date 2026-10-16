@@ -16,7 +16,8 @@
     "postProcessing": "Son İşlem",
     "history": "Geçmiş",
     "debug": "Hata Ayıklama",
-    "about": "Hakkında"
+    "about": "Hakkında",
+    "meetings": "Toplantılar"
   },
   "onboarding": {
     "subtitle": "Başlamak için bir transkripsiyon modeli seçin",
@@ -743,5 +744,67 @@
     "learnMore": "Bu nasıl düzeltilir",
     "recorderBlocked": "Şu anda kısayol kaydedilemiyor — macOS Secure Input tuş olaylarını engelliyor. Önce Secure Input uyarısını giderin.",
     "dismiss": "Kapat"
+  },
+  "meetings": {
+    "title": "Toplantılar",
+    "defaultTitle": "Toplantı {{date}}",
+    "recorder": {
+      "titleLabel": "Toplantı başlığı",
+      "start": "Kaydı başlat",
+      "stop": "Durdur",
+      "finishing": "Son kısım yazıya dökülüyor…",
+      "listening": "Dinleniyor. Konuşuldukça döküm burada görünür.",
+      "micOnly": "Yalnızca mikrofonunuz kaydediliyor.",
+      "startError": "Kayıt başlatılamadı: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Diğer katılımcıları kaydet",
+      "description": "Bilgisayarınızın çaldığı sesi, örneğin görüşme sesini de kaydeder; böylece diğerlerinin konuşması da yazıya dökülür."
+    },
+    "speaker": {
+      "you": "Siz",
+      "others": "Diğerleri",
+      "numbered": "Konuşmacı {{number}}"
+    },
+    "list": {
+      "title": "Geçmiş toplantılar",
+      "empty": "Henüz toplantı yok.",
+      "interrupted": "Yarıda kaldı"
+    },
+    "detail": {
+      "back": "Tüm toplantılar",
+      "loading": "Yükleniyor…",
+      "empty": "Bu toplantıda hiçbir şey yazıya dökülmedi.",
+      "copy": "Dökümü kopyala",
+      "copyError": "Döküm kopyalanamadı.",
+      "openFolder": "Ses klasörünü aç",
+      "delete": "Toplantıyı sil",
+      "confirmDelete": "Silmek için tekrar tıklayın",
+      "deleteError": "Toplantı silinemedi."
+    },
+    "speakers": {
+      "title": "Konuşmacılar",
+      "identify": "Konuşmacıları tanı",
+      "identifying": "Konuşmacılar tanınıyor…",
+      "downloading": "Konuşmacı modelleri indiriliyor…",
+      "failed": "Konuşmacılar tanınamadı: {{error}}",
+      "retry": "Tekrar dene",
+      "none": "Başka konuşmacı bulunamadı.",
+      "rename": "Bu konuşmacıya ad ver"
+    },
+    "autoNotes": {
+      "label": "Toplantı bitince not yaz",
+      "description": "Toplantıyı, kararları ve görevleri Son İşlem bölümünde ayarlanan modelle özetler."
+    },
+    "notes": {
+      "title": "Notlar",
+      "write": "Not yaz",
+      "rewrite": "Notları yeniden yaz",
+      "writing": "Notlar yazılıyor…",
+      "writingPart": "Notlar yazılıyor… ({{done}}/{{total}})",
+      "failed": "Notlar yazılamadı: {{error}}",
+      "copy": "Notları kopyala",
+      "empty": "Henüz not yok."
+    }
   }
 }

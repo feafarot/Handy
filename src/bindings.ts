@@ -947,6 +947,121 @@ async updateRecordingRetentionPeriod(period: string) : Promise<Result<null, stri
     else return { status: "error", error: e  as any };
 }
 },
+async startMeeting(title: string) : Promise<Result<Meeting, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("start_meeting", { title }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async stopMeeting() : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("stop_meeting") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async getMeetingState() : Promise<MeetingState> {
+    return await TAURI_INVOKE("get_meeting_state");
+},
+async listMeetings() : Promise<Result<Meeting[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_meetings") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async getMeeting(id: number) : Promise<Result<MeetingDetail | null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_meeting", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async renameMeeting(id: number, title: string) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("rename_meeting", { id, title }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async deleteMeeting(id: number) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("delete_meeting", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Starts telling the other participants apart; see `MeetingSpeakersEvent`.
+ */
+async identifyMeetingSpeakers(id: number) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("identify_meeting_speakers", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Names one of a meeting's speakers; an empty or missing name goes back to
+ * the number.
+ */
+async renameMeetingSpeaker(id: number, speaker: number, name: string | null) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("rename_meeting_speaker", { id, speaker, name }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Starts writing a meeting's notes; see `MeetingNotesEvent`.
+ */
+async writeMeetingNotes(id: number) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("write_meeting_notes", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async openMeetingFolder(id: number) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("open_meeting_folder", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Whether this platform can record the other participants.
+ */
+async isMeetingSystemAudioSupported() : Promise<boolean> {
+    return await TAURI_INVOKE("is_meeting_system_audio_supported");
+},
+async changeMeetingSystemAudioSetting(enabled: boolean) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_meeting_system_audio_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeMeetingAutoNotesSetting(enabled: boolean) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_meeting_auto_notes_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 /**
  * Stub implementation for non-macOS platforms
  * Always returns false since laptop detection is macOS-specific
@@ -966,10 +1081,18 @@ async isLaptop() : Promise<Result<boolean, string>> {
 
 export const events = __makeEvents__<{
 historyUpdatePayload: HistoryUpdatePayload,
+meetingNotesEvent: MeetingNotesEvent,
+meetingSegmentEvent: MeetingSegmentEvent,
+meetingSpeakersEvent: MeetingSpeakersEvent,
+meetingStateEvent: MeetingStateEvent,
 streamPhaseEvent: StreamPhaseEvent,
 streamTextEvent: StreamTextEvent
 }>({
 historyUpdatePayload: "history-update-payload",
+meetingNotesEvent: "meeting-notes-event",
+meetingSegmentEvent: "meeting-segment-event",
+meetingSpeakersEvent: "meeting-speakers-event",
+meetingStateEvent: "meeting-state-event",
 streamPhaseEvent: "stream-phase-event",
 streamTextEvent: "stream-text-event"
 })
@@ -1067,7 +1190,16 @@ app_context_screen_text?: boolean;
  * Send the captured context to the LLM while the user is still speaking
  * so a local server can load the model and cache the prompt prefix.
  */
-app_context_preload?: boolean }
+app_context_preload?: boolean; 
+/**
+ * Record system audio (the other participants) alongside the microphone
+ * in meetings, where the platform supports it. See `meeting`.
+ */
+meeting_system_audio?: boolean; 
+/**
+ * Write notes with the post-processing LLM once a meeting ends.
+ */
+meeting_auto_notes?: boolean }
 export type AudioDevice = { index: string; name: string; is_default: boolean }
 export type AutoSubmitKey = "enter" | "ctrl_enter" | "cmd_enter"
 export type AvailableAccelerators = { transcribe: string[]; ort: string[]; gpu_devices: GpuDeviceOption[] }
@@ -1109,6 +1241,64 @@ key_down: number; key_up: number; flags_changed: number; mouse: number; duration
 export type KeyboardImplementation = "tauri" | "handy_keys"
 export type LLMPrompt = { id: string; name: string; prompt: string }
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error"
+export type Meeting = { id: number; title: string; 
+/**
+ * Unix milliseconds.
+ */
+started_at: number; ended_at: number | null; status: MeetingStatus; 
+/**
+ * Whether system audio (the other participants) was recorded.
+ */
+system_audio: boolean; 
+/**
+ * Whether the other participants' segments carry speaker numbers.
+ */
+speakers_identified: boolean }
+export type MeetingDetail = { meeting: Meeting; segments: MeetingSegment[]; speakers: MeetingSpeaker[]; 
+/**
+ * Markdown, once written.
+ */
+notes: string | null; 
+/**
+ * Speaker identification is running for this meeting right now.
+ */
+identifying_speakers: boolean; 
+/**
+ * Notes are being written for this meeting right now.
+ */
+writing_notes: boolean }
+export type MeetingNotesEvent = { meeting_id: number; progress: NotesProgress }
+export type MeetingSegment = { id: number; meeting_id: number; source: Source; 
+/**
+ * Which of the other participants spoke (1-based, see
+ * [`MeetingSpeaker`]), once identified. Always unset for the microphone.
+ */
+speaker: number | null; 
+/**
+ * Offsets from the start of the meeting.
+ */
+start_ms: number; end_ms: number; text: string }
+export type MeetingSegmentEvent = { segment: MeetingSegment }
+/**
+ * One of the other participants, as told apart by speaker identification.
+ */
+export type MeetingSpeaker = { speaker: number; 
+/**
+ * Set once the user names them.
+ */
+name: string | null }
+export type MeetingSpeakersEvent = { meeting_id: number; progress: SpeakersProgress }
+export type MeetingState = { phase: "idle" } | { phase: "recording"; meeting: Meeting } | 
+/**
+ * Recording stopped; the last utterances are still being transcribed.
+ */
+{ phase: "finishing"; meeting_id: number }
+export type MeetingStateEvent = { state: MeetingState }
+export type MeetingStatus = "recording" | "done" | 
+/**
+ * The app exited while it was recording; audio up to then is kept.
+ */
+"interrupted"
 export type ModelInfo = { id: string; name: string; description: string; filename: string; source: ModelSource; size_mb: number; is_downloaded: boolean; is_downloading: boolean; partial_size: number; is_directory: boolean; engine_type: EngineType; accuracy_score: number; speed_score: number; supports_translation: boolean; is_recommended: boolean; supported_languages: string[]; supports_language_selection: boolean; is_custom: boolean; supports_streaming: boolean; supports_language_detection: boolean }
 export type ModelLoadStatus = { is_loaded: boolean; current_model: string | null }
 /**
@@ -1136,6 +1326,11 @@ sha256: string | null } } |
  */
 "Local"
 export type ModelUnloadTimeout = "never" | "immediately" | "min_2" | "min_5" | "min_10" | "min_15" | "hour_1" | "sec_15"
+export type NotesProgress = 
+/**
+ * `done` of `total` requests to the LLM have finished.
+ */
+{ step: "writing"; done: number; total: number } | { step: "done" } | { step: "failed"; error: string }
 export type OrtAcceleratorSetting = "auto" | "cpu" | "cuda" | "directml" | "rocm"
 export type OverlayPosition = "top" | "bottom"
 /**
@@ -1203,6 +1398,23 @@ export type ShortcutActivation =
 "hold_or_toggle"
 export type ShortcutBinding = { id: string; name: string; description: string; default_binding: string; current_binding: string }
 export type SoundTheme = "marimba" | "pop" | "custom"
+/**
+ * Which side of the call a segment came from.
+ */
+export type Source = 
+/**
+ * The microphone: the user.
+ */
+"mic" | 
+/**
+ * Everything the PC played: the other participants.
+ */
+"system"
+export type SpeakersProgress = 
+/**
+ * First use: fetching the diarization models.
+ */
+{ step: "downloading" } | { step: "identifying" } | { step: "done" } | { step: "failed"; error: string }
 /**
  * Phase of the streaming overlay card, emitted to drive its UI state.
  */

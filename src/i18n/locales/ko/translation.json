@@ -16,7 +16,8 @@
     "postProcessing": "후처리",
     "history": "히스토리",
     "debug": "디버그",
-    "about": "정보"
+    "about": "정보",
+    "meetings": "회의"
   },
   "onboarding": {
     "subtitle": "시작하려면 음성 인식 모델을 선택하세요",
@@ -743,5 +744,67 @@
     "learnMore": "해결 방법",
     "recorderBlocked": "지금은 단축키를 등록할 수 없습니다. macOS Secure Input이 키 이벤트를 차단하고 있습니다. Secure Input 경고를 먼저 해결하세요.",
     "dismiss": "닫기"
+  },
+  "meetings": {
+    "title": "회의",
+    "defaultTitle": "회의 {{date}}",
+    "recorder": {
+      "titleLabel": "회의 제목",
+      "start": "녹음 시작",
+      "stop": "중지",
+      "finishing": "마지막 부분을 받아쓰는 중…",
+      "listening": "듣고 있습니다. 사람들이 말하면 여기에 받아쓴 내용이 나타납니다.",
+      "micOnly": "내 마이크만 녹음하고 있습니다.",
+      "startError": "녹음을 시작할 수 없습니다: {{error}}"
+    },
+    "systemAudio": {
+      "label": "다른 참가자 녹음",
+      "description": "통화 음성처럼 컴퓨터에서 재생되는 소리도 녹음해 다른 사람의 말도 받아씁니다."
+    },
+    "speaker": {
+      "you": "나",
+      "others": "다른 참가자",
+      "numbered": "화자 {{number}}"
+    },
+    "list": {
+      "title": "지난 회의",
+      "empty": "아직 회의가 없습니다.",
+      "interrupted": "중단됨"
+    },
+    "detail": {
+      "back": "모든 회의",
+      "loading": "불러오는 중…",
+      "empty": "이 회의에서는 받아쓴 내용이 없습니다.",
+      "copy": "받아쓴 내용 복사",
+      "copyError": "받아쓴 내용을 복사할 수 없습니다.",
+      "openFolder": "오디오 폴더 열기",
+      "delete": "회의 삭제",
+      "confirmDelete": "삭제하려면 다시 클릭하세요",
+      "deleteError": "회의를 삭제할 수 없습니다."
+    },
+    "speakers": {
+      "title": "화자",
+      "identify": "화자 식별",
+      "identifying": "화자를 식별하는 중…",
+      "downloading": "화자 모델을 다운로드하는 중…",
+      "failed": "화자를 식별할 수 없습니다: {{error}}",
+      "retry": "다시 시도",
+      "none": "다른 화자를 찾지 못했습니다.",
+      "rename": "이 화자 이름 지정"
+    },
+    "autoNotes": {
+      "label": "회의가 끝나면 메모 작성",
+      "description": "후처리에 설정된 모델로 회의 내용, 결정 사항, 할 일을 요약합니다."
+    },
+    "notes": {
+      "title": "메모",
+      "write": "메모 작성",
+      "rewrite": "메모 다시 작성",
+      "writing": "메모를 작성하는 중…",
+      "writingPart": "메모를 작성하는 중… ({{done}}/{{total}})",
+      "failed": "메모를 작성할 수 없습니다: {{error}}",
+      "copy": "메모 복사",
+      "empty": "아직 메모가 없습니다."
+    }
   }
 }

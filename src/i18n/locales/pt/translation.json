@@ -16,7 +16,8 @@
     "postProcessing": "Pós-Processamento",
     "history": "Histórico",
     "debug": "Depuração",
-    "about": "Sobre"
+    "about": "Sobre",
+    "meetings": "Reuniões"
   },
   "onboarding": {
     "subtitle": "Para começar, escolha um modelo de transcrição",
@@ -743,5 +744,67 @@
     "learnMore": "Como resolver isso",
     "recorderBlocked": "Não é possível gravar atalhos agora — o Secure Input do macOS está bloqueando os eventos de tecla. Resolva primeiro o aviso do Secure Input.",
     "dismiss": "Dispensar"
+  },
+  "meetings": {
+    "title": "Reuniões",
+    "defaultTitle": "Reunião {{date}}",
+    "recorder": {
+      "titleLabel": "Título da reunião",
+      "start": "Iniciar gravação",
+      "stop": "Parar",
+      "finishing": "Transcrevendo a última parte…",
+      "listening": "Ouvindo. A transcrição aparece aqui enquanto as pessoas falam.",
+      "micOnly": "Apenas o seu microfone está sendo gravado.",
+      "startError": "Não foi possível iniciar a gravação: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Gravar os outros participantes",
+      "description": "Grava também o que o computador reproduz, como o áudio da chamada, para transcrever também os outros."
+    },
+    "speaker": {
+      "you": "Você",
+      "others": "Outros",
+      "numbered": "Orador {{number}}"
+    },
+    "list": {
+      "title": "Reuniões anteriores",
+      "empty": "Ainda não há reuniões.",
+      "interrupted": "Interrompida"
+    },
+    "detail": {
+      "back": "Todas as reuniões",
+      "loading": "Carregando…",
+      "empty": "Nada foi transcrito nesta reunião.",
+      "copy": "Copiar transcrição",
+      "copyError": "Não foi possível copiar a transcrição.",
+      "openFolder": "Abrir pasta de áudio",
+      "delete": "Excluir reunião",
+      "confirmDelete": "Clique novamente para excluir",
+      "deleteError": "Não foi possível excluir a reunião."
+    },
+    "speakers": {
+      "title": "Oradores",
+      "identify": "Identificar oradores",
+      "identifying": "Identificando oradores…",
+      "downloading": "Baixando os modelos de oradores…",
+      "failed": "Não foi possível identificar os oradores: {{error}}",
+      "retry": "Tentar novamente",
+      "none": "Nenhum outro orador encontrado.",
+      "rename": "Dar nome a este orador"
+    },
+    "autoNotes": {
+      "label": "Escrever notas quando a reunião terminar",
+      "description": "Resume a reunião, as decisões e as tarefas com o modelo configurado em Pós-Processamento."
+    },
+    "notes": {
+      "title": "Notas",
+      "write": "Escrever notas",
+      "rewrite": "Reescrever notas",
+      "writing": "Escrevendo notas…",
+      "writingPart": "Escrevendo notas… ({{done}}/{{total}})",
+      "failed": "Não foi possível escrever as notas: {{error}}",
+      "copy": "Copiar notas",
+      "empty": "Ainda não há notas."
+    }
   }
 }

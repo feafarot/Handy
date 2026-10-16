@@ -16,7 +16,8 @@
     "postProcessing": "Postproces",
     "history": "Historia",
     "debug": "Debugowanie",
-    "about": "O programie"
+    "about": "O programie",
+    "meetings": "Spotkania"
   },
   "onboarding": {
     "subtitle": "Aby rozpocząć, wybierz model transkrypcji",
@@ -743,5 +744,67 @@
     "learnMore": "Jak to naprawić",
     "recorderBlocked": "Nie można teraz nagrać skrótu — Secure Input w macOS blokuje zdarzenia klawiszy. Najpierw rozwiąż ostrzeżenie o Secure Input.",
     "dismiss": "Odrzuć"
+  },
+  "meetings": {
+    "title": "Spotkania",
+    "defaultTitle": "Spotkanie {{date}}",
+    "recorder": {
+      "titleLabel": "Tytuł spotkania",
+      "start": "Rozpocznij nagrywanie",
+      "stop": "Zatrzymaj",
+      "finishing": "Transkrypcja ostatniej części…",
+      "listening": "Słucham. Transkrypcja pojawia się tutaj, gdy ludzie mówią.",
+      "micOnly": "Nagrywany jest tylko Twój mikrofon.",
+      "startError": "Nie udało się rozpocząć nagrywania: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Nagrywaj pozostałych uczestników",
+      "description": "Nagrywaj też to, co odtwarza komputer, np. dźwięk rozmowy, aby transkrybować również wypowiedzi innych."
+    },
+    "speaker": {
+      "you": "Ty",
+      "others": "Inni",
+      "numbered": "Mówca {{number}}"
+    },
+    "list": {
+      "title": "Poprzednie spotkania",
+      "empty": "Brak spotkań.",
+      "interrupted": "Przerwane"
+    },
+    "detail": {
+      "back": "Wszystkie spotkania",
+      "loading": "Ładowanie…",
+      "empty": "Z tego spotkania nic nie zostało przepisane.",
+      "copy": "Kopiuj transkrypcję",
+      "copyError": "Nie udało się skopiować transkrypcji.",
+      "openFolder": "Otwórz folder z nagraniami",
+      "delete": "Usuń spotkanie",
+      "confirmDelete": "Kliknij ponownie, aby usunąć",
+      "deleteError": "Nie udało się usunąć spotkania."
+    },
+    "speakers": {
+      "title": "Mówcy",
+      "identify": "Rozpoznaj mówców",
+      "identifying": "Rozpoznawanie mówców…",
+      "downloading": "Pobieranie modeli mówców…",
+      "failed": "Nie udało się rozpoznać mówców: {{error}}",
+      "retry": "Spróbuj ponownie",
+      "none": "Nie znaleziono innych mówców.",
+      "rename": "Nazwij tego mówcę"
+    },
+    "autoNotes": {
+      "label": "Pisz notatki po zakończeniu spotkania",
+      "description": "Podsumowuje spotkanie, decyzje i zadania za pomocą modelu ustawionego w sekcji Postproces."
+    },
+    "notes": {
+      "title": "Notatki",
+      "write": "Napisz notatki",
+      "rewrite": "Napisz notatki ponownie",
+      "writing": "Pisanie notatek…",
+      "writingPart": "Pisanie notatek… ({{done}}/{{total}})",
+      "failed": "Nie udało się napisać notatek: {{error}}",
+      "copy": "Kopiuj notatki",
+      "empty": "Brak notatek."
+    }
   }
 }

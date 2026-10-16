@@ -75,6 +75,10 @@ libc = "0.2"
 # Canary, Cohere). Per-platform backend features are added in the target tables
 # (Cargo unifies features, so `serde` here applies to every platform).
 transcribe-rs = { version = "0.3.8", features = ["onnx"] }
+# Meeting speaker labels (meeting/speakers.rs): pyannote community-1 diarization.
+# The fork adds the ONNX Runtime CPU and DirectML modes and builds against the
+# ort pinned by transcribe-rs; DirectML is enabled for Windows below.
+speakrs = { git = "https://github.com/feafarot/speakrs", rev = "33907f239b96724cb297f00fa926910fe7e6483b", default-features = false, features = ["ort-cpu"] }
 transcribe-cpp = { version = "0.4.0", default-features = false, features = [
   "serde",
 ] }
@@ -99,6 +103,10 @@ tauri-plugin-single-instance = "2.3.2"
 tauri-plugin-updater = "2.10.1"
 
 [target.'cfg(windows)'.dependencies]
+# Meeting speaker labels on any DirectX 12 GPU, falling back to CPU. The ONNX
+# Runtime build Handy links already contains DirectML (Windows ships DirectML.dll);
+# this only adds the code that registers the provider.
+speakrs = { git = "https://github.com/feafarot/speakrs", rev = "33907f239b96724cb297f00fa926910fe7e6483b", default-features = false, features = ["directml"] }
 # Used to reach ICoreWebView2Settings3 through the webview's controller
 # (disabling browser accelerator keys in the main window). Must match the
 # version wry links against so the COM types are identical.
@@ -129,6 +137,11 @@ windows = { version = "0.61.3", features = [
   "Win32_Storage_FileSystem",
   "Win32_System_Com",
   "Win32_UI_Accessibility",
+  # Meeting system audio (meeting/system_audio/windows.rs): WASAPI loopback
+  # of every output device, logged by device name.
+  "Win32_Devices_FunctionDiscovery",
+  "Win32_Media_Audio",
+  "Win32_UI_Shell_PropertiesSystem",
   "Foundation",
   "Foundation_Collections",
   "Graphics_Imaging",

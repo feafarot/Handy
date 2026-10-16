@@ -16,7 +16,8 @@
     "postProcessing": "Následné zpracování",
     "history": "Historie",
     "debug": "Ladění",
-    "about": "O aplikaci"
+    "about": "O aplikaci",
+    "meetings": "Schůzky"
   },
   "onboarding": {
     "subtitle": "Pro začátek vyberte model pro přepis",
@@ -743,5 +744,67 @@
     "learnMore": "Jak to vyřešit",
     "recorderBlocked": "Zkratky teď nelze nahrát — Secure Input v macOS blokuje události kláves. Nejprve vyřešte upozornění na Secure Input.",
     "dismiss": "Zavřít"
+  },
+  "meetings": {
+    "title": "Schůzky",
+    "defaultTitle": "Schůzka {{date}}",
+    "recorder": {
+      "titleLabel": "Název schůzky",
+      "start": "Začít nahrávat",
+      "stop": "Zastavit",
+      "finishing": "Přepisuje se poslední část…",
+      "listening": "Poslouchám. Přepis se tu objevuje, jak lidé mluví.",
+      "micOnly": "Nahrává se jen váš mikrofon.",
+      "startError": "Nahrávání se nepodařilo spustit: {{error}}"
+    },
+    "systemAudio": {
+      "label": "Nahrávat ostatní účastníky",
+      "description": "Nahrávat i to, co počítač přehrává, třeba zvuk hovoru, aby se přepsala i řeč ostatních."
+    },
+    "speaker": {
+      "you": "Vy",
+      "others": "Ostatní",
+      "numbered": "Mluvčí {{number}}"
+    },
+    "list": {
+      "title": "Minulé schůzky",
+      "empty": "Zatím žádné schůzky.",
+      "interrupted": "Přerušeno"
+    },
+    "detail": {
+      "back": "Všechny schůzky",
+      "loading": "Načítání…",
+      "empty": "Z této schůzky se nic nepřepsalo.",
+      "copy": "Kopírovat přepis",
+      "copyError": "Přepis se nepodařilo zkopírovat.",
+      "openFolder": "Otevřít složku se zvukem",
+      "delete": "Smazat schůzku",
+      "confirmDelete": "Klikněte znovu pro smazání",
+      "deleteError": "Schůzku se nepodařilo smazat."
+    },
+    "speakers": {
+      "title": "Mluvčí",
+      "identify": "Rozpoznat mluvčí",
+      "identifying": "Rozpoznávání mluvčích…",
+      "downloading": "Stahování modelů mluvčích…",
+      "failed": "Mluvčí se nepodařilo rozpoznat: {{error}}",
+      "retry": "Zkusit znovu",
+      "none": "Žádní další mluvčí nebyli nalezeni.",
+      "rename": "Pojmenovat tohoto mluvčího"
+    },
+    "autoNotes": {
+      "label": "Psát poznámky po skončení schůzky",
+      "description": "Shrne schůzku, rozhodnutí a úkoly pomocí modelu nastaveného v Následném zpracování."
+    },
+    "notes": {
+      "title": "Poznámky",
+      "write": "Napsat poznámky",
+      "rewrite": "Přepsat poznámky",
+      "writing": "Píšou se poznámky…",
+      "writingPart": "Píšou se poznámky… ({{done}}/{{total}})",
+      "failed": "Poznámky se nepodařilo napsat: {{error}}",
+      "copy": "Kopírovat poznámky",
+      "empty": "Zatím žádné poznámky."
+    }
   }
 }
