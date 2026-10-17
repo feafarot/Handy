@@ -221,6 +221,9 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(transcription_manager.clone());
     app_handle.manage(history_manager.clone());
     app_handle.manage(meeting_manager);
+    let meeting_auto_starter = Arc::new(meeting::auto::MeetingAutoStarter::new(app_handle));
+    meeting_auto_starter.spawn();
+    app_handle.manage(meeting_auto_starter);
     app_handle.manage(tray::TrayState::new());
 
     // Note: Shortcuts are NOT initialized here.
@@ -783,6 +786,7 @@ pub fn run(cli_args: CliArgs) {
             commands::meeting::list_meetings,
             commands::meeting::get_meeting,
             commands::meeting::rename_meeting,
+            commands::meeting::set_meeting_app,
             commands::meeting::delete_meeting,
             commands::meeting::identify_meeting_speakers,
             commands::meeting::rename_meeting_speaker,
@@ -791,6 +795,12 @@ pub fn run(cli_args: CliArgs) {
             commands::meeting::is_meeting_system_audio_supported,
             commands::meeting::change_meeting_system_audio_setting,
             commands::meeting::change_meeting_auto_notes_setting,
+            commands::meeting::is_meeting_auto_start_supported,
+            commands::meeting::change_meeting_auto_start_setting,
+            commands::meeting::change_meeting_auto_stop_setting,
+            commands::meeting::change_meeting_auto_start_blocklist_setting,
+            commands::meeting::get_meeting_prompt,
+            commands::meeting::answer_meeting_prompt,
             helpers::clamshell::is_laptop,
         ])
         .events(collect_events![
@@ -801,6 +811,7 @@ pub fn run(cli_args: CliArgs) {
             meeting::MeetingSegmentEvent,
             meeting::MeetingSpeakersEvent,
             meeting::MeetingNotesEvent,
+            meeting::auto::MeetingPromptEvent,
         ]);
 
     #[cfg(debug_assertions)] // <- Only export on non-release builds

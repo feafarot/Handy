@@ -805,6 +805,70 @@
       "failed": "Não foi possível escrever as notas: {{error}}",
       "copy": "Copiar notas",
       "empty": "Ainda não há notas."
+    },
+    "app": {
+      "label": "Aplicativo usado na reunião",
+      "placeholder": "Aplicativo desconhecido"
+    },
+    "autoStart": {
+      "title": "Gravação automática",
+      "unsupported": "Por enquanto, a detecção de reuniões só está disponível no Windows.",
+      "mode": {
+        "label": "Iniciar a gravação de reuniões",
+        "description": "Percebe quando um aplicativo como Zoom, Teams ou um navegador começa a usar o seu microfone.",
+        "options": {
+          "manual": {
+            "label": "Manualmente",
+            "description": "Só quando você clicar em “Iniciar gravação”."
+          },
+          "semi": {
+            "label": "Perguntar antes",
+            "description": "Pergunta sempre que um aplicativo começa a usar o seu microfone e diz qual é."
+          },
+          "full": {
+            "label": "Automaticamente",
+            "description": "Grava na hora as chamadas no Zoom, Teams, Slack e aplicativos parecidos. Pergunta no caso de navegadores e outros aplicativos."
+          }
+        }
+      },
+      "stop": {
+        "label": "Quando a chamada terminar",
+        "description": "O que fazer quando o aplicativo de onde vem uma reunião detectada passar um minuto sem usar o seu microfone.",
+        "options": {
+          "stop": "Parar a gravação",
+          "ask": "Perguntar",
+          "off": "Continuar gravando"
+        }
+      },
+      "blocklist": {
+        "label": "Nunca gravar automaticamente",
+        "description": "O modo automático ignora estes aplicativos. Adicione um com “Nunca neste aplicativo” quando for perguntado.",
+        "empty": "Nenhum aplicativo ainda.",
+        "remove": "Remover {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Gravar esta reunião?",
+        "reason": "{{app}} está usando o seu microfone.",
+        "serviceReason": "{{service}} em {{app}} está usando o seu microfone.",
+        "record": "Gravar",
+        "notNow": "Agora não",
+        "block": "Nunca neste aplicativo"
+      },
+      "started": {
+        "title": "Gravando uma reunião",
+        "body": "A gravação da sua reunião em {{app}} começou.",
+        "stop": "Parar",
+        "dismiss": "OK",
+        "blockHint": "Para esta gravação e nunca mais grava este aplicativo automaticamente."
+      },
+      "stop": {
+        "title": "A reunião acabou?",
+        "body": "{{app}} parou de usar o seu microfone. Parar a gravação?",
+        "stop": "Parar a gravação",
+        "keep": "Continuar gravando"
+      }
     }
   }
 }

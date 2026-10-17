@@ -805,6 +805,70 @@
       "failed": "Nie udało się napisać notatek: {{error}}",
       "copy": "Kopiuj notatki",
       "empty": "Brak notatek."
+    },
+    "app": {
+      "label": "Aplikacja, w której odbyło się spotkanie",
+      "placeholder": "Nieznana aplikacja"
+    },
+    "autoStart": {
+      "title": "Automatyczne nagrywanie",
+      "unsupported": "Wykrywanie spotkań jest na razie dostępne tylko w systemie Windows.",
+      "mode": {
+        "label": "Rozpoczynanie nagrywania spotkań",
+        "description": "Wykrywa, gdy aplikacja taka jak Zoom, Teams lub przeglądarka zaczyna używać Twojego mikrofonu.",
+        "options": {
+          "manual": {
+            "label": "Ręcznie",
+            "description": "Tylko po kliknięciu „Rozpocznij nagrywanie“."
+          },
+          "semi": {
+            "label": "Najpierw pytaj",
+            "description": "Pytaj za każdym razem, gdy jakaś aplikacja zacznie używać Twojego mikrofonu, i mów, która to."
+          },
+          "full": {
+            "label": "Automatycznie",
+            "description": "Od razu nagrywaj rozmowy w Zoom, Teams, Slack i podobnych aplikacjach. Pytaj w przypadku przeglądarek i innych aplikacji."
+          }
+        }
+      },
+      "stop": {
+        "label": "Gdy rozmowa się skończy",
+        "description": "Co zrobić, gdy aplikacja, z której nagrywane jest wykryte spotkanie, przez minutę nie używa Twojego mikrofonu.",
+        "options": {
+          "stop": "Zatrzymaj nagrywanie",
+          "ask": "Pytaj",
+          "off": "Nagrywaj dalej"
+        }
+      },
+      "blocklist": {
+        "label": "Nigdy nie nagrywaj automatycznie",
+        "description": "Tryb automatyczny pomija te aplikacje. Dodaj aplikację przyciskiem „Nigdy dla tej aplikacji“, gdy pojawi się pytanie.",
+        "empty": "Brak aplikacji.",
+        "remove": "Usuń {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Nagrać to spotkanie?",
+        "reason": "{{app}} używa Twojego mikrofonu.",
+        "serviceReason": "{{service}} w {{app}} używa Twojego mikrofonu.",
+        "record": "Nagrywaj",
+        "notNow": "Nie teraz",
+        "block": "Nigdy dla tej aplikacji"
+      },
+      "started": {
+        "title": "Nagrywanie spotkania",
+        "body": "Rozpoczęto nagrywanie spotkania w {{app}}.",
+        "stop": "Zatrzymaj",
+        "dismiss": "OK",
+        "blockHint": "Zatrzymuje to nagrywanie i już nigdy nie nagrywa tej aplikacji automatycznie."
+      },
+      "stop": {
+        "title": "Spotkanie zakończone?",
+        "body": "{{app}} nie używa już Twojego mikrofonu. Zatrzymać nagrywanie?",
+        "stop": "Zatrzymaj nagrywanie",
+        "keep": "Nagrywaj dalej"
+      }
     }
   }
 }

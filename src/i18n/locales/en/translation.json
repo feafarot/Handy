@@ -805,6 +805,70 @@
       "failed": "Couldn't write the notes: {{error}}",
       "copy": "Copy notes",
       "empty": "No notes yet."
+    },
+    "app": {
+      "label": "App the meeting was held in",
+      "placeholder": "Unknown app"
+    },
+    "autoStart": {
+      "title": "Automatic Recording",
+      "unsupported": "Detecting meetings is only available on Windows for now.",
+      "mode": {
+        "label": "Start Recording Meetings",
+        "description": "Notice when an app such as Zoom, Teams or a browser starts using your microphone.",
+        "options": {
+          "manual": {
+            "label": "Manually",
+            "description": "Only when you press Start recording."
+          },
+          "semi": {
+            "label": "Ask first",
+            "description": "Ask every time an app starts using your microphone, and say which one."
+          },
+          "full": {
+            "label": "Automatically",
+            "description": "Record calls in Zoom, Teams, Slack and similar apps right away. Ask about browsers and other apps."
+          }
+        }
+      },
+      "stop": {
+        "label": "When the Call Ends",
+        "description": "What to do once the app a detected meeting is recorded from has stopped using your microphone for a minute.",
+        "options": {
+          "stop": "Stop recording",
+          "ask": "Ask",
+          "off": "Keep recording"
+        }
+      },
+      "blocklist": {
+        "label": "Never Record Automatically",
+        "description": "Automatic mode leaves these apps alone. Add one with “Never for this app” when asked.",
+        "empty": "No apps yet.",
+        "remove": "Remove {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Record this meeting?",
+        "reason": "{{app}} is using your microphone.",
+        "serviceReason": "{{service}} in {{app}} is using your microphone.",
+        "record": "Record",
+        "notNow": "Not now",
+        "block": "Never for this app"
+      },
+      "started": {
+        "title": "Recording a meeting",
+        "body": "Started recording your {{app}} meeting.",
+        "stop": "Stop",
+        "dismiss": "OK",
+        "blockHint": "Stops this recording and never records this app automatically again."
+      },
+      "stop": {
+        "title": "Meeting over?",
+        "body": "{{app}} stopped using your microphone. Stop recording?",
+        "stop": "Stop recording",
+        "keep": "Keep recording"
+      }
     }
   }
 }

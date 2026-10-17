@@ -990,6 +990,18 @@ async renameMeeting(id: number, title: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Sets the app a meeting was held in; an empty or missing name means
+ * unknown.
+ */
+async setMeetingApp(id: number, app: string | null) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_meeting_app", { id, app }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async deleteMeeting(id: number) : Promise<Result<null, string>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("delete_meeting", { id }) };
@@ -1063,6 +1075,46 @@ async changeMeetingAutoNotesSetting(enabled: boolean) : Promise<Result<null, str
 }
 },
 /**
+ * Whether this platform can tell when a meeting starts.
+ */
+async isMeetingAutoStartSupported() : Promise<boolean> {
+    return await TAURI_INVOKE("is_meeting_auto_start_supported");
+},
+async changeMeetingAutoStartSetting(mode: MeetingAutoStart) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_meeting_auto_start_setting", { mode }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeMeetingAutoStopSetting(mode: MeetingAutoStop) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_meeting_auto_stop_setting", { mode }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeMeetingAutoStartBlocklistSetting(apps: MeetingBlockedApp[]) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_meeting_auto_start_blocklist_setting", { apps }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * The question or notice about a detected meeting on screen, if any; see
+ * `MeetingPromptEvent`.
+ */
+async getMeetingPrompt() : Promise<MeetingPrompt | null> {
+    return await TAURI_INVOKE("get_meeting_prompt");
+},
+async answerMeetingPrompt(id: number, answer: MeetingPromptAnswer) : Promise<void> {
+    await TAURI_INVOKE("answer_meeting_prompt", { id, answer });
+},
+/**
  * Stub implementation for non-macOS platforms
  * Always returns false since laptop detection is macOS-specific
  */
@@ -1082,6 +1134,7 @@ async isLaptop() : Promise<Result<boolean, string>> {
 export const events = __makeEvents__<{
 historyUpdatePayload: HistoryUpdatePayload,
 meetingNotesEvent: MeetingNotesEvent,
+meetingPromptEvent: MeetingPromptEvent,
 meetingSegmentEvent: MeetingSegmentEvent,
 meetingSpeakersEvent: MeetingSpeakersEvent,
 meetingStateEvent: MeetingStateEvent,
@@ -1090,6 +1143,7 @@ streamTextEvent: StreamTextEvent
 }>({
 historyUpdatePayload: "history-update-payload",
 meetingNotesEvent: "meeting-notes-event",
+meetingPromptEvent: "meeting-prompt-event",
 meetingSegmentEvent: "meeting-segment-event",
 meetingSpeakersEvent: "meeting-speakers-event",
 meetingStateEvent: "meeting-state-event",
@@ -1103,6 +1157,15 @@ streamTextEvent: "stream-text-event"
 
 /** user-defined types **/
 
+export type AppKind = 
+/**
+ * Made for calls (Zoom, Teams): holding the microphone means a meeting.
+ */
+"meeting_app" | 
+/**
+ * Could be a web meeting, could be anything.
+ */
+"browser" | "other"
 /**
  * The container-level `serde(default)` (backed by the `Default` impl below)
  * guarantees every field — including ones added in the future — falls back to
@@ -1199,7 +1262,11 @@ meeting_system_audio?: boolean;
 /**
  * Write notes with the post-processing LLM once a meeting ends.
  */
-meeting_auto_notes?: boolean }
+meeting_auto_notes?: boolean; meeting_auto_start?: MeetingAutoStart; meeting_auto_stop?: MeetingAutoStop; 
+/**
+ * Apps full-auto never records or asks about.
+ */
+meeting_auto_start_blocklist?: MeetingBlockedApp[] }
 export type AudioDevice = { index: string; name: string; is_default: boolean }
 export type AutoSubmitKey = "enter" | "ctrl_enter" | "cmd_enter"
 export type AvailableAccelerators = { transcribe: string[]; ort: string[]; gpu_devices: GpuDeviceOption[] }
@@ -1253,7 +1320,47 @@ system_audio: boolean;
 /**
  * Whether the other participants' segments carry speaker numbers.
  */
-speakers_identified: boolean }
+speakers_identified: boolean; 
+/**
+ * The app the meeting was held in, e.g. "Zoom", as detected or given by
+ * the user.
+ */
+app: string | null }
+/**
+ * Whether meetings start recording on their own when an app starts using the
+ * microphone. See `meeting::auto`.
+ */
+export type MeetingAutoStart = 
+/**
+ * Only from the Meetings page.
+ */
+"manual" | 
+/**
+ * Ask before recording every meeting detected.
+ */
+"semi" | 
+/**
+ * Record meetings in apps made for calls right away; ask about browsers
+ * and other apps.
+ */
+"full"
+/**
+ * What happens to a meeting recorded because it was detected once its app
+ * has let go of the microphone for a while.
+ */
+export type MeetingAutoStop = "stop" | "ask" | 
+/**
+ * Keep recording until stopped by hand.
+ */
+"off"
+/**
+ * An app full-auto meeting detection leaves alone.
+ */
+export type MeetingBlockedApp = { 
+/**
+ * See `meeting::auto::MicApp::id`.
+ */
+id: string; name: string }
 export type MeetingDetail = { meeting: Meeting; segments: MeetingSegment[]; speakers: MeetingSpeaker[]; 
 /**
  * Markdown, once written.
@@ -1268,6 +1375,33 @@ identifying_speakers: boolean;
  */
 writing_notes: boolean }
 export type MeetingNotesEvent = { meeting_id: number; progress: NotesProgress }
+/**
+ * A question or notice about a detected meeting, for the prompt window.
+ */
+export type MeetingPrompt = { 
+/**
+ * Answers name the prompt they answer.
+ */
+id: number; request: MeetingPromptRequest }
+export type MeetingPromptAnswer = "record" | "stop" | 
+/**
+ * Never for this app (full-auto only).
+ */
+"block" | "dismiss"
+export type MeetingPromptEvent = { prompt: MeetingPrompt | null }
+export type MeetingPromptRequest = 
+/**
+ * Whether to record a possible meeting.
+ */
+{ kind: "start"; app: string; app_kind: AppKind; service: string | null; hint: string | null; can_block: boolean } | 
+/**
+ * A recording started without asking; "never for this app" stops it.
+ */
+{ kind: "started"; app: string } | 
+/**
+ * Whether to stop a meeting whose app let go of the microphone.
+ */
+{ kind: "stop"; app: string }
 export type MeetingSegment = { id: number; meeting_id: number; source: Source; 
 /**
  * Which of the other participants spoke (1-based, see

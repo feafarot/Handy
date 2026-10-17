@@ -38,6 +38,14 @@ The **Meetings** page records a call and turns it into a transcript and notes:
 2. **Identify speakers:** after **Stop**, the other side is split into Speaker 1, 2, 3… with [speakrs](https://github.com/avencera/speakrs) (pyannote community-1 diarization, on the GPU through DirectML on Windows). The models (~35 MB) are downloaded on first use. Name each speaker in the meeting view and the transcript follows.
 3. **Write notes:** the transcript is summarized into a summary, discussion points, decisions, action items and open questions by the LLM set up in **Post Process** (a local server such as Ollama works). Long meetings are summarized in parts and then merged, so small context windows are fine. Turn off **Write Notes When a Meeting Ends** to write them only on demand, and use **Rewrite notes** after naming speakers.
 
+**Automatic recording (Windows):** under **Automatic Recording**, Handy can notice when an app starts using your microphone:
+
+- **Manually** (default): nothing happens on its own.
+- **Ask first:** a small popup in the corner of the screen asks before every recording and says which app set it off.
+- **Automatically:** calls in apps made for them (Zoom, Teams, Webex, Slack and the like) are recorded right away, with a short notice. Browsers and other apps still ask, since a browser using the microphone may or may not be a meeting; the popup names a web meeting it recognizes (e.g. Google Meet) from the window title. Choose **Never for this app** to stop being asked about an app; the list can be edited on the Meetings page.
+
+**When the Call Ends** decides what happens once the app a detected meeting came from has let go of the microphone for a minute: stop recording, ask, or keep going. Every meeting remembers the app it was held in (detected, or typed in by you).
+
 Meetings are stored in `meetings.db` in the app data directory, with each meeting's audio (`mic.wav`, `system.wav`) under `meetings/<id>/`. Only the notes step leaves your machine, and only if your post-processing provider is a cloud service.
 
 ## Quick Start

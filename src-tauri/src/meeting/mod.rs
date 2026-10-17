@@ -11,7 +11,11 @@
 //!
 //! Once a meeting ends, the other participants are told apart (see
 //! `speakers`) and notes are written (see `notes`), in the background.
+//!
+//! Meetings can also start (and stop) on their own when an app starts using
+//! the microphone; see `auto`.
 
+pub mod auto;
 mod notes;
 mod segmenter;
 mod speakers;
@@ -173,7 +177,8 @@ impl MeetingManager {
         }
     }
 
-    pub fn start(&self, title: &str, system_audio: bool) -> Result<Meeting> {
+    /// Starts recording. `app` is what the meeting is held in, if known.
+    pub fn start(&self, title: &str, system_audio: bool, app: Option<&str>) -> Result<Meeting> {
         let mut state = self.lock_state();
         match &*state {
             State::Idle => {}
@@ -182,13 +187,15 @@ impl MeetingManager {
                 return Err(anyhow!("the previous meeting is still being transcribed"))
             }
         }
-        let session = Session::start(&self.app, &self.store, title, system_audio)?;
+        let session = Session::start(&self.app, &self.store, title, system_audio, app)?;
         let meeting = session.meeting.clone();
         *state = State::Recording(Box::new(session));
         drop(state);
         info!(
-            "Meeting {} started (system audio: {})",
-            meeting.id, meeting.system_audio
+            "Meeting {} started (system audio: {}, app: {})",
+            meeting.id,
+            meeting.system_audio,
+            meeting.app.as_deref().unwrap_or("unknown")
         );
         self.emit_state();
         Ok(meeting)
@@ -398,6 +405,22 @@ impl MeetingManager {
         self.store.rename(meeting_id, title)
     }
 
+    /// Sets the app the meeting was held in; an empty or missing name means
+    /// unknown.
+    pub fn set_app(&self, meeting_id: i64, app: Option<&str>) -> Result<()> {
+        let app = app.map(str::trim).filter(|app| !app.is_empty());
+        self.store.set_app(meeting_id, app)?;
+        let mut state = self.lock_state();
+        if let State::Recording(session) = &mut *state {
+            if session.meeting.id == meeting_id {
+                session.meeting.app = app.map(str::to_string);
+                drop(state);
+                self.emit_state();
+            }
+        }
+        Ok(())
+    }
+
     pub fn delete(&self, meeting_id: i64) -> Result<()> {
         if self.is_active(meeting_id) {
             return Err(anyhow!("the meeting is still being recorded"));
@@ -437,6 +460,7 @@ impl Session {
         store: &Arc<MeetingStore>,
         title: &str,
         system: bool,
+        app_name: Option<&str>,
     ) -> Result<Self> {
         let vad_path = app
             .path()
@@ -463,7 +487,7 @@ impl Session {
             None
         };
 
-        let meeting = store.create(title, started_at, system_capture.is_some())?;
+        let meeting = store.create(title, started_at, system_capture.is_some(), app_name)?;
         let dir = store.audio_dir(meeting.id);
         let mut channels = Vec::new();
         let start_channel = |source, receiver, timeline| {

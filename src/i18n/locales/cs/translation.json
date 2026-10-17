@@ -805,6 +805,70 @@
       "failed": "Poznámky se nepodařilo napsat: {{error}}",
       "copy": "Kopírovat poznámky",
       "empty": "Zatím žádné poznámky."
+    },
+    "app": {
+      "label": "Aplikace, ve které schůzka proběhla",
+      "placeholder": "Neznámá aplikace"
+    },
+    "autoStart": {
+      "title": "Automatické nahrávání",
+      "unsupported": "Rozpoznávání schůzek je zatím dostupné jen ve Windows.",
+      "mode": {
+        "label": "Začít nahrávat schůzky",
+        "description": "Všimne si, když aplikace jako Zoom, Teams nebo prohlížeč začne používat váš mikrofon.",
+        "options": {
+          "manual": {
+            "label": "Ručně",
+            "description": "Jen když stisknete „Začít nahrávat“."
+          },
+          "semi": {
+            "label": "Nejdřív se zeptat",
+            "description": "Zeptat se pokaždé, když aplikace začne používat váš mikrofon, a říct, která to je."
+          },
+          "full": {
+            "label": "Automaticky",
+            "description": "Hovory v aplikacích Zoom, Teams, Slack a podobných nahrávat hned. U prohlížečů a jiných aplikací se zeptat."
+          }
+        }
+      },
+      "stop": {
+        "label": "Když hovor skončí",
+        "description": "Co dělat, když aplikace, ze které se nahrává rozpoznaná schůzka, minutu nepoužívá váš mikrofon.",
+        "options": {
+          "stop": "Zastavit nahrávání",
+          "ask": "Zeptat se",
+          "off": "Nahrávat dál"
+        }
+      },
+      "blocklist": {
+        "label": "Nikdy nenahrávat automaticky",
+        "description": "Automatický režim tyto aplikace vynechá. Aplikaci přidáte volbou „Nikdy pro tuto aplikaci“, když se zobrazí dotaz.",
+        "empty": "Zatím žádné aplikace.",
+        "remove": "Odebrat {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Nahrát tuto schůzku?",
+        "reason": "{{app}} používá váš mikrofon.",
+        "serviceReason": "{{service}} v {{app}} používá váš mikrofon.",
+        "record": "Nahrát",
+        "notNow": "Teď ne",
+        "block": "Nikdy pro tuto aplikaci"
+      },
+      "started": {
+        "title": "Nahrává se schůzka",
+        "body": "Nahrávání vaší schůzky v {{app}} začalo.",
+        "stop": "Zastavit",
+        "dismiss": "OK",
+        "blockHint": "Zastaví toto nahrávání a tuto aplikaci už nikdy nebude automaticky nahrávat."
+      },
+      "stop": {
+        "title": "Schůzka skončila?",
+        "body": "{{app}} už nepoužívá váš mikrofon. Zastavit nahrávání?",
+        "stop": "Zastavit nahrávání",
+        "keep": "Nahrávat dál"
+      }
     }
   }
 }

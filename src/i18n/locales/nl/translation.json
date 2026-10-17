@@ -805,6 +805,70 @@
       "failed": "Kan de notities niet schrijven: {{error}}",
       "copy": "Notities kopiëren",
       "empty": "Nog geen notities."
+    },
+    "app": {
+      "label": "App waarin de vergadering plaatsvond",
+      "placeholder": "Onbekende app"
+    },
+    "autoStart": {
+      "title": "Automatisch opnemen",
+      "unsupported": "Vergaderingen herkennen kan voorlopig alleen op Windows.",
+      "mode": {
+        "label": "Opname van vergaderingen starten",
+        "description": "Merk op wanneer een app zoals Zoom, Teams of een browser je microfoon gaat gebruiken.",
+        "options": {
+          "manual": {
+            "label": "Handmatig",
+            "description": "Alleen als je op 'Opname starten' drukt."
+          },
+          "semi": {
+            "label": "Eerst vragen",
+            "description": "Vraag het telkens als een app je microfoon gaat gebruiken, en zeg welke."
+          },
+          "full": {
+            "label": "Automatisch",
+            "description": "Neem gesprekken in Zoom, Teams, Slack en vergelijkbare apps meteen op. Vraag het bij browsers en andere apps."
+          }
+        }
+      },
+      "stop": {
+        "label": "Als het gesprek eindigt",
+        "description": "Wat er moet gebeuren als de app waaruit een herkende vergadering wordt opgenomen je microfoon een minuut niet meer gebruikt.",
+        "options": {
+          "stop": "Opname stoppen",
+          "ask": "Vragen",
+          "off": "Blijven opnemen"
+        }
+      },
+      "blocklist": {
+        "label": "Nooit automatisch opnemen",
+        "description": "De automatische modus laat deze apps met rust. Voeg er een toe met 'Nooit voor deze app' als je het gevraagd wordt.",
+        "empty": "Nog geen apps.",
+        "remove": "{{app}} verwijderen"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Deze vergadering opnemen?",
+        "reason": "{{app}} gebruikt je microfoon.",
+        "serviceReason": "{{service}} in {{app}} gebruikt je microfoon.",
+        "record": "Opnemen",
+        "notNow": "Niet nu",
+        "block": "Nooit voor deze app"
+      },
+      "started": {
+        "title": "Vergadering wordt opgenomen",
+        "body": "De opname van je vergadering in {{app}} is gestart.",
+        "stop": "Stoppen",
+        "dismiss": "OK",
+        "blockHint": "Stopt deze opname en neemt deze app nooit meer automatisch op."
+      },
+      "stop": {
+        "title": "Vergadering voorbij?",
+        "body": "{{app}} gebruikt je microfoon niet meer. Opname stoppen?",
+        "stop": "Opname stoppen",
+        "keep": "Blijven opnemen"
+      }
     }
   }
 }

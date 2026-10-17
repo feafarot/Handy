@@ -805,6 +805,70 @@
       "failed": "No s'han pogut escriure les notes: {{error}}",
       "copy": "Copia les notes",
       "empty": "Encara no hi ha notes."
+    },
+    "app": {
+      "label": "Aplicació on s'ha fet la reunió",
+      "placeholder": "Aplicació desconeguda"
+    },
+    "autoStart": {
+      "title": "Gravació automàtica",
+      "unsupported": "De moment, la detecció de reunions només està disponible al Windows.",
+      "mode": {
+        "label": "Comença a gravar les reunions",
+        "description": "Detecta quan una aplicació com ara el Zoom, el Teams o un navegador comença a utilitzar el micròfon.",
+        "options": {
+          "manual": {
+            "label": "Manualment",
+            "description": "Només quan premeu «Comença a gravar»."
+          },
+          "semi": {
+            "label": "Pregunta abans",
+            "description": "Pregunta cada vegada que una aplicació comença a utilitzar el micròfon i diu quina és."
+          },
+          "full": {
+            "label": "Automàticament",
+            "description": "Grava de seguida les trucades del Zoom, el Teams, l'Slack i aplicacions semblants. Pregunta per als navegadors i altres aplicacions."
+          }
+        }
+      },
+      "stop": {
+        "label": "Quan acabi la trucada",
+        "description": "Què cal fer quan l'aplicació des de la qual es grava una reunió detectada fa un minut que no utilitza el micròfon.",
+        "options": {
+          "stop": "Atura la gravació",
+          "ask": "Pregunta",
+          "off": "Continua gravant"
+        }
+      },
+      "blocklist": {
+        "label": "Sense gravació automàtica",
+        "description": "El mode automàtic no toca aquestes aplicacions. Afegiu-ne una amb «Mai per a aquesta aplicació» quan se us pregunti.",
+        "empty": "Encara no hi ha aplicacions.",
+        "remove": "Traieu {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Voleu gravar aquesta reunió?",
+        "reason": "{{app}} està utilitzant el micròfon.",
+        "serviceReason": "{{service}} a {{app}} està utilitzant el micròfon.",
+        "record": "Grava",
+        "notNow": "Ara no",
+        "block": "Mai per a aquesta aplicació"
+      },
+      "started": {
+        "title": "S'està gravant una reunió",
+        "body": "Ha començat la gravació de la reunió de {{app}}.",
+        "stop": "Atura",
+        "dismiss": "D'acord",
+        "blockHint": "Atura aquesta gravació i no tornarà a gravar mai automàticament aquesta aplicació."
+      },
+      "stop": {
+        "title": "Ha acabat la reunió?",
+        "body": "{{app}} ha deixat d'utilitzar el micròfon. Voleu aturar la gravació?",
+        "stop": "Atura la gravació",
+        "keep": "Continua gravant"
+      }
     }
   }
 }

@@ -805,6 +805,70 @@
       "failed": "Impossible de rédiger les notes : {{error}}",
       "copy": "Copier les notes",
       "empty": "Pas encore de notes."
+    },
+    "app": {
+      "label": "Application utilisée pour la réunion",
+      "placeholder": "Application inconnue"
+    },
+    "autoStart": {
+      "title": "Enregistrement automatique",
+      "unsupported": "La détection des réunions n'est disponible que sur Windows pour l'instant.",
+      "mode": {
+        "label": "Démarrer l'enregistrement des réunions",
+        "description": "Repère quand une application comme Zoom, Teams ou un navigateur commence à utiliser votre micro.",
+        "options": {
+          "manual": {
+            "label": "Manuellement",
+            "description": "Uniquement quand vous cliquez sur « Démarrer l'enregistrement »."
+          },
+          "semi": {
+            "label": "Demander d'abord",
+            "description": "Demande à chaque fois qu'une application commence à utiliser votre micro, en précisant laquelle."
+          },
+          "full": {
+            "label": "Automatiquement",
+            "description": "Enregistre tout de suite les appels dans Zoom, Teams, Slack et les applications similaires. Demande pour les navigateurs et les autres applications."
+          }
+        }
+      },
+      "stop": {
+        "label": "À la fin de l'appel",
+        "description": "Que faire quand l'application d'où provient une réunion détectée n'utilise plus votre micro depuis une minute.",
+        "options": {
+          "stop": "Arrêter l'enregistrement",
+          "ask": "Demander",
+          "off": "Continuer l'enregistrement"
+        }
+      },
+      "blocklist": {
+        "label": "Ne jamais enregistrer automatiquement",
+        "description": "Le mode automatique ignore ces applications. Ajoutez-en une avec « Jamais pour cette app » quand la question vous est posée.",
+        "empty": "Aucune application pour l'instant.",
+        "remove": "Retirer {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Enregistrer cette réunion ?",
+        "reason": "{{app}} utilise votre micro.",
+        "serviceReason": "{{service}} dans {{app}} utilise votre micro.",
+        "record": "Enregistrer",
+        "notNow": "Plus tard",
+        "block": "Jamais pour cette app"
+      },
+      "started": {
+        "title": "Enregistrement de la réunion",
+        "body": "L'enregistrement de votre réunion {{app}} a commencé.",
+        "stop": "Arrêter",
+        "dismiss": "OK",
+        "blockHint": "Arrête cet enregistrement et n'enregistrera plus jamais cette application automatiquement."
+      },
+      "stop": {
+        "title": "Réunion terminée ?",
+        "body": "{{app}} n'utilise plus votre micro. Arrêter l'enregistrement ?",
+        "stop": "Arrêter",
+        "keep": "Continuer d'enregistrer"
+      }
     }
   }
 }
