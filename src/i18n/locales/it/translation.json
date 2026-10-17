@@ -805,6 +805,70 @@
       "failed": "Impossibile scrivere le note: {{error}}",
       "copy": "Copia le note",
       "empty": "Ancora nessuna nota."
+    },
+    "app": {
+      "label": "App in cui si è tenuta la riunione",
+      "placeholder": "App sconosciuta"
+    },
+    "autoStart": {
+      "title": "Registrazione automatica",
+      "unsupported": "Per ora il rilevamento delle riunioni è disponibile solo su Windows.",
+      "mode": {
+        "label": "Avvia la registrazione delle riunioni",
+        "description": "Rileva quando un'app come Zoom, Teams o un browser inizia a usare il tuo microfono.",
+        "options": {
+          "manual": {
+            "label": "Manualmente",
+            "description": "Solo quando premi «Avvia registrazione»."
+          },
+          "semi": {
+            "label": "Chiedi prima",
+            "description": "Chiede ogni volta che un'app inizia a usare il tuo microfono e dice quale."
+          },
+          "full": {
+            "label": "Automaticamente",
+            "description": "Registra subito le chiamate in Zoom, Teams, Slack e app simili. Chiede per i browser e le altre app."
+          }
+        }
+      },
+      "stop": {
+        "label": "Quando la chiamata finisce",
+        "description": "Cosa fare quando l'app da cui si registra una riunione rilevata non usa più il tuo microfono da un minuto.",
+        "options": {
+          "stop": "Ferma la registrazione",
+          "ask": "Chiedi",
+          "off": "Continua a registrare"
+        }
+      },
+      "blocklist": {
+        "label": "Non registrare mai automaticamente",
+        "description": "La modalità automatica ignora queste app. Aggiungine una con «Mai per questa app» quando richiesto.",
+        "empty": "Ancora nessuna app.",
+        "remove": "Rimuovi {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Registrare questa riunione?",
+        "reason": "{{app}} sta usando il tuo microfono.",
+        "serviceReason": "{{service}} in {{app}} sta usando il tuo microfono.",
+        "record": "Registra",
+        "notNow": "Non ora",
+        "block": "Mai per questa app"
+      },
+      "started": {
+        "title": "Registrazione della riunione",
+        "body": "La registrazione della tua riunione su {{app}} è iniziata.",
+        "stop": "Ferma",
+        "dismiss": "OK",
+        "blockHint": "Ferma questa registrazione e non registra mai più automaticamente questa app."
+      },
+      "stop": {
+        "title": "Riunione finita?",
+        "body": "{{app}} ha smesso di usare il tuo microfono. Fermare la registrazione?",
+        "stop": "Ferma la registrazione",
+        "keep": "Continua a registrare"
+      }
     }
   }
 }

@@ -805,6 +805,70 @@
       "failed": "Không thể viết ghi chú: {{error}}",
       "copy": "Sao chép ghi chú",
       "empty": "Chưa có ghi chú."
+    },
+    "app": {
+      "label": "Ứng dụng dùng cho cuộc họp",
+      "placeholder": "Ứng dụng không xác định"
+    },
+    "autoStart": {
+      "title": "Tự động ghi",
+      "unsupported": "Hiện chỉ có thể phát hiện cuộc họp trên Windows.",
+      "mode": {
+        "label": "Bắt đầu ghi cuộc họp",
+        "description": "Nhận biết khi một ứng dụng như Zoom, Teams hoặc trình duyệt bắt đầu dùng micrô của bạn.",
+        "options": {
+          "manual": {
+            "label": "Thủ công",
+            "description": "Chỉ khi bạn nhấn “Bắt đầu ghi”."
+          },
+          "semi": {
+            "label": "Hỏi trước",
+            "description": "Hỏi mỗi khi có ứng dụng bắt đầu dùng micrô của bạn và cho biết đó là ứng dụng nào."
+          },
+          "full": {
+            "label": "Tự động",
+            "description": "Ghi ngay các cuộc gọi trong Zoom, Teams, Slack và ứng dụng tương tự. Hỏi trước với trình duyệt và ứng dụng khác."
+          }
+        }
+      },
+      "stop": {
+        "label": "Khi cuộc gọi kết thúc",
+        "description": "Việc cần làm khi ứng dụng đang được dùng để ghi cuộc họp đã phát hiện ngừng dùng micrô của bạn trong một phút.",
+        "options": {
+          "stop": "Dừng ghi",
+          "ask": "Hỏi",
+          "off": "Tiếp tục ghi"
+        }
+      },
+      "blocklist": {
+        "label": "Không bao giờ tự động ghi",
+        "description": "Chế độ tự động bỏ qua các ứng dụng này. Thêm ứng dụng bằng “Không bao giờ với ứng dụng này” khi được hỏi.",
+        "empty": "Chưa có ứng dụng nào.",
+        "remove": "Xóa {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Ghi cuộc họp này?",
+        "reason": "{{app}} đang dùng micrô của bạn.",
+        "serviceReason": "{{service}} trong {{app}} đang dùng micrô của bạn.",
+        "record": "Ghi",
+        "notNow": "Để sau",
+        "block": "Không bao giờ với ứng dụng này"
+      },
+      "started": {
+        "title": "Đang ghi cuộc họp",
+        "body": "Đã bắt đầu ghi cuộc họp {{app}} của bạn.",
+        "stop": "Dừng",
+        "dismiss": "OK",
+        "blockHint": "Dừng bản ghi này và không bao giờ tự động ghi ứng dụng này nữa."
+      },
+      "stop": {
+        "title": "Cuộc họp đã kết thúc?",
+        "body": "{{app}} đã ngừng dùng micrô của bạn. Dừng ghi?",
+        "stop": "Dừng ghi",
+        "keep": "Tiếp tục ghi"
+      }
     }
   }
 }

@@ -274,6 +274,7 @@ mod tests {
                 status: MeetingStatus::Done,
                 system_audio: true,
                 speakers_identified: true,
+                app: None,
             },
             segments: vec![
                 segment(3, Source::System, Some(2), 70_000, "Agreed."),

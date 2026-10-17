@@ -1,5 +1,6 @@
+use crate::meeting::auto::{MeetingAutoStarter, MeetingPrompt, MeetingPromptAnswer};
 use crate::meeting::{Meeting, MeetingDetail, MeetingManager, MeetingState};
-use crate::settings;
+use crate::settings::{self, MeetingAutoStart, MeetingAutoStop, MeetingBlockedApp};
 use std::sync::Arc;
 use tauri::{AppHandle, State};
 use tauri_plugin_opener::OpenerExt;
@@ -9,11 +10,13 @@ use tauri_plugin_opener::OpenerExt;
 pub fn start_meeting(
     app: AppHandle,
     meetings: State<'_, Arc<MeetingManager>>,
+    auto_starter: State<'_, Arc<MeetingAutoStarter>>,
     title: String,
 ) -> Result<Meeting, String> {
     let system_audio = settings::get_settings(&app).meeting_system_audio;
+    let held_in = auto_starter.current_app();
     meetings
-        .start(&title, system_audio)
+        .start(&title, system_audio, held_in.as_deref())
         .map_err(|e| e.to_string())
 }
 
@@ -52,6 +55,20 @@ pub fn rename_meeting(
     title: String,
 ) -> Result<(), String> {
     meetings.rename(id, &title).map_err(|e| e.to_string())
+}
+
+/// Sets the app a meeting was held in; an empty or missing name means
+/// unknown.
+#[tauri::command]
+#[specta::specta]
+pub fn set_meeting_app(
+    meetings: State<'_, Arc<MeetingManager>>,
+    id: i64,
+    app: Option<String>,
+) -> Result<(), String> {
+    meetings
+        .set_app(id, app.as_deref())
+        .map_err(|e| e.to_string())
 }
 
 /// Starts telling the other participants apart; see `MeetingSpeakersEvent`.
@@ -131,4 +148,69 @@ pub fn change_meeting_auto_notes_setting(app: AppHandle, enabled: bool) -> Resul
     settings.meeting_auto_notes = enabled;
     settings::write_settings(&app, settings);
     Ok(())
+}
+
+/// Whether this platform can tell when a meeting starts.
+#[tauri::command]
+#[specta::specta]
+pub fn is_meeting_auto_start_supported() -> bool {
+    crate::meeting::auto::SUPPORTED
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn change_meeting_auto_start_setting(
+    app: AppHandle,
+    mode: MeetingAutoStart,
+) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    settings.meeting_auto_start = mode;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn change_meeting_auto_stop_setting(
+    app: AppHandle,
+    mode: MeetingAutoStop,
+) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    settings.meeting_auto_stop = mode;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn change_meeting_auto_start_blocklist_setting(
+    app: AppHandle,
+    apps: Vec<MeetingBlockedApp>,
+) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    settings.meeting_auto_start_blocklist = apps;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+/// The question or notice about a detected meeting on screen, if any; see
+/// `MeetingPromptEvent`.
+#[tauri::command]
+#[specta::specta]
+pub fn get_meeting_prompt(
+    auto_starter: State<'_, Arc<MeetingAutoStarter>>,
+) -> Option<MeetingPrompt> {
+    auto_starter.prompt()
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn answer_meeting_prompt(
+    auto_starter: State<'_, Arc<MeetingAutoStarter>>,
+    id: u32,
+    answer: MeetingPromptAnswer,
+) {
+    // Starting a recording opens devices: keep it off the main thread.
+    let auto_starter = Arc::clone(&auto_starter);
+    std::thread::spawn(move || auto_starter.answer(id, answer));
 }

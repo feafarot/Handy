@@ -46,6 +46,7 @@ static MIGRATIONS: &[M] = &[
         );",
     ),
     M::up("ALTER TABLE meetings ADD COLUMN notes TEXT;"),
+    M::up("ALTER TABLE meetings ADD COLUMN app TEXT;"),
 ];
 
 /// Which side of the call a segment came from.
@@ -122,6 +123,9 @@ pub struct Meeting {
     pub system_audio: bool,
     /// Whether the other participants' segments carry speaker numbers.
     pub speakers_identified: bool,
+    /// The app the meeting was held in, e.g. "Zoom", as detected or given by
+    /// the user.
+    pub app: Option<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Type)]
@@ -235,15 +239,23 @@ impl MeetingStore {
         self.audio_root.join(meeting_id.to_string())
     }
 
-    pub fn create(&self, title: &str, started_at: i64, system_audio: bool) -> Result<Meeting> {
+    pub fn create(
+        &self,
+        title: &str,
+        started_at: i64,
+        system_audio: bool,
+        app: Option<&str>,
+    ) -> Result<Meeting> {
         let connection = self.connection();
         connection.execute(
-            "INSERT INTO meetings (title, started_at, status, system_audio) VALUES (?1, ?2, ?3, ?4)",
+            "INSERT INTO meetings (title, started_at, status, system_audio, app)
+             VALUES (?1, ?2, ?3, ?4, ?5)",
             params![
                 title,
                 started_at,
                 MeetingStatus::Recording.as_str(),
-                system_audio
+                system_audio,
+                app
             ],
         )?;
         let id = connection.last_insert_rowid();
@@ -257,6 +269,7 @@ impl MeetingStore {
             status: MeetingStatus::Recording,
             system_audio,
             speakers_identified: false,
+            app: app.map(str::to_string),
         })
     }
 
@@ -296,7 +309,7 @@ impl MeetingStore {
     pub fn list(&self) -> Result<Vec<Meeting>> {
         let connection = self.connection();
         let mut statement = connection.prepare(
-            "SELECT id, title, started_at, ended_at, status, system_audio, speakers_identified
+            "SELECT id, title, started_at, ended_at, status, system_audio, speakers_identified, app
              FROM meetings ORDER BY started_at DESC",
         )?;
         let meetings = statement
@@ -309,7 +322,7 @@ impl MeetingStore {
         let connection = self.connection();
         let Some(meeting) = connection
             .query_row(
-                "SELECT id, title, started_at, ended_at, status, system_audio, speakers_identified
+                "SELECT id, title, started_at, ended_at, status, system_audio, speakers_identified, app
                  FROM meetings WHERE id = ?1",
                 [meeting_id],
                 meeting_from_row,
@@ -459,6 +472,15 @@ impl MeetingStore {
         Ok(())
     }
 
+    /// Sets the app the meeting was held in; `None` for unknown.
+    pub fn set_app(&self, meeting_id: i64, app: Option<&str>) -> Result<()> {
+        self.connection().execute(
+            "UPDATE meetings SET app = ?1 WHERE id = ?2",
+            params![app, meeting_id],
+        )?;
+        Ok(())
+    }
+
     pub fn delete(&self, meeting_id: i64) -> Result<()> {
         self.connection()
             .execute("DELETE FROM meetings WHERE id = ?1", [meeting_id])?;
@@ -479,6 +501,7 @@ fn meeting_from_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<Meeting> {
         status: MeetingStatus::parse(&row.get::<_, String>(4)?),
         system_audio: row.get(5)?,
         speakers_identified: row.get(6)?,
+        app: row.get(7)?,
     })
 }
 
@@ -502,7 +525,7 @@ mod tests {
     fn meetings_round_trip_and_interrupted_ones_are_closed_on_open() {
         let dir = tempfile::tempdir().unwrap();
         let store = MeetingStore::open(dir.path()).unwrap();
-        let meeting = store.create("Standup", 1_000, true).unwrap();
+        let meeting = store.create("Standup", 1_000, true, Some("Zoom")).unwrap();
         assert!(store.audio_dir(meeting.id).is_dir());
         store
             .add_segment(meeting.id, Source::System, 5_000, 7_000, "second")
@@ -524,6 +547,8 @@ mod tests {
         assert_eq!(meeting.ended_at, Some(1_000 + 7_000));
 
         store.rename(meeting.id, "Planning").unwrap();
+        assert_eq!(meeting.app.as_deref(), Some("Zoom"));
+        store.set_app(meeting.id, None).unwrap();
 
         // Speaker identification labels one segment and splits another.
         let mixed = store
@@ -585,6 +610,7 @@ mod tests {
         assert_eq!(detail.notes.as_deref(), Some("## Summary"));
 
         assert_eq!(store.list().unwrap()[0].title, "Planning");
+        assert_eq!(store.list().unwrap()[0].app, None);
         store.delete(meeting.id).unwrap();
         assert!(store.get(meeting.id).unwrap().is_none());
         assert!(!store.audio_dir(meeting.id).exists());

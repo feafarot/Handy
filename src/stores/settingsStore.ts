@@ -5,6 +5,9 @@ import type {
   AppSettings as Settings,
   AudioDevice,
   ChineseScript,
+  MeetingAutoStart,
+  MeetingAutoStop,
+  MeetingBlockedApp,
   TranscribeAcceleratorSetting,
   OrtAcceleratorSetting,
   ShortcutActivation,
@@ -175,6 +178,14 @@ const settingUpdaters: {
     commands.changeMeetingSystemAudioSetting(value as boolean),
   meeting_auto_notes: (value) =>
     commands.changeMeetingAutoNotesSetting(value as boolean),
+  meeting_auto_start: (value) =>
+    commands.changeMeetingAutoStartSetting(value as MeetingAutoStart),
+  meeting_auto_stop: (value) =>
+    commands.changeMeetingAutoStopSetting(value as MeetingAutoStop),
+  meeting_auto_start_blocklist: (value) =>
+    commands.changeMeetingAutoStartBlocklistSetting(
+      value as MeetingBlockedApp[],
+    ),
   log_level: (value) => commands.setLogLevel(value as any),
   app_language: (value) => commands.changeAppLanguageSetting(value as string),
   theme: (value) => commands.changeThemeSetting(value as string),

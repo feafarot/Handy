@@ -805,6 +805,70 @@
       "failed": "Notizen konnten nicht geschrieben werden: {{error}}",
       "copy": "Notizen kopieren",
       "empty": "Noch keine Notizen."
+    },
+    "app": {
+      "label": "App, in der das Meeting stattfand",
+      "placeholder": "Unbekannte App"
+    },
+    "autoStart": {
+      "title": "Automatische Aufnahme",
+      "unsupported": "Meetings werden vorerst nur unter Windows erkannt.",
+      "mode": {
+        "label": "Meetings aufnehmen",
+        "description": "Bemerkt, wenn eine App wie Zoom, Teams oder ein Browser auf dein Mikrofon zugreift.",
+        "options": {
+          "manual": {
+            "label": "Manuell",
+            "description": "Nur wenn du auf „Aufnahme starten“ klickst."
+          },
+          "semi": {
+            "label": "Erst fragen",
+            "description": "Jedes Mal fragen, wenn eine App auf dein Mikrofon zugreift, und sagen, welche."
+          },
+          "full": {
+            "label": "Automatisch",
+            "description": "Anrufe in Zoom, Teams, Slack und ähnlichen Apps sofort aufnehmen. Bei Browsern und anderen Apps fragen."
+          }
+        }
+      },
+      "stop": {
+        "label": "Wenn der Anruf endet",
+        "description": "Was passieren soll, wenn die App, aus der ein erkanntes Meeting aufgenommen wird, dein Mikrofon eine Minute lang nicht mehr nutzt.",
+        "options": {
+          "stop": "Aufnahme stoppen",
+          "ask": "Fragen",
+          "off": "Weiter aufnehmen"
+        }
+      },
+      "blocklist": {
+        "label": "Nie automatisch aufnehmen",
+        "description": "Der automatische Modus lässt diese Apps in Ruhe. Füge eine mit „Nie für diese App“ hinzu, wenn du gefragt wirst.",
+        "empty": "Noch keine Apps.",
+        "remove": "{{app}} entfernen"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Dieses Meeting aufnehmen?",
+        "reason": "{{app}} verwendet dein Mikrofon.",
+        "serviceReason": "{{service}} in {{app}} verwendet dein Mikrofon.",
+        "record": "Aufnehmen",
+        "notNow": "Nicht jetzt",
+        "block": "Nie für diese App"
+      },
+      "started": {
+        "title": "Meeting wird aufgenommen",
+        "body": "Die Aufnahme deines Meetings in {{app}} hat begonnen.",
+        "stop": "Stopp",
+        "dismiss": "OK",
+        "blockHint": "Beendet diese Aufnahme und nimmt diese App nie wieder automatisch auf."
+      },
+      "stop": {
+        "title": "Meeting vorbei?",
+        "body": "{{app}} verwendet dein Mikrofon nicht mehr. Aufnahme stoppen?",
+        "stop": "Aufnahme stoppen",
+        "keep": "Weiter aufnehmen"
+      }
     }
   }
 }

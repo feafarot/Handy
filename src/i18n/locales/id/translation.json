@@ -805,6 +805,70 @@
       "failed": "Tidak dapat menulis catatan: {{error}}",
       "copy": "Salin catatan",
       "empty": "Belum ada catatan."
+    },
+    "app": {
+      "label": "Aplikasi tempat rapat berlangsung",
+      "placeholder": "Aplikasi tidak dikenal"
+    },
+    "autoStart": {
+      "title": "Perekaman otomatis",
+      "unsupported": "Untuk saat ini, deteksi rapat hanya tersedia di Windows.",
+      "mode": {
+        "label": "Mulai merekam rapat",
+        "description": "Ketahui saat aplikasi seperti Zoom, Teams, atau browser mulai menggunakan mikrofon Anda.",
+        "options": {
+          "manual": {
+            "label": "Manual",
+            "description": "Hanya saat Anda menekan “Mulai merekam”."
+          },
+          "semi": {
+            "label": "Tanya dulu",
+            "description": "Tanya setiap kali ada aplikasi yang mulai menggunakan mikrofon Anda, beserta nama aplikasinya."
+          },
+          "full": {
+            "label": "Otomatis",
+            "description": "Langsung rekam panggilan di Zoom, Teams, Slack, dan aplikasi serupa. Tanya dulu untuk browser dan aplikasi lain."
+          }
+        }
+      },
+      "stop": {
+        "label": "Saat panggilan berakhir",
+        "description": "Yang dilakukan setelah aplikasi sumber rekaman rapat yang terdeteksi tidak menggunakan mikrofon Anda selama satu menit.",
+        "options": {
+          "stop": "Hentikan perekaman",
+          "ask": "Tanya",
+          "off": "Terus merekam"
+        }
+      },
+      "blocklist": {
+        "label": "Jangan pernah rekam otomatis",
+        "description": "Mode otomatis tidak menyentuh aplikasi ini. Tambahkan aplikasi dengan “Jangan untuk aplikasi ini” saat ditanya.",
+        "empty": "Belum ada aplikasi.",
+        "remove": "Hapus {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Rekam rapat ini?",
+        "reason": "{{app}} sedang menggunakan mikrofon Anda.",
+        "serviceReason": "{{service}} di {{app}} sedang menggunakan mikrofon Anda.",
+        "record": "Rekam",
+        "notNow": "Nanti saja",
+        "block": "Jangan untuk aplikasi ini"
+      },
+      "started": {
+        "title": "Merekam rapat",
+        "body": "Perekaman rapat {{app}} Anda telah dimulai.",
+        "stop": "Berhenti",
+        "dismiss": "OK",
+        "blockHint": "Menghentikan rekaman ini dan tidak akan pernah lagi merekam aplikasi ini secara otomatis."
+      },
+      "stop": {
+        "title": "Rapat selesai?",
+        "body": "{{app}} berhenti menggunakan mikrofon Anda. Hentikan perekaman?",
+        "stop": "Hentikan perekaman",
+        "keep": "Terus merekam"
+      }
     }
   }
 }

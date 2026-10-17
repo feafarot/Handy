@@ -145,6 +145,41 @@ pub enum ModelUnloadTimeout {
     Sec15, // Debug mode only
 }
 
+/// Whether meetings start recording on their own when an app starts using the
+/// microphone. See `meeting::auto`.
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Type, Default)]
+#[serde(rename_all = "lowercase")]
+pub enum MeetingAutoStart {
+    /// Only from the Meetings page.
+    #[default]
+    Manual,
+    /// Ask before recording every meeting detected.
+    Semi,
+    /// Record meetings in apps made for calls right away; ask about browsers
+    /// and other apps.
+    Full,
+}
+
+/// What happens to a meeting recorded because it was detected once its app
+/// has let go of the microphone for a while.
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Type, Default)]
+#[serde(rename_all = "lowercase")]
+pub enum MeetingAutoStop {
+    #[default]
+    Stop,
+    Ask,
+    /// Keep recording until stopped by hand.
+    Off,
+}
+
+/// An app full-auto meeting detection leaves alone.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Type)]
+pub struct MeetingBlockedApp {
+    /// See `meeting::auto::MicApp::id`.
+    pub id: String,
+    pub name: String,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Type)]
 #[serde(rename_all = "snake_case")]
 pub enum PasteMethod {
@@ -553,6 +588,13 @@ pub struct AppSettings {
     /// Write notes with the post-processing LLM once a meeting ends.
     #[serde(default = "default_meeting_auto_notes")]
     pub meeting_auto_notes: bool,
+    #[serde(default)]
+    pub meeting_auto_start: MeetingAutoStart,
+    #[serde(default)]
+    pub meeting_auto_stop: MeetingAutoStop,
+    /// Apps full-auto never records or asks about.
+    #[serde(default)]
+    pub meeting_auto_start_blocklist: Vec<MeetingBlockedApp>,
 }
 
 fn default_model() -> String {
@@ -1038,6 +1080,9 @@ pub fn get_default_settings() -> AppSettings {
         app_context_preload: false,
         meeting_system_audio: default_meeting_system_audio(),
         meeting_auto_notes: default_meeting_auto_notes(),
+        meeting_auto_start: MeetingAutoStart::default(),
+        meeting_auto_stop: MeetingAutoStop::default(),
+        meeting_auto_start_blocklist: Vec::new(),
     }
 }
 

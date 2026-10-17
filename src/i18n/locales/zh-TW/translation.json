@@ -805,6 +805,70 @@
       "failed": "無法撰寫紀要：{{error}}",
       "copy": "複製紀要",
       "empty": "還沒有紀要。"
+    },
+    "app": {
+      "label": "會議所用的應用程式",
+      "placeholder": "未知的應用程式"
+    },
+    "autoStart": {
+      "title": "自動錄音",
+      "unsupported": "目前只有 Windows 支援偵測會議。",
+      "mode": {
+        "label": "開始錄製會議",
+        "description": "偵測 Zoom、Teams 或瀏覽器等應用程式何時開始使用你的麥克風。",
+        "options": {
+          "manual": {
+            "label": "手動",
+            "description": "只在你按下「開始錄音」時錄製。"
+          },
+          "semi": {
+            "label": "先詢問",
+            "description": "每當有應用程式開始使用麥克風時都詢問，並說明是哪一個。"
+          },
+          "full": {
+            "label": "自動",
+            "description": "立即錄製 Zoom、Teams、Slack 等應用程式中的通話。瀏覽器和其他應用程式則先詢問。"
+          }
+        }
+      },
+      "stop": {
+        "label": "通話結束時",
+        "description": "錄製所偵測會議的應用程式停止使用麥克風滿一分鐘後要執行的動作。",
+        "options": {
+          "stop": "停止錄音",
+          "ask": "詢問",
+          "off": "繼續錄音"
+        }
+      },
+      "blocklist": {
+        "label": "永不自動錄音",
+        "description": "自動模式會略過這些應用程式。詢問時按下「永不錄製此應用程式」即可加入。",
+        "empty": "還沒有應用程式。",
+        "remove": "移除 {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "要錄製這場會議嗎？",
+        "reason": "{{app}} 正在使用你的麥克風。",
+        "serviceReason": "{{app}} 中的 {{service}} 正在使用你的麥克風。",
+        "record": "錄製",
+        "notNow": "暫時不要",
+        "block": "永不錄製此應用程式"
+      },
+      "started": {
+        "title": "正在錄製會議",
+        "body": "已開始錄製你的 {{app}} 會議。",
+        "stop": "停止",
+        "dismiss": "好",
+        "blockHint": "停止這次錄音，之後不再自動錄製此應用程式。"
+      },
+      "stop": {
+        "title": "會議結束了嗎？",
+        "body": "{{app}} 已停止使用你的麥克風。要停止錄音嗎？",
+        "stop": "停止錄音",
+        "keep": "繼續錄音"
+      }
     }
   }
 }

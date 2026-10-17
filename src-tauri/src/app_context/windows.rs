@@ -105,7 +105,7 @@ pub fn foreground_app() -> Option<(AppInfo, Window)> {
     ))
 }
 
-fn window_title(hwnd: HWND) -> Option<String> {
+pub(crate) fn window_title(hwnd: HWND) -> Option<String> {
     let mut buffer = [0u16; 512];
     let len = unsafe { GetWindowTextW(hwnd, &mut buffer) };
     let title = String::from_utf16_lossy(&buffer[..len.max(0) as usize]);
@@ -113,7 +113,7 @@ fn window_title(hwnd: HWND) -> Option<String> {
     (!title.is_empty()).then(|| title.to_string())
 }
 
-fn process_image_path(pid: u32) -> Option<String> {
+pub(crate) fn process_image_path(pid: u32) -> Option<String> {
     let process = unsafe { OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid) }.ok()?;
     let mut buffer = [0u16; 1024];
     let mut len = buffer.len() as u32;
@@ -132,7 +132,7 @@ fn process_image_path(pid: u32) -> Option<String> {
 
 /// The `FileDescription` from an executable's version resource, e.g.
 /// "Google Chrome" for chrome.exe.
-fn file_description(path: &str) -> Option<String> {
+pub(crate) fn file_description(path: &str) -> Option<String> {
     let path = HSTRING::from(path);
     let size = unsafe { GetFileVersionInfoSizeW(&path, None) };
     if size == 0 {

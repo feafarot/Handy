@@ -805,6 +805,70 @@
       "failed": "Kunde inte skriva anteckningarna: {{error}}",
       "copy": "Kopiera anteckningar",
       "empty": "Inga anteckningar än."
+    },
+    "app": {
+      "label": "Appen som mötet hölls i",
+      "placeholder": "Okänd app"
+    },
+    "autoStart": {
+      "title": "Automatisk inspelning",
+      "unsupported": "Mötesidentifiering finns än så länge bara på Windows.",
+      "mode": {
+        "label": "Starta inspelning av möten",
+        "description": "Märk när en app som Zoom, Teams eller en webbläsare börjar använda din mikrofon.",
+        "options": {
+          "manual": {
+            "label": "Manuellt",
+            "description": "Bara när du trycker på ”Starta inspelning”."
+          },
+          "semi": {
+            "label": "Fråga först",
+            "description": "Fråga varje gång en app börjar använda din mikrofon, och säg vilken."
+          },
+          "full": {
+            "label": "Automatiskt",
+            "description": "Spela in samtal i Zoom, Teams, Slack och liknande appar direkt. Fråga för webbläsare och andra appar."
+          }
+        }
+      },
+      "stop": {
+        "label": "När samtalet slutar",
+        "description": "Vad som ska hända när appen som ett identifierat möte spelas in från inte har använt din mikrofon på en minut.",
+        "options": {
+          "stop": "Stoppa inspelningen",
+          "ask": "Fråga",
+          "off": "Fortsätt spela in"
+        }
+      },
+      "blocklist": {
+        "label": "Spela aldrig in automatiskt",
+        "description": "Automatiskt läge låter de här apparna vara. Lägg till en med ”Aldrig för den här appen” när du tillfrågas.",
+        "empty": "Inga appar än.",
+        "remove": "Ta bort {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Spela in det här mötet?",
+        "reason": "{{app}} använder din mikrofon.",
+        "serviceReason": "{{service}} i {{app}} använder din mikrofon.",
+        "record": "Spela in",
+        "notNow": "Inte nu",
+        "block": "Aldrig för den här appen"
+      },
+      "started": {
+        "title": "Spelar in ett möte",
+        "body": "Inspelningen av ditt möte i {{app}} har startat.",
+        "stop": "Stoppa",
+        "dismiss": "OK",
+        "blockHint": "Stoppar den här inspelningen och spelar aldrig mer in den här appen automatiskt."
+      },
+      "stop": {
+        "title": "Är mötet slut?",
+        "body": "{{app}} har slutat använda din mikrofon. Stoppa inspelningen?",
+        "stop": "Stoppa inspelningen",
+        "keep": "Fortsätt spela in"
+      }
     }
   }
 }

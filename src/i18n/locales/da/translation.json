@@ -805,6 +805,70 @@
       "failed": "Kunne ikke skrive noterne: {{error}}",
       "copy": "Kopiér noter",
       "empty": "Ingen noter endnu."
+    },
+    "app": {
+      "label": "Appen, mødet blev holdt i",
+      "placeholder": "Ukendt app"
+    },
+    "autoStart": {
+      "title": "Automatisk optagelse",
+      "unsupported": "Registrering af møder er indtil videre kun tilgængelig på Windows.",
+      "mode": {
+        "label": "Start optagelse af møder",
+        "description": "Opdag, når en app som Zoom, Teams eller en browser begynder at bruge din mikrofon.",
+        "options": {
+          "manual": {
+            "label": "Manuelt",
+            "description": "Kun når du trykker på ”Start optagelse”."
+          },
+          "semi": {
+            "label": "Spørg først",
+            "description": "Spørg hver gang en app begynder at bruge din mikrofon, og sig hvilken."
+          },
+          "full": {
+            "label": "Automatisk",
+            "description": "Optag opkald i Zoom, Teams, Slack og lignende apps med det samme. Spørg ved browsere og andre apps."
+          }
+        }
+      },
+      "stop": {
+        "label": "Når opkaldet slutter",
+        "description": "Hvad der skal ske, når appen, som et registreret møde optages fra, ikke har brugt din mikrofon i et minut.",
+        "options": {
+          "stop": "Stop optagelse",
+          "ask": "Spørg",
+          "off": "Fortsæt optagelse"
+        }
+      },
+      "blocklist": {
+        "label": "Optag aldrig automatisk",
+        "description": "Automatisk tilstand lader disse apps være. Tilføj en med ”Aldrig for denne app”, når du bliver spurgt.",
+        "empty": "Ingen apps endnu.",
+        "remove": "Fjern {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Optag dette møde?",
+        "reason": "{{app}} bruger din mikrofon.",
+        "serviceReason": "{{service}} i {{app}} bruger din mikrofon.",
+        "record": "Optag",
+        "notNow": "Ikke nu",
+        "block": "Aldrig for denne app"
+      },
+      "started": {
+        "title": "Optager et møde",
+        "body": "Optagelsen af dit møde i {{app}} er startet.",
+        "stop": "Stop",
+        "dismiss": "OK",
+        "blockHint": "Stopper denne optagelse og optager aldrig denne app automatisk igen."
+      },
+      "stop": {
+        "title": "Er mødet slut?",
+        "body": "{{app}} er holdt op med at bruge din mikrofon. Stop optagelsen?",
+        "stop": "Stop optagelse",
+        "keep": "Fortsæt optagelse"
+      }
     }
   }
 }

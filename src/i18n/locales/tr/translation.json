@@ -805,6 +805,70 @@
       "failed": "Notlar yazılamadı: {{error}}",
       "copy": "Notları kopyala",
       "empty": "Henüz not yok."
+    },
+    "app": {
+      "label": "Toplantının yapıldığı uygulama",
+      "placeholder": "Bilinmeyen uygulama"
+    },
+    "autoStart": {
+      "title": "Otomatik kayıt",
+      "unsupported": "Toplantı algılama şimdilik yalnızca Windows'ta kullanılabilir.",
+      "mode": {
+        "label": "Toplantı kaydını başlat",
+        "description": "Zoom, Teams veya bir tarayıcı gibi bir uygulama mikrofonunuzu kullanmaya başladığında bunu fark eder.",
+        "options": {
+          "manual": {
+            "label": "Elle",
+            "description": "Yalnızca “Kaydı başlat” düğmesine bastığınızda."
+          },
+          "semi": {
+            "label": "Önce sor",
+            "description": "Bir uygulama mikrofonunuzu kullanmaya başladığında her seferinde hangisi olduğunu söyleyerek sorar."
+          },
+          "full": {
+            "label": "Otomatik",
+            "description": "Zoom, Teams, Slack ve benzeri uygulamalardaki görüşmeleri hemen kaydeder. Tarayıcılar ve diğer uygulamalar için sorar."
+          }
+        }
+      },
+      "stop": {
+        "label": "Görüşme bittiğinde",
+        "description": "Algılanan toplantının kaydedildiği uygulama bir dakika boyunca mikrofonunuzu kullanmadığında ne yapılacağı.",
+        "options": {
+          "stop": "Kaydı durdur",
+          "ask": "Sor",
+          "off": "Kayda devam et"
+        }
+      },
+      "blocklist": {
+        "label": "Asla otomatik kaydetme",
+        "description": "Otomatik mod bu uygulamalara dokunmaz. Sorulduğunda “Bu uygulama için asla” ile uygulama ekleyin.",
+        "empty": "Henüz uygulama yok.",
+        "remove": "{{app}} uygulamasını kaldır"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "Bu toplantı kaydedilsin mi?",
+        "reason": "{{app}} mikrofonunuzu kullanıyor.",
+        "serviceReason": "{{app}} içindeki {{service}} mikrofonunuzu kullanıyor.",
+        "record": "Kaydet",
+        "notNow": "Şimdi değil",
+        "block": "Bu uygulama için asla"
+      },
+      "started": {
+        "title": "Toplantı kaydediliyor",
+        "body": "{{app}} toplantınızın kaydı başladı.",
+        "stop": "Durdur",
+        "dismiss": "Tamam",
+        "blockHint": "Bu kaydı durdurur ve bu uygulamayı bir daha asla otomatik olarak kaydetmez."
+      },
+      "stop": {
+        "title": "Toplantı bitti mi?",
+        "body": "{{app}} artık mikrofonunuzu kullanmıyor. Kayıt durdurulsun mu?",
+        "stop": "Kaydı durdur",
+        "keep": "Kayda devam et"
+      }
     }
   }
 }

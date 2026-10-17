@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
+  AppWindow,
   ArrowLeft,
   Check,
   Copy,
@@ -31,6 +32,7 @@ import { Input } from "../ui/Input";
 import { ToggleSwitch } from "../ui/ToggleSwitch";
 import { copyToClipboard } from "../settings/history/clipboard";
 import { MarkdownContent } from "../whats-new/MarkdownContent";
+import { AutoStartSettings } from "./AutoStartSettings";
 import {
   formatOffset,
   groupTurns,
@@ -40,7 +42,21 @@ import {
 const meetingDate = (meeting: Meeting, locale: string) =>
   formatDateTime(String(Math.floor(meeting.started_at / 1000)), locale);
 
-/** Date, duration and status of a meeting, as one line. */
+/** The title to show for a meeting: detected meetings start untitled and go
+ * by their date. */
+const useMeetingTitle = () => {
+  const { t, i18n } = useTranslation();
+  return useCallback(
+    (meeting: Meeting) =>
+      meeting.title ||
+      t("meetings.defaultTitle", {
+        date: meetingDate(meeting, i18n.language),
+      }),
+    [t, i18n.language],
+  );
+};
+
+/** Date, duration, app and status of a meeting, as one line. */
 const useMeetingMeta = () => {
   const { t, i18n } = useTranslation();
   return useCallback(
@@ -48,6 +64,9 @@ const useMeetingMeta = () => {
       const parts = [meetingDate(meeting, i18n.language)];
       if (meeting.ended_at !== null) {
         parts.push(formatOffset(meeting.ended_at - meeting.started_at));
+      }
+      if (meeting.app) {
+        parts.push(meeting.app);
       }
       if (meeting.status === "interrupted") {
         parts.push(t("meetings.list.interrupted"));
@@ -138,6 +157,46 @@ const Elapsed: React.FC<{ since: number }> = ({ since }) => {
   return <span className="tabular-nums">{formatOffset(now - since)}</span>;
 };
 
+/** The app a meeting was held in, as detected; editable, saved when it loses
+ * focus. */
+const AppField: React.FC<{
+  meeting: Meeting;
+  onSaved?: (app: string | null) => void;
+}> = ({ meeting, onSaved }) => {
+  const { t } = useTranslation();
+  const [app, setApp] = useState(meeting.app ?? "");
+  useEffect(() => setApp(meeting.app ?? ""), [meeting.app]);
+  const save = async () => {
+    const trimmed = app.trim();
+    if (trimmed === (meeting.app ?? "")) {
+      return;
+    }
+    const value = trimmed || null;
+    const result = await commands.setMeetingApp(meeting.id, value);
+    if (result.status === "ok") {
+      onSaved?.(value);
+    } else {
+      setApp(meeting.app ?? "");
+    }
+  };
+  return (
+    <div className="flex items-center gap-1.5 min-w-0">
+      <AppWindow className="w-3.5 h-3.5 text-text/50 shrink-0" />
+      <Input
+        variant="compact"
+        className="w-48"
+        value={app}
+        placeholder={t("meetings.app.placeholder")}
+        onChange={(e) => setApp(e.target.value)}
+        onBlur={save}
+        onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+        aria-label={t("meetings.app.label")}
+        title={t("meetings.app.label")}
+      />
+    </div>
+  );
+};
+
 interface RecorderProps {
   state: MeetingState;
   live: MeetingSegment[];
@@ -145,6 +204,7 @@ interface RecorderProps {
 
 const Recorder: React.FC<RecorderProps> = ({ state, live }) => {
   const { t, i18n } = useTranslation();
+  const meetingTitle = useMeetingTitle();
   const { getSetting, updateSetting, isUpdating } = useSettings();
   const [title, setTitle] = useState("");
   const [starting, setStarting] = useState(false);
@@ -238,14 +298,17 @@ const Recorder: React.FC<RecorderProps> = ({ state, live }) => {
     <div className="bg-background border border-mid-gray/20 rounded-lg">
       <div className="px-4 py-3 flex items-center justify-between gap-2 border-b border-mid-gray/20">
         {recording ? (
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shrink-0" />
-            <span className="text-sm font-medium truncate">
-              {recording.title}
-            </span>
-            <span className="text-sm text-text/60">
-              <Elapsed since={recording.started_at} />
-            </span>
+          <div className="flex flex-col gap-1.5 min-w-0">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shrink-0" />
+              <span className="text-sm font-medium truncate">
+                {meetingTitle(recording)}
+              </span>
+              <span className="text-sm text-text/60">
+                <Elapsed since={recording.started_at} />
+              </span>
+            </div>
+            <AppField meeting={recording} />
           </div>
         ) : (
           <div className="flex items-center gap-2 text-sm text-text/70">
@@ -485,6 +548,7 @@ const MeetingView: React.FC<{ id: number; onBack: () => void }> = ({
 }) => {
   const { t, i18n } = useTranslation();
   const meetingMeta = useMeetingMeta();
+  const meetingTitle = useMeetingTitle();
   const [detail, setDetail] = useState<MeetingDetail | null>(null);
   const [title, setTitle] = useState("");
   const [copied, setCopied] = useState(false);
@@ -558,7 +622,7 @@ const MeetingView: React.FC<{ id: number; onBack: () => void }> = ({
 
   const copy = async () => {
     const markdown = transcriptToMarkdown(
-      meeting.title,
+      meetingTitle(meeting),
       date,
       segments,
       speakerName,
@@ -634,10 +698,17 @@ const MeetingView: React.FC<{ id: number; onBack: () => void }> = ({
         <div className="px-4 py-3 flex flex-col gap-2">
           <Input
             value={title}
+            placeholder={meetingTitle({ ...meeting, title: "" })}
             onChange={(e) => setTitle(e.target.value)}
             onBlur={saveTitle}
             onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
             aria-label={t("meetings.recorder.titleLabel")}
+          />
+          <AppField
+            meeting={meeting}
+            onSaved={(app) =>
+              setDetail({ ...detail, meeting: { ...meeting, app } })
+            }
           />
           <div className="flex items-center justify-between gap-2">
             <p className="text-xs text-text/60">{meetingMeta(meeting)}</p>
@@ -706,6 +777,7 @@ const MeetingView: React.FC<{ id: number; onBack: () => void }> = ({
 export const MeetingsPage: React.FC = () => {
   const { t } = useTranslation();
   const meetingMeta = useMeetingMeta();
+  const meetingTitle = useMeetingTitle();
   const [state, setState] = useState<MeetingState>({ phase: "idle" });
   const [live, setLive] = useState<MeetingSegment[]>([]);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
@@ -792,6 +864,14 @@ export const MeetingsPage: React.FC = () => {
       </div>
       <div className="space-y-2">
         <h2 className="px-4 text-xs font-medium text-mid-gray uppercase tracking-wide">
+          {t("meetings.autoStart.title")}
+        </h2>
+        <div className="bg-background border border-mid-gray/20 rounded-lg">
+          <AutoStartSettings />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <h2 className="px-4 text-xs font-medium text-mid-gray uppercase tracking-wide">
           {t("meetings.list.title")}
         </h2>
         <div className="bg-background border border-mid-gray/20 rounded-lg">
@@ -807,7 +887,9 @@ export const MeetingsPage: React.FC = () => {
                   onClick={() => setOpenId(meeting.id)}
                   className="w-full px-4 py-2.5 flex flex-col items-start gap-0.5 text-start hover:bg-mid-gray/10 transition-colors cursor-pointer"
                 >
-                  <span className="text-sm font-medium">{meeting.title}</span>
+                  <span className="text-sm font-medium">
+                    {meetingTitle(meeting)}
+                  </span>
                   <span className="text-xs text-text/60">
                     {meetingMeta(meeting)}
                   </span>

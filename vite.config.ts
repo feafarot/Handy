@@ -17,12 +17,13 @@ export default defineConfig(async () => ({
     },
   },
 
-  // Multiple entry points for main app and overlay
+  // Multiple entry points: main app, recording overlay, meeting prompt
   build: {
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
         overlay: resolve(__dirname, "src/overlay/index.html"),
+        "meeting-prompt": resolve(__dirname, "src/meeting-prompt/index.html"),
       },
     },
   },

@@ -805,6 +805,70 @@
       "failed": "메모를 작성할 수 없습니다: {{error}}",
       "copy": "메모 복사",
       "empty": "아직 메모가 없습니다."
+    },
+    "app": {
+      "label": "회의에 사용한 앱",
+      "placeholder": "알 수 없는 앱"
+    },
+    "autoStart": {
+      "title": "자동 녹음",
+      "unsupported": "회의 감지는 현재 Windows에서만 사용할 수 있습니다.",
+      "mode": {
+        "label": "회의 녹음 시작",
+        "description": "Zoom, Teams, 브라우저 같은 앱이 마이크를 사용하기 시작하면 알아차립니다.",
+        "options": {
+          "manual": {
+            "label": "수동",
+            "description": "'녹음 시작'을 누를 때만 녹음합니다."
+          },
+          "semi": {
+            "label": "먼저 묻기",
+            "description": "앱이 마이크를 사용하기 시작할 때마다 어떤 앱인지 알려 주고 묻습니다."
+          },
+          "full": {
+            "label": "자동",
+            "description": "Zoom, Teams, Slack 같은 앱의 통화는 바로 녹음합니다. 브라우저와 기타 앱은 먼저 묻습니다."
+          }
+        }
+      },
+      "stop": {
+        "label": "통화가 끝나면",
+        "description": "감지된 회의를 녹음 중인 앱이 1분 동안 마이크를 사용하지 않을 때 할 동작입니다.",
+        "options": {
+          "stop": "녹음 중지",
+          "ask": "묻기",
+          "off": "계속 녹음"
+        }
+      },
+      "blocklist": {
+        "label": "자동 녹음 안 함",
+        "description": "자동 모드에서는 이 앱들을 녹음하지 않습니다. 물어볼 때 '이 앱은 녹음 안 함'을 눌러 추가하세요.",
+        "empty": "아직 앱이 없습니다.",
+        "remove": "{{app}} 제거"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "이 회의를 녹음할까요?",
+        "reason": "{{app}}에서 마이크를 사용 중입니다.",
+        "serviceReason": "{{app}}의 {{service}}에서 마이크를 사용 중입니다.",
+        "record": "녹음",
+        "notNow": "나중에",
+        "block": "이 앱은 녹음 안 함"
+      },
+      "started": {
+        "title": "회의 녹음 중",
+        "body": "{{app}} 회의 녹음을 시작했습니다.",
+        "stop": "중지",
+        "dismiss": "확인",
+        "blockHint": "이 녹음을 중지하고 앞으로 이 앱을 자동으로 녹음하지 않습니다."
+      },
+      "stop": {
+        "title": "회의가 끝났나요?",
+        "body": "{{app}}에서 더 이상 마이크를 사용하지 않습니다. 녹음을 중지할까요?",
+        "stop": "녹음 중지",
+        "keep": "계속 녹음"
+      }
     }
   }
 }

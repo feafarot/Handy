@@ -805,6 +805,70 @@
       "failed": "No se pudieron escribir las notas: {{error}}",
       "copy": "Copiar notas",
       "empty": "Todavía no hay notas."
+    },
+    "app": {
+      "label": "Aplicación en la que se celebró la reunión",
+      "placeholder": "Aplicación desconocida"
+    },
+    "autoStart": {
+      "title": "Grabación automática",
+      "unsupported": "Por ahora, la detección de reuniones solo está disponible en Windows.",
+      "mode": {
+        "label": "Empezar a grabar reuniones",
+        "description": "Detecta cuándo una aplicación como Zoom, Teams o un navegador empieza a usar tu micrófono.",
+        "options": {
+          "manual": {
+            "label": "Manualmente",
+            "description": "Solo cuando pulses «Empezar a grabar»."
+          },
+          "semi": {
+            "label": "Preguntar antes",
+            "description": "Pregunta cada vez que una aplicación empieza a usar tu micrófono y dice cuál."
+          },
+          "full": {
+            "label": "Automáticamente",
+            "description": "Graba al momento las llamadas de Zoom, Teams, Slack y aplicaciones similares. Pregunta en el caso de navegadores y otras aplicaciones."
+          }
+        }
+      },
+      "stop": {
+        "label": "Cuando termine la llamada",
+        "description": "Qué hacer cuando la aplicación desde la que se graba una reunión detectada lleva un minuto sin usar tu micrófono.",
+        "options": {
+          "stop": "Detener la grabación",
+          "ask": "Preguntar",
+          "off": "Seguir grabando"
+        }
+      },
+      "blocklist": {
+        "label": "No grabar nunca automáticamente",
+        "description": "El modo automático no toca estas aplicaciones. Añade una con «Nunca en esta aplicación» cuando se te pregunte.",
+        "empty": "Aún no hay aplicaciones.",
+        "remove": "Quitar {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "¿Grabar esta reunión?",
+        "reason": "{{app}} está usando tu micrófono.",
+        "serviceReason": "{{service}} en {{app}} está usando tu micrófono.",
+        "record": "Grabar",
+        "notNow": "Ahora no",
+        "block": "Nunca en esta aplicación"
+      },
+      "started": {
+        "title": "Grabando una reunión",
+        "body": "Se ha empezado a grabar tu reunión de {{app}}.",
+        "stop": "Detener",
+        "dismiss": "Aceptar",
+        "blockHint": "Detiene esta grabación y no volverá a grabar esta aplicación automáticamente."
+      },
+      "stop": {
+        "title": "¿Ha terminado la reunión?",
+        "body": "{{app}} ha dejado de usar tu micrófono. ¿Detener la grabación?",
+        "stop": "Detener la grabación",
+        "keep": "Seguir grabando"
+      }
     }
   }
 }

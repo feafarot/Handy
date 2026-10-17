@@ -805,6 +805,70 @@
       "failed": "无法撰写纪要：{{error}}",
       "copy": "复制纪要",
       "empty": "还没有纪要。"
+    },
+    "app": {
+      "label": "会议所用的应用",
+      "placeholder": "未知应用"
+    },
+    "autoStart": {
+      "title": "自动录音",
+      "unsupported": "会议检测目前仅支持 Windows。",
+      "mode": {
+        "label": "开始录制会议",
+        "description": "检测 Zoom、Teams 或浏览器等应用何时开始使用你的麦克风。",
+        "options": {
+          "manual": {
+            "label": "手动",
+            "description": "仅在你点击“开始录音”时录制。"
+          },
+          "semi": {
+            "label": "先询问",
+            "description": "每当有应用开始使用麦克风时都询问，并说明是哪个应用。"
+          },
+          "full": {
+            "label": "自动",
+            "description": "立即录制 Zoom、Teams、Slack 等应用中的通话。浏览器和其他应用则先询问。"
+          }
+        }
+      },
+      "stop": {
+        "label": "通话结束时",
+        "description": "录制所检测会议的应用停止使用麦克风满一分钟后要执行的操作。",
+        "options": {
+          "stop": "停止录音",
+          "ask": "询问",
+          "off": "继续录音"
+        }
+      },
+      "blocklist": {
+        "label": "从不自动录音",
+        "description": "自动模式会跳过这些应用。询问时点击“永不录制此应用”即可添加。",
+        "empty": "还没有应用。",
+        "remove": "移除 {{app}}"
+      }
+    },
+    "prompt": {
+      "start": {
+        "title": "要录制这场会议吗？",
+        "reason": "{{app}} 正在使用你的麦克风。",
+        "serviceReason": "{{app}} 中的 {{service}} 正在使用你的麦克风。",
+        "record": "录制",
+        "notNow": "暂不",
+        "block": "永不录制此应用"
+      },
+      "started": {
+        "title": "正在录制会议",
+        "body": "已开始录制你的 {{app}} 会议。",
+        "stop": "停止",
+        "dismiss": "好的",
+        "blockHint": "停止本次录音，以后不再自动录制此应用。"
+      },
+      "stop": {
+        "title": "会议结束了吗？",
+        "body": "{{app}} 已停止使用你的麦克风。要停止录音吗？",
+        "stop": "停止录音",
+        "keep": "继续录音"
+      }
     }
   }
 }
