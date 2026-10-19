@@ -8,6 +8,7 @@ import type {
   MeetingAutoStart,
   MeetingAutoStop,
   MeetingBlockedApp,
+  MeetingNotesWriter,
   TranscribeAcceleratorSetting,
   OrtAcceleratorSetting,
   ShortcutActivation,
@@ -178,6 +179,16 @@ const settingUpdaters: {
     commands.changeMeetingSystemAudioSetting(value as boolean),
   meeting_auto_notes: (value) =>
     commands.changeMeetingAutoNotesSetting(value as boolean),
+  meeting_guess_speaker_names: (value) =>
+    commands.changeMeetingGuessSpeakerNamesSetting(value as boolean),
+  meeting_notes_writer: (value) =>
+    commands.changeMeetingNotesWriterSetting(value as MeetingNotesWriter),
+  meeting_notes_claude_model: (value) =>
+    commands.changeMeetingNotesClaudeModelSetting(value as string),
+  meeting_notes_context_tokens: (value) =>
+    commands.changeMeetingNotesContextTokensSetting(value as number),
+  meeting_notes_selected_prompt_id: (value) =>
+    commands.setMeetingNotesSelectedPrompt(value as string),
   meeting_auto_start: (value) =>
     commands.changeMeetingAutoStartSetting(value as MeetingAutoStart),
   meeting_auto_stop: (value) =>

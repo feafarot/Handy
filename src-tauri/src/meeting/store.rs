@@ -11,6 +11,8 @@ use specta::Type;
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
+use crate::settings::MeetingNotesWriter;
+
 static MIGRATIONS: &[M] = &[
     M::up(
         "CREATE TABLE meetings (
@@ -47,6 +49,8 @@ static MIGRATIONS: &[M] = &[
     ),
     M::up("ALTER TABLE meetings ADD COLUMN notes TEXT;"),
     M::up("ALTER TABLE meetings ADD COLUMN app TEXT;"),
+    M::up("ALTER TABLE meeting_speakers ADD COLUMN name_guessed INTEGER NOT NULL DEFAULT 0;"),
+    M::up("ALTER TABLE meetings ADD COLUMN notes_writer TEXT;"),
 ];
 
 /// Which side of the call a segment came from.
@@ -126,6 +130,8 @@ pub struct Meeting {
     /// The app the meeting was held in, e.g. "Zoom", as detected or given by
     /// the user.
     pub app: Option<String>,
+    /// What writes this meeting's notes; the setting's choice when unset.
+    pub notes_writer: Option<MeetingNotesWriter>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Type)]
@@ -146,8 +152,10 @@ pub struct MeetingSegment {
 #[derive(Clone, Debug, Serialize, Deserialize, Type)]
 pub struct MeetingSpeaker {
     pub speaker: u32,
-    /// Set once the user names them.
+    /// Set once the user names them, or the LLM works it out.
     pub name: Option<String>,
+    /// The name was worked out from the conversation, not given by the user.
+    pub name_guessed: bool,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Type)]
@@ -270,6 +278,7 @@ impl MeetingStore {
             system_audio,
             speakers_identified: false,
             app: app.map(str::to_string),
+            notes_writer: None,
         })
     }
 
@@ -309,7 +318,8 @@ impl MeetingStore {
     pub fn list(&self) -> Result<Vec<Meeting>> {
         let connection = self.connection();
         let mut statement = connection.prepare(
-            "SELECT id, title, started_at, ended_at, status, system_audio, speakers_identified, app
+            "SELECT id, title, started_at, ended_at, status, system_audio, speakers_identified, app,
+                    notes_writer
              FROM meetings ORDER BY started_at DESC",
         )?;
         let meetings = statement
@@ -322,7 +332,8 @@ impl MeetingStore {
         let connection = self.connection();
         let Some(meeting) = connection
             .query_row(
-                "SELECT id, title, started_at, ended_at, status, system_audio, speakers_identified, app
+                "SELECT id, title, started_at, ended_at, status, system_audio, speakers_identified, app,
+                        notes_writer
                  FROM meetings WHERE id = ?1",
                 [meeting_id],
                 meeting_from_row,
@@ -339,13 +350,15 @@ impl MeetingStore {
             .query_map([meeting_id], segment_from_row)?
             .collect::<rusqlite::Result<Vec<_>>>()?;
         let mut statement = connection.prepare(
-            "SELECT speaker, name FROM meeting_speakers WHERE meeting_id = ?1 ORDER BY speaker",
+            "SELECT speaker, name, name_guessed FROM meeting_speakers
+             WHERE meeting_id = ?1 ORDER BY speaker",
         )?;
         let speakers = statement
             .query_map([meeting_id], |row| {
                 Ok(MeetingSpeaker {
                     speaker: row.get(0)?,
                     name: row.get(1)?,
+                    name_guessed: row.get(2)?,
                 })
             })?
             .collect::<rusqlite::Result<Vec<_>>>()?;
@@ -458,9 +471,26 @@ impl MeetingStore {
     /// Names one of a meeting's speakers; `None` goes back to the number.
     pub fn rename_speaker(&self, meeting_id: i64, speaker: u32, name: Option<&str>) -> Result<()> {
         self.connection().execute(
-            "UPDATE meeting_speakers SET name = ?1 WHERE meeting_id = ?2 AND speaker = ?3",
+            "UPDATE meeting_speakers SET name = ?1, name_guessed = 0
+             WHERE meeting_id = ?2 AND speaker = ?3",
             params![name, meeting_id, speaker],
         )?;
+        Ok(())
+    }
+
+    /// Names speakers from the conversation; one the user has named in the
+    /// meantime keeps their name.
+    pub fn set_guessed_names(&self, meeting_id: i64, names: &[(u32, String)]) -> Result<()> {
+        let mut connection = self.connection();
+        let transaction = connection.transaction()?;
+        for (speaker, name) in names {
+            transaction.execute(
+                "UPDATE meeting_speakers SET name = ?1, name_guessed = 1
+                 WHERE meeting_id = ?2 AND speaker = ?3 AND name IS NULL",
+                params![name, meeting_id, speaker],
+            )?;
+        }
+        transaction.commit()?;
         Ok(())
     }
 
@@ -468,6 +498,19 @@ impl MeetingStore {
         self.connection().execute(
             "UPDATE meetings SET title = ?1 WHERE id = ?2",
             params![title, meeting_id],
+        )?;
+        Ok(())
+    }
+
+    /// Sets what writes the meeting's notes; `None` for the setting's choice.
+    pub fn set_notes_writer(
+        &self,
+        meeting_id: i64,
+        writer: Option<MeetingNotesWriter>,
+    ) -> Result<()> {
+        self.connection().execute(
+            "UPDATE meetings SET notes_writer = ?1 WHERE id = ?2",
+            params![writer.map(MeetingNotesWriter::as_str), meeting_id],
         )?;
         Ok(())
     }
@@ -502,6 +545,10 @@ fn meeting_from_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<Meeting> {
         system_audio: row.get(5)?,
         speakers_identified: row.get(6)?,
         app: row.get(7)?,
+        notes_writer: row
+            .get::<_, Option<String>>(8)?
+            .as_deref()
+            .and_then(MeetingNotesWriter::parse),
     })
 }
 
@@ -549,6 +596,9 @@ mod tests {
         store.rename(meeting.id, "Planning").unwrap();
         assert_eq!(meeting.app.as_deref(), Some("Zoom"));
         store.set_app(meeting.id, None).unwrap();
+        store
+            .set_notes_writer(meeting.id, Some(MeetingNotesWriter::ClaudeCode))
+            .unwrap();
 
         // Speaker identification labels one segment and splits another.
         let mixed = store
@@ -604,6 +654,20 @@ mod tests {
         );
         let names: Vec<_> = detail.speakers.iter().map(|s| s.name.clone()).collect();
         assert_eq!(names, [None, Some("Dana".to_string())]);
+
+        // A guess fills only a speaker without a name, and is marked as one.
+        store
+            .set_guessed_names(meeting.id, &[(1, "Sam".into()), (2, "Lee".into())])
+            .unwrap();
+        let detail = store.get(meeting.id).unwrap().unwrap();
+        let names: Vec<_> = detail
+            .speakers
+            .iter()
+            .map(|s| (s.name.as_deref(), s.name_guessed))
+            .collect();
+        assert_eq!(names, [(Some("Sam"), true), (Some("Dana"), false)]);
+        store.rename_speaker(meeting.id, 1, Some("Sam")).unwrap();
+        assert!(!store.get(meeting.id).unwrap().unwrap().speakers[0].name_guessed);
         assert_eq!(detail.notes, None);
         store.set_notes(meeting.id, "## Summary").unwrap();
         let detail = store.get(meeting.id).unwrap().unwrap();
@@ -611,6 +675,15 @@ mod tests {
 
         assert_eq!(store.list().unwrap()[0].title, "Planning");
         assert_eq!(store.list().unwrap()[0].app, None);
+        assert_eq!(
+            store.list().unwrap()[0].notes_writer,
+            Some(MeetingNotesWriter::ClaudeCode)
+        );
+        store.set_notes_writer(meeting.id, None).unwrap();
+        assert_eq!(
+            store.get(meeting.id).unwrap().unwrap().meeting.notes_writer,
+            None
+        );
         store.delete(meeting.id).unwrap();
         assert!(store.get(meeting.id).unwrap().is_none());
         assert!(!store.audio_dir(meeting.id).exists());

@@ -463,6 +463,40 @@
         "selectToEdit": "Vyberte výše prompt, abyste zobrazili a upravili jeho podrobnosti.",
         "createFirst": "Klikněte nahoře na 'Vytvořit nový prompt' a vytvořte svůj první prompt pro následné zpracování."
       },
+      "meetingNotes": {
+        "title": "Poznámky ze schůzek",
+        "guessNames": {
+          "label": "Odhadovat jména mluvčích",
+          "description": "Před napsáním poznámek nechte model zjistit jména ostatních účastníků z konverzace (představení, pozdravy, oslovení jménem). Každé jméno můžete opravit na stránce schůzky."
+        },
+        "writer": {
+          "title": "Psát poznámky pomocí",
+          "description": "Co pojmenuje mluvčí a napíše poznámky ze schůzky. Každá schůzka si na své stránce může zvolit jinak.",
+          "postProcess": "Model pro následné zpracování",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Model Claude",
+            "description": "Model, kterým Claude Code píše poznámky. Haiku je rychlý a na poznámky stačí; Sonnet a Opus jsou pomalejší a čerpají víc z vašeho plánu."
+          },
+          "checking": "Hledám Claude Code…",
+          "found": "Nalezeno {{version}}. Poznámky používají účet Claude, ke kterému je přihlášen.",
+          "missing": "Claude Code není k dispozici: {{error}}",
+          "privacy": "Přepisy se odesílají společnosti Anthropic. Na pracovní schůzky použijte účet, který vaše firma povoluje, a důvěrné schůzky nechte na modelu pro následné zpracování."
+        },
+        "contextSize": {
+          "title": "Velikost kontextu modelu",
+          "description": "Kolik kontextu má model pro následné zpracování nastaveno na svém serveru (Ollama: Settings → Context length). Schůzka, která se vejde, se pošle celá; delší se nejdřív shrne po částech. Vyšší hodnota, než server dovolí, odřízne část přepisu.",
+          "option": "{{size}}K tokenů"
+        },
+        "prompt": {
+          "title": "Prompt pro poznámky",
+          "description": "Jak model píše poznámky ze schůzky. Přepis se posílá spolu s těmito pokyny.",
+          "tip": "Přepis následuje po těchto pokynech, jeden řádek \"[m:ss] Name: text\" na každou repliku; \"Me\" jste vy.",
+          "placeholder": "Popište, jaké poznámky chcete: oddíly, délka, jazyk, formát."
+        }
+      },
       "appContext": {
         "title": "Kontext aplikace",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Mluvčí se nepodařilo rozpoznat: {{error}}",
       "retry": "Zkusit znovu",
       "none": "Žádní další mluvčí nebyli nalezeni.",
-      "rename": "Pojmenovat tohoto mluvčího"
+      "rename": "Pojmenovat tohoto mluvčího",
+      "guessed": "Odhadnuto z konverzace. Pokud je špatně, upravte ho."
     },
     "autoNotes": {
       "label": "Psát poznámky po skončení schůzky",
@@ -804,7 +839,14 @@
       "writingPart": "Píšou se poznámky… ({{done}}/{{total}})",
       "failed": "Poznámky se nepodařilo napsat: {{error}}",
       "copy": "Kopírovat poznámky",
-      "empty": "Zatím žádné poznámky."
+      "empty": "Zatím žádné poznámky.",
+      "naming": "Zjišťuji, kdo je kdo…",
+      "writer": {
+        "label": "Co píše poznámky z této schůzky",
+        "default": "Výchozí ({{writer}})",
+        "postProcess": "Model pro následné zpracování",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "Aplikace, ve které schůzka proběhla",

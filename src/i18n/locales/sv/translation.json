@@ -463,6 +463,40 @@
         "selectToEdit": "Välj en prompt ovan för att visa och redigera dess detaljer.",
         "createFirst": "Klicka på 'Skapa ny prompt' ovan för att skapa din första prompt för efterbearbetning."
       },
+      "meetingNotes": {
+        "title": "Mötesanteckningar",
+        "guessNames": {
+          "label": "Gissa talarnas namn",
+          "description": "Innan anteckningarna skrivs låter modellen räkna ut de andra deltagarnas namn från samtalet (presentationer, hälsningar, när någon tilltalas med namn). Du kan rätta alla namn på mötessidan."
+        },
+        "writer": {
+          "title": "Skriv anteckningar med",
+          "description": "Det som namnger talarna och skriver mötesanteckningarna. Varje möte kan välja annorlunda på sin sida.",
+          "postProcess": "Efterbehandlingsmodell",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Claude-modell",
+            "description": "Modellen som Claude Code skriver anteckningar med. Haiku är snabb och räcker gott; Sonnet och Opus är långsammare och använder mer av din plan."
+          },
+          "checking": "Letar efter Claude Code…",
+          "found": "Hittade {{version}}. Anteckningarna använder Claude-kontot det är inloggat med.",
+          "missing": "Claude Code är inte tillgängligt: {{error}}",
+          "privacy": "Transkriptioner skickas till Anthropic. Använd ett konto som ditt företag tillåter för arbetsmöten och behåll konfidentiella möten på efterbehandlingsmodellen."
+        },
+        "contextSize": {
+          "title": "Modellens kontextstorlek",
+          "description": "Hur mycket kontext efterbehandlingsmodellen har enligt serverns inställningar (Ollama: Settings → Context length). Ett möte som får plats skickas i sin helhet; ett längre sammanfattas först i delar. Ett högre värde än servern tillåter klipper bort en del av transkriptionen.",
+          "option": "{{size}}K tokens"
+        },
+        "prompt": {
+          "title": "Prompt för anteckningar",
+          "description": "Hur modellen skriver mötesanteckningar. Transkriptionen skickas tillsammans med dessa instruktioner.",
+          "tip": "Transkriptionen följer efter dessa instruktioner, en rad \"[m:ss] Name: text\" per replik; \"Me\" är du.",
+          "placeholder": "Beskriv vilka anteckningar du vill ha: avsnitt, längd, språk, format."
+        }
+      },
       "appContext": {
         "title": "Appkontext",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Kunde inte identifiera talarna: {{error}}",
       "retry": "Försök igen",
       "none": "Inga andra talare hittades.",
-      "rename": "Namnge den här talaren"
+      "rename": "Namnge den här talaren",
+      "guessed": "Gissat från samtalet. Redigera det om det är fel."
     },
     "autoNotes": {
       "label": "Skriv anteckningar när ett möte slutar",
@@ -804,7 +839,14 @@
       "writingPart": "Skriver anteckningar… ({{done}}/{{total}})",
       "failed": "Kunde inte skriva anteckningarna: {{error}}",
       "copy": "Kopiera anteckningar",
-      "empty": "Inga anteckningar än."
+      "empty": "Inga anteckningar än.",
+      "naming": "Tar reda på vem som är vem…",
+      "writer": {
+        "label": "Vad som skriver det här mötets anteckningar",
+        "default": "Standard ({{writer}})",
+        "postProcess": "Efterbehandlingsmodell",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "Appen som mötet hölls i",

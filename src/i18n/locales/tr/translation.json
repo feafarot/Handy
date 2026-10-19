@@ -463,6 +463,40 @@
         "selectToEdit": "Ayrıntılarını görüntülemek ve düzenlemek için yukarıdan bir prompt seçin.",
         "createFirst": "İlk son işlem promptunuzu oluşturmak için yukarıdaki “Yeni Prompt Oluştur” seçeneğine tıklayın."
       },
+      "meetingNotes": {
+        "title": "Toplantı Notları",
+        "guessNames": {
+          "label": "Konuşmacı Adlarını Tahmin Et",
+          "description": "Notlar yazılmadan önce model, diğer katılımcıların adlarını konuşmadan çıkarır (tanışmalar, selamlaşmalar, adıyla sorulan sorular). Toplantı sayfasında herhangi bir adı düzeltebilirsiniz."
+        },
+        "writer": {
+          "title": "Notları şununla yaz",
+          "description": "Konuşmacıları adlandıran ve toplantı notlarını yazan araç. Her toplantı kendi sayfasında farklısını seçebilir.",
+          "postProcess": "Son işleme modeli",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Claude modeli",
+            "description": "Claude Code'un notları yazdığı model. Haiku hızlıdır ve notlar için yeterlidir; Sonnet ve Opus daha yavaştır ve planınızdan daha fazla harcar."
+          },
+          "checking": "Claude Code aranıyor…",
+          "found": "{{version}} bulundu. Notlar, oturum açılmış Claude hesabını kullanır.",
+          "missing": "Claude Code kullanılamıyor: {{error}}",
+          "privacy": "Dökümler Anthropic'e gönderilir. İş toplantıları için şirketinizin izin verdiği bir hesap kullanın ve gizli toplantıları son işleme modelinde tutun."
+        },
+        "contextSize": {
+          "title": "Model Bağlam Boyutu",
+          "description": "Son işleme modelinin sunucusunda ayarlı bağlam miktarı (Ollama: Settings → Context length). Sığan bir toplantı tek parça gönderilir; daha uzunu önce parçalar halinde özetlenir. Sunucunun izin verdiğinden yüksek ayarlamak dökümün bir kısmını keser.",
+          "option": "{{size}}K token"
+        },
+        "prompt": {
+          "title": "Not İstemi",
+          "description": "Modelin toplantı notlarını nasıl yazdığı. Döküm bu talimatlarla birlikte gönderilir.",
+          "tip": "Döküm bu talimatlardan sonra gelir, her konuşma sırası için bir \"[m:ss] Name: text\" satırı; \"Me\" sizsiniz.",
+          "placeholder": "İstediğiniz notları tarif edin: bölümler, uzunluk, dil, biçim."
+        }
+      },
       "appContext": {
         "title": "Uygulama Bağlamı",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Konuşmacılar tanınamadı: {{error}}",
       "retry": "Tekrar dene",
       "none": "Başka konuşmacı bulunamadı.",
-      "rename": "Bu konuşmacıya ad ver"
+      "rename": "Bu konuşmacıya ad ver",
+      "guessed": "Konuşmadan tahmin edildi. Yanlışsa düzenleyin."
     },
     "autoNotes": {
       "label": "Toplantı bitince not yaz",
@@ -804,7 +839,14 @@
       "writingPart": "Notlar yazılıyor… ({{done}}/{{total}})",
       "failed": "Notlar yazılamadı: {{error}}",
       "copy": "Notları kopyala",
-      "empty": "Henüz not yok."
+      "empty": "Henüz not yok.",
+      "naming": "Kimin kim olduğu bulunuyor…",
+      "writer": {
+        "label": "Bu toplantının notlarını ne yazar",
+        "default": "Varsayılan ({{writer}})",
+        "postProcess": "Son işleme modeli",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "Toplantının yapıldığı uygulama",

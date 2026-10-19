@@ -463,6 +463,40 @@
         "selectToEdit": "Chọn một prompt ở trên để xem và chỉnh sửa chi tiết.",
         "createFirst": "Nhấn 'Tạo Prompt mới' ở trên để tạo prompt xử lý sau đầu tiên của bạn."
       },
+      "meetingNotes": {
+        "title": "Ghi chú cuộc họp",
+        "guessNames": {
+          "label": "Đoán tên người nói",
+          "description": "Trước khi viết ghi chú, mô hình suy ra tên của những người tham gia khác từ cuộc trò chuyện (giới thiệu, chào hỏi, được hỏi bằng tên). Bạn có thể sửa bất kỳ tên nào trên trang cuộc họp."
+        },
+        "writer": {
+          "title": "Viết ghi chú bằng",
+          "description": "Công cụ đặt tên người nói và viết ghi chú cuộc họp. Mỗi cuộc họp có thể chọn khác trên trang của nó.",
+          "postProcess": "Mô hình hậu xử lý",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Mô hình Claude",
+            "description": "Mô hình mà Claude Code dùng để viết ghi chú. Haiku nhanh và đủ dùng; Sonnet và Opus chậm hơn và tốn nhiều hạn mức gói của bạn hơn."
+          },
+          "checking": "Đang tìm Claude Code…",
+          "found": "Đã tìm thấy {{version}}. Ghi chú dùng tài khoản Claude mà nó đang đăng nhập.",
+          "missing": "Claude Code không khả dụng: {{error}}",
+          "privacy": "Bản chép lời được gửi tới Anthropic. Với cuộc họp công việc, hãy dùng tài khoản mà công ty bạn cho phép và giữ các cuộc họp bảo mật trên mô hình hậu xử lý."
+        },
+        "contextSize": {
+          "title": "Kích thước ngữ cảnh của mô hình",
+          "description": "Lượng ngữ cảnh mà mô hình hậu xử lý chạy theo cài đặt trên máy chủ (Ollama: Settings → Context length). Cuộc họp vừa thì được gửi nguyên vẹn; cuộc họp dài hơn được tóm tắt theo từng phần trước. Đặt cao hơn mức máy chủ cho phép sẽ cắt mất một phần bản chép lời.",
+          "option": "{{size}}K token"
+        },
+        "prompt": {
+          "title": "Lời nhắc ghi chú",
+          "description": "Cách mô hình viết ghi chú cuộc họp. Bản chép lời được gửi kèm các hướng dẫn này.",
+          "tip": "Bản chép lời theo sau các hướng dẫn này, mỗi lượt nói một dòng \"[m:ss] Name: text\"; \"Me\" là bạn.",
+          "placeholder": "Mô tả ghi chú bạn muốn: các phần, độ dài, ngôn ngữ, định dạng."
+        }
+      },
       "appContext": {
         "title": "Ngữ cảnh ứng dụng",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Không thể nhận diện người nói: {{error}}",
       "retry": "Thử lại",
       "none": "Không tìm thấy người nói nào khác.",
-      "rename": "Đặt tên cho người nói này"
+      "rename": "Đặt tên cho người nói này",
+      "guessed": "Được đoán từ cuộc trò chuyện. Hãy sửa nếu sai."
     },
     "autoNotes": {
       "label": "Viết ghi chú khi cuộc họp kết thúc",
@@ -804,7 +839,14 @@
       "writingPart": "Đang viết ghi chú… ({{done}}/{{total}})",
       "failed": "Không thể viết ghi chú: {{error}}",
       "copy": "Sao chép ghi chú",
-      "empty": "Chưa có ghi chú."
+      "empty": "Chưa có ghi chú.",
+      "naming": "Đang xác định ai là ai…",
+      "writer": {
+        "label": "Công cụ viết ghi chú cho cuộc họp này",
+        "default": "Mặc định ({{writer}})",
+        "postProcess": "Mô hình hậu xử lý",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "Ứng dụng dùng cho cuộc họp",

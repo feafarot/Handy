@@ -463,6 +463,40 @@
         "selectToEdit": "選擇上方的提示詞以檢視和編輯其詳細資訊",
         "createFirst": "點選上方的「建立新提示詞」來建立您的第一個後處理提示詞"
       },
+      "meetingNotes": {
+        "title": "會議筆記",
+        "guessNames": {
+          "label": "猜測發言者姓名",
+          "description": "撰寫筆記前，讓模型從對話中推斷其他參與者的姓名（自我介紹、打招呼、被點名提問）。你可以在會議頁面更正任何姓名。"
+        },
+        "writer": {
+          "title": "筆記撰寫方式",
+          "description": "為發言者命名並撰寫會議筆記的工具。每場會議都可在其頁面上另行選擇。",
+          "postProcess": "後處理模型",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Claude 模型",
+            "description": "Claude Code 撰寫筆記所用的模型。Haiku 速度快，足以應付筆記；Sonnet 和 Opus 較慢，會消耗更多方案額度。"
+          },
+          "checking": "正在尋找 Claude Code…",
+          "found": "已找到 {{version}}。筆記會使用其登入的 Claude 帳號。",
+          "missing": "Claude Code 無法使用：{{error}}",
+          "privacy": "逐字稿會傳送給 Anthropic。工作會議請使用公司允許的帳號，機密會議請繼續使用後處理模型。"
+        },
+        "contextSize": {
+          "title": "模型上下文大小",
+          "description": "後處理模型在其伺服器上設定的上下文大小（Ollama：Settings → Context length）。放得下的會議會整份傳送；更長的會議會先分段摘要。設定得高於伺服器允許的值會截掉部分逐字稿。",
+          "option": "{{size}}K 個詞元"
+        },
+        "prompt": {
+          "title": "筆記提示詞",
+          "description": "模型撰寫會議筆記的方式。逐字稿會與這些指示一起傳送。",
+          "tip": "逐字稿接在這些指示之後，每次發言一行 \"[m:ss] Name: text\"；\"Me\" 是你。",
+          "placeholder": "描述你想要的筆記：段落、長度、語言、格式。"
+        }
+      },
       "appContext": {
         "title": "應用程式情境",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "無法辨識發言者：{{error}}",
       "retry": "重試",
       "none": "找不到其他發言者。",
-      "rename": "為此發言者命名"
+      "rename": "為此發言者命名",
+      "guessed": "從對話中猜測。如有錯誤請修改。"
     },
     "autoNotes": {
       "label": "會議結束時撰寫紀要",
@@ -804,7 +839,14 @@
       "writingPart": "正在撰寫紀要…（{{done}}/{{total}}）",
       "failed": "無法撰寫紀要：{{error}}",
       "copy": "複製紀要",
-      "empty": "還沒有紀要。"
+      "empty": "還沒有紀要。",
+      "naming": "正在辨識誰是誰…",
+      "writer": {
+        "label": "由什麼撰寫此會議的筆記",
+        "default": "預設（{{writer}}）",
+        "postProcess": "後處理模型",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "會議所用的應用程式",

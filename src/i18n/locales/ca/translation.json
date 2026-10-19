@@ -463,6 +463,40 @@
         "selectToEdit": "Seleccioneu una indicació more amunt per veure'n i editar-ne els detalls.",
         "createFirst": "Feu clic a «Creeu una indicació nova» més amunt per crear la primera indicació de postprocessament."
       },
+      "meetingNotes": {
+        "title": "Notes de reunió",
+        "guessNames": {
+          "label": "Endevina els noms dels interlocutors",
+          "description": "Abans d'escriure les notes, deixa que el model dedueixi els noms dels altres participants a partir de la conversa (presentacions, salutacions, preguntes adreçades per nom). Pots corregir qualsevol nom a la pàgina de la reunió."
+        },
+        "writer": {
+          "title": "Escriu les notes amb",
+          "description": "Què posa nom als interlocutors i escriu les notes de la reunió. Cada reunió pot triar una altra opció a la seva pàgina.",
+          "postProcess": "Model de postprocessament",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Model de Claude",
+            "description": "El model amb què Claude Code escriu les notes. Haiku és ràpid i suficient; Sonnet i Opus són més lents i consumeixen més del teu pla."
+          },
+          "checking": "Cercant Claude Code…",
+          "found": "S'ha trobat {{version}}. Les notes fan servir el compte de Claude amb què ha iniciat sessió.",
+          "missing": "Claude Code no està disponible: {{error}}",
+          "privacy": "Les transcripcions s'envien a Anthropic. Per a reunions de feina, fes servir un compte que la teva empresa permeti i deixa les reunions confidencials al model de postprocessament."
+        },
+        "contextSize": {
+          "title": "Mida del context del model",
+          "description": "Quant context fa servir el model de postprocessament, tal com està configurat al seu servidor (Ollama: Settings → Context length). Una reunió que hi cap s'envia sencera; una de més llarga es resumeix primer per parts. Posar-ho per sobre del que permet el servidor talla part de la transcripció.",
+          "option": "{{size}}K tokens"
+        },
+        "prompt": {
+          "title": "Indicació de les notes",
+          "description": "Com escriu el model les notes de la reunió. La transcripció s'envia juntament amb aquestes instruccions.",
+          "tip": "La transcripció va després d'aquestes instruccions, una línia \"[m:ss] Name: text\" per torn; \"Me\" ets tu.",
+          "placeholder": "Descriu les notes que vols: seccions, extensió, idioma, format."
+        }
+      },
       "appContext": {
         "title": "Context de l'aplicació",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "No s'han pogut identificar els parlants: {{error}}",
       "retry": "Torna-ho a provar",
       "none": "No s'han trobat altres parlants.",
-      "rename": "Posa nom a aquest parlant"
+      "rename": "Posa nom a aquest parlant",
+      "guessed": "Deduït de la conversa. Edita'l si és incorrecte."
     },
     "autoNotes": {
       "label": "Escriu notes quan acabi la reunió",
@@ -804,7 +839,14 @@
       "writingPart": "S'estan escrivint les notes… ({{done}}/{{total}})",
       "failed": "No s'han pogut escriure les notes: {{error}}",
       "copy": "Copia les notes",
-      "empty": "Encara no hi ha notes."
+      "empty": "Encara no hi ha notes.",
+      "naming": "Esbrinant qui és qui…",
+      "writer": {
+        "label": "Què escriu les notes d'aquesta reunió",
+        "default": "Per defecte ({{writer}})",
+        "postProcess": "Model de postprocessament",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "Aplicació on s'ha fet la reunió",

@@ -463,6 +463,40 @@
         "selectToEdit": "세부 정보를 보고 편집하려면 위에서 프롬프트를 선택하세요.",
         "createFirst": "첫 번째 후처리 프롬프트를 만들려면 위의 '새 프롬프트 만들기'를 클릭하세요."
       },
+      "meetingNotes": {
+        "title": "회의 노트",
+        "guessNames": {
+          "label": "화자 이름 추측",
+          "description": "노트를 작성하기 전에 모델이 대화(자기소개, 인사, 이름을 부르며 한 질문)에서 다른 참가자의 이름을 알아냅니다. 회의 페이지에서 어떤 이름이든 고칠 수 있습니다."
+        },
+        "writer": {
+          "title": "노트 작성 도구",
+          "description": "화자 이름을 붙이고 회의 노트를 작성하는 도구입니다. 회의마다 해당 페이지에서 다르게 고를 수 있습니다.",
+          "postProcess": "후처리 모델",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Claude 모델",
+            "description": "Claude Code가 노트를 작성할 모델입니다. Haiku는 빠르고 노트에 충분하며, Sonnet과 Opus는 더 느리고 요금제 사용량을 더 씁니다."
+          },
+          "checking": "Claude Code를 찾는 중…",
+          "found": "{{version}}을(를) 찾았습니다. 노트는 로그인된 Claude 계정을 사용합니다.",
+          "missing": "Claude Code를 사용할 수 없습니다: {{error}}",
+          "privacy": "전사본은 Anthropic으로 전송됩니다. 업무 회의에는 회사가 허용한 계정을 쓰고, 기밀 회의는 후처리 모델로 두세요."
+        },
+        "contextSize": {
+          "title": "모델 컨텍스트 크기",
+          "description": "후처리 모델이 서버에서 설정된 컨텍스트 크기입니다(Ollama: Settings → Context length). 들어가는 회의는 통째로 보내고, 더 긴 회의는 먼저 나눠서 요약합니다. 서버 한도보다 크게 설정하면 전사본 일부가 잘립니다.",
+          "option": "{{size}}K 토큰"
+        },
+        "prompt": {
+          "title": "노트 프롬프트",
+          "description": "모델이 회의 노트를 작성하는 방식입니다. 전사본은 이 지시와 함께 전송됩니다.",
+          "tip": "전사본은 이 지시 다음에 발화마다 \"[m:ss] Name: text\" 한 줄로 이어집니다. \"Me\"는 사용자입니다.",
+          "placeholder": "원하는 노트를 설명하세요: 섹션, 길이, 언어, 형식."
+        }
+      },
       "appContext": {
         "title": "앱 컨텍스트",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "화자를 식별할 수 없습니다: {{error}}",
       "retry": "다시 시도",
       "none": "다른 화자를 찾지 못했습니다.",
-      "rename": "이 화자 이름 지정"
+      "rename": "이 화자 이름 지정",
+      "guessed": "대화에서 추측한 이름입니다. 틀렸다면 수정하세요."
     },
     "autoNotes": {
       "label": "회의가 끝나면 메모 작성",
@@ -804,7 +839,14 @@
       "writingPart": "메모를 작성하는 중… ({{done}}/{{total}})",
       "failed": "메모를 작성할 수 없습니다: {{error}}",
       "copy": "메모 복사",
-      "empty": "아직 메모가 없습니다."
+      "empty": "아직 메모가 없습니다.",
+      "naming": "누가 누구인지 파악하는 중…",
+      "writer": {
+        "label": "이 회의의 노트를 작성하는 도구",
+        "default": "기본값 ({{writer}})",
+        "postProcess": "후처리 모델",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "회의에 사용한 앱",

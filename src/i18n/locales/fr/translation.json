@@ -463,6 +463,40 @@
         "selectToEdit": "Sélectionnez un prompt ci-dessus pour voir et modifier ses détails.",
         "createFirst": "Cliquez sur 'Créer un nouveau prompt' ci-dessus pour créer votre premier prompt de post-traitement."
       },
+      "meetingNotes": {
+        "title": "Notes de réunion",
+        "guessNames": {
+          "label": "Deviner le nom des intervenants",
+          "description": "Avant de rédiger les notes, le modèle déduit le nom des autres participants à partir de la conversation (présentations, salutations, questions adressées par leur nom). Vous pouvez corriger chaque nom sur la page de la réunion."
+        },
+        "writer": {
+          "title": "Rédiger les notes avec",
+          "description": "Ce qui nomme les intervenants et rédige les notes de réunion. Chaque réunion peut choisir autrement sur sa page.",
+          "postProcess": "Modèle de post-traitement",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Modèle Claude",
+            "description": "Le modèle avec lequel Claude Code rédige les notes. Haiku est rapide et suffit largement ; Sonnet et Opus sont plus lents et consomment davantage votre forfait."
+          },
+          "checking": "Recherche de Claude Code…",
+          "found": "{{version}} trouvé. Les notes utilisent le compte Claude avec lequel il est connecté.",
+          "missing": "Claude Code n'est pas disponible : {{error}}",
+          "privacy": "Les transcriptions sont envoyées à Anthropic. Pour les réunions de travail, utilisez un compte autorisé par votre entreprise et gardez les réunions confidentielles sur le modèle de post-traitement."
+        },
+        "contextSize": {
+          "title": "Taille du contexte du modèle",
+          "description": "La quantité de contexte du modèle de post-traitement, telle que réglée sur son serveur (Ollama : Settings → Context length). Une réunion qui tient est envoyée en entier ; une plus longue est d'abord résumée par parties. Une valeur supérieure à celle du serveur coupe une partie de la transcription.",
+          "option": "{{size}}K jetons"
+        },
+        "prompt": {
+          "title": "Prompt des notes",
+          "description": "La façon dont le modèle rédige les notes de réunion. La transcription est envoyée avec ces instructions.",
+          "tip": "La transcription suit ces instructions, une ligne \"[m:ss] Name: text\" par prise de parole ; \"Me\", c'est vous.",
+          "placeholder": "Décrivez les notes souhaitées : sections, longueur, langue, format."
+        }
+      },
       "appContext": {
         "title": "Contexte de l'application",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Impossible d'identifier les intervenants : {{error}}",
       "retry": "Réessayer",
       "none": "Aucun autre intervenant trouvé.",
-      "rename": "Nommer cet intervenant"
+      "rename": "Nommer cet intervenant",
+      "guessed": "Deviné à partir de la conversation. Modifiez-le s'il est faux."
     },
     "autoNotes": {
       "label": "Rédiger des notes à la fin de la réunion",
@@ -804,7 +839,14 @@
       "writingPart": "Rédaction des notes… ({{done}}/{{total}})",
       "failed": "Impossible de rédiger les notes : {{error}}",
       "copy": "Copier les notes",
-      "empty": "Pas encore de notes."
+      "empty": "Pas encore de notes.",
+      "naming": "Identification des intervenants…",
+      "writer": {
+        "label": "Ce qui rédige les notes de cette réunion",
+        "default": "Par défaut ({{writer}})",
+        "postProcess": "Modèle de post-traitement",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "Application utilisée pour la réunion",

@@ -463,6 +463,40 @@
         "selectToEdit": "Wähle oben einen Prompt aus, um dessen Details anzuzeigen und zu bearbeiten.",
         "createFirst": "Klicke oben auf 'Neuen Prompt erstellen', um deinen ersten Nachbearbeitungs-Prompt zu erstellen."
       },
+      "meetingNotes": {
+        "title": "Besprechungsnotizen",
+        "guessNames": {
+          "label": "Namen der Sprecher erraten",
+          "description": "Vor dem Schreiben der Notizen ermittelt das Modell die Namen der anderen Teilnehmer aus dem Gespräch (Vorstellungen, Begrüßungen, Fragen mit Namensnennung). Du kannst jeden Namen auf der Besprechungsseite korrigieren."
+        },
+        "writer": {
+          "title": "Notizen schreiben mit",
+          "description": "Was die Sprecher benennt und die Besprechungsnotizen schreibt. Jede Besprechung kann auf ihrer Seite etwas anderes wählen.",
+          "postProcess": "Nachbearbeitungsmodell",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Claude-Modell",
+            "description": "Das Modell, mit dem Claude Code die Notizen schreibt. Haiku ist schnell und reicht für Notizen; Sonnet und Opus sind langsamer und verbrauchen mehr von deinem Plan."
+          },
+          "checking": "Suche Claude Code…",
+          "found": "{{version}} gefunden. Die Notizen nutzen das Claude-Konto, mit dem es angemeldet ist.",
+          "missing": "Claude Code ist nicht verfügbar: {{error}}",
+          "privacy": "Transkripte werden an Anthropic gesendet. Nutze für Arbeitsbesprechungen ein Konto, das deine Firma erlaubt, und lass vertrauliche Besprechungen beim Nachbearbeitungsmodell."
+        },
+        "contextSize": {
+          "title": "Kontextgröße des Modells",
+          "description": "Wie viel Kontext das Nachbearbeitungsmodell laut seinem Server hat (Ollama: Settings → Context length). Eine Besprechung, die hineinpasst, wird vollständig gesendet; eine längere wird zuerst in Teilen zusammengefasst. Ein höherer Wert als der Server erlaubt schneidet einen Teil des Transkripts ab.",
+          "option": "{{size}}K Tokens"
+        },
+        "prompt": {
+          "title": "Notizen-Prompt",
+          "description": "Wie das Modell die Besprechungsnotizen schreibt. Das Transkript wird zusammen mit diesen Anweisungen gesendet.",
+          "tip": "Das Transkript folgt auf diese Anweisungen, eine Zeile \"[m:ss] Name: text\" pro Redebeitrag; \"Me\" bist du.",
+          "placeholder": "Beschreibe die gewünschten Notizen: Abschnitte, Länge, Sprache, Format."
+        }
+      },
       "appContext": {
         "title": "App-Kontext",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Sprecher konnten nicht erkannt werden: {{error}}",
       "retry": "Erneut versuchen",
       "none": "Keine weiteren Sprecher gefunden.",
-      "rename": "Diesen Sprecher benennen"
+      "rename": "Diesen Sprecher benennen",
+      "guessed": "Aus dem Gespräch erraten. Bearbeite ihn, falls er falsch ist."
     },
     "autoNotes": {
       "label": "Notizen nach dem Meeting schreiben",
@@ -804,7 +839,14 @@
       "writingPart": "Notizen werden geschrieben… ({{done}}/{{total}})",
       "failed": "Notizen konnten nicht geschrieben werden: {{error}}",
       "copy": "Notizen kopieren",
-      "empty": "Noch keine Notizen."
+      "empty": "Noch keine Notizen.",
+      "naming": "Ermittle, wer wer ist…",
+      "writer": {
+        "label": "Was die Notizen dieser Besprechung schreibt",
+        "default": "Standard ({{writer}})",
+        "postProcess": "Nachbearbeitungsmodell",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "App, in der das Meeting stattfand",

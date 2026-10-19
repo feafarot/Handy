@@ -463,6 +463,40 @@
         "selectToEdit": "Scegli un prompt qui sopra per visualizzare o modificare i dettagli.",
         "createFirst": "Clicca 'Crea un nuovo prompt' qui sopra per creare il tuo primo prompt di post-elaborazione."
       },
+      "meetingNotes": {
+        "title": "Note delle riunioni",
+        "guessNames": {
+          "label": "Indovina i nomi di chi parla",
+          "description": "Prima di scrivere le note, il modello ricava i nomi degli altri partecipanti dalla conversazione (presentazioni, saluti, domande rivolte per nome). Puoi correggere qualsiasi nome nella pagina della riunione."
+        },
+        "writer": {
+          "title": "Scrivi le note con",
+          "description": "Ciò che dà un nome a chi parla e scrive le note della riunione. Ogni riunione può scegliere diversamente nella sua pagina.",
+          "postProcess": "Modello di post-elaborazione",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Modello Claude",
+            "description": "Il modello con cui Claude Code scrive le note. Haiku è veloce e basta per le note; Sonnet e Opus sono più lenti e consumano più del tuo piano."
+          },
+          "checking": "Ricerca di Claude Code…",
+          "found": "Trovato {{version}}. Le note usano l'account Claude con cui ha effettuato l'accesso.",
+          "missing": "Claude Code non è disponibile: {{error}}",
+          "privacy": "Le trascrizioni vengono inviate ad Anthropic. Per le riunioni di lavoro usa un account consentito dalla tua azienda e tieni le riunioni riservate sul modello di post-elaborazione."
+        },
+        "contextSize": {
+          "title": "Dimensione del contesto del modello",
+          "description": "Quanto contesto usa il modello di post-elaborazione secondo le impostazioni del suo server (Ollama: Settings → Context length). Una riunione che ci sta viene inviata intera; una più lunga viene prima riassunta a parti. Un valore più alto di quello consentito dal server taglia parte della trascrizione.",
+          "option": "{{size}}K token"
+        },
+        "prompt": {
+          "title": "Prompt delle note",
+          "description": "Come il modello scrive le note della riunione. La trascrizione viene inviata insieme a queste istruzioni.",
+          "tip": "La trascrizione segue queste istruzioni, una riga \"[m:ss] Name: text\" per intervento; \"Me\" sei tu.",
+          "placeholder": "Descrivi le note che vuoi: sezioni, lunghezza, lingua, formato."
+        }
+      },
       "appContext": {
         "title": "Contesto dell'App",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Impossibile identificare gli interlocutori: {{error}}",
       "retry": "Riprova",
       "none": "Nessun altro interlocutore trovato.",
-      "rename": "Dai un nome a questo interlocutore"
+      "rename": "Dai un nome a questo interlocutore",
+      "guessed": "Dedotto dalla conversazione. Modificalo se è sbagliato."
     },
     "autoNotes": {
       "label": "Scrivi le note a fine riunione",
@@ -804,7 +839,14 @@
       "writingPart": "Scrittura delle note… ({{done}}/{{total}})",
       "failed": "Impossibile scrivere le note: {{error}}",
       "copy": "Copia le note",
-      "empty": "Ancora nessuna nota."
+      "empty": "Ancora nessuna nota.",
+      "naming": "Capisco chi è chi…",
+      "writer": {
+        "label": "Cosa scrive le note di questa riunione",
+        "default": "Predefinito ({{writer}})",
+        "postProcess": "Modello di post-elaborazione",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "App in cui si è tenuta la riunione",

@@ -463,6 +463,40 @@
         "selectToEdit": "Wybierz prompt powyżej, aby zobaczyć i edytować jego szczegóły.",
         "createFirst": "Kliknij 'Utwórz nowy prompt' powyżej, aby utworzyć pierwszy prompt postprocessingu."
       },
+      "meetingNotes": {
+        "title": "Notatki ze spotkań",
+        "guessNames": {
+          "label": "Zgaduj imiona rozmówców",
+          "description": "Przed napisaniem notatek model ustala imiona pozostałych uczestników na podstawie rozmowy (przedstawianie się, powitania, zwracanie się po imieniu). Każde imię możesz poprawić na stronie spotkania."
+        },
+        "writer": {
+          "title": "Pisz notatki za pomocą",
+          "description": "Co nadaje imiona rozmówcom i pisze notatki ze spotkania. Każde spotkanie może wybrać inaczej na swojej stronie.",
+          "postProcess": "Model przetwarzania końcowego",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Model Claude",
+            "description": "Model, którym Claude Code pisze notatki. Haiku jest szybki i w zupełności wystarcza; Sonnet i Opus są wolniejsze i zużywają więcej z Twojego planu."
+          },
+          "checking": "Szukanie Claude Code…",
+          "found": "Znaleziono {{version}}. Notatki korzystają z konta Claude, na które jest zalogowany.",
+          "missing": "Claude Code jest niedostępny: {{error}}",
+          "privacy": "Transkrypcje są wysyłane do Anthropic. Do spotkań służbowych używaj konta, na które pozwala Twoja firma, a poufne spotkania zostaw na modelu przetwarzania końcowego."
+        },
+        "contextSize": {
+          "title": "Rozmiar kontekstu modelu",
+          "description": "Ile kontekstu ma model przetwarzania końcowego według ustawień jego serwera (Ollama: Settings → Context length). Spotkanie, które się mieści, jest wysyłane w całości; dłuższe jest najpierw streszczane w częściach. Wartość wyższa niż pozwala serwer ucina część transkrypcji.",
+          "option": "{{size}}K tokenów"
+        },
+        "prompt": {
+          "title": "Prompt notatek",
+          "description": "Jak model pisze notatki ze spotkania. Transkrypcja jest wysyłana razem z tymi instrukcjami.",
+          "tip": "Transkrypcja następuje po tych instrukcjach, jedna linia \"[m:ss] Name: text\" na wypowiedź; \"Me\" to Ty.",
+          "placeholder": "Opisz, jakich notatek chcesz: sekcje, długość, język, format."
+        }
+      },
       "appContext": {
         "title": "Kontekst aplikacji",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Nie udało się rozpoznać mówców: {{error}}",
       "retry": "Spróbuj ponownie",
       "none": "Nie znaleziono innych mówców.",
-      "rename": "Nazwij tego mówcę"
+      "rename": "Nazwij tego mówcę",
+      "guessed": "Odgadnięte z rozmowy. Popraw, jeśli jest błędne."
     },
     "autoNotes": {
       "label": "Pisz notatki po zakończeniu spotkania",
@@ -804,7 +839,14 @@
       "writingPart": "Pisanie notatek… ({{done}}/{{total}})",
       "failed": "Nie udało się napisać notatek: {{error}}",
       "copy": "Kopiuj notatki",
-      "empty": "Brak notatek."
+      "empty": "Brak notatek.",
+      "naming": "Ustalanie, kto jest kim…",
+      "writer": {
+        "label": "Co pisze notatki z tego spotkania",
+        "default": "Domyślnie ({{writer}})",
+        "postProcess": "Model przetwarzania końcowego",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "Aplikacja, w której odbyło się spotkanie",

@@ -1074,6 +1074,92 @@ async changeMeetingAutoNotesSetting(enabled: boolean) : Promise<Result<null, str
     else return { status: "error", error: e  as any };
 }
 },
+async changeMeetingGuessSpeakerNamesSetting(enabled: boolean) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_meeting_guess_speaker_names_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeMeetingNotesContextTokensSetting(tokens: number) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_meeting_notes_context_tokens_setting", { tokens }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Sets what writes a meeting's notes; `None` follows the setting.
+ */
+async setMeetingNotesWriter(id: number, writer: MeetingNotesWriter | null) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_meeting_notes_writer", { id, writer }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeMeetingNotesWriterSetting(writer: MeetingNotesWriter) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_meeting_notes_writer_setting", { writer }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeMeetingNotesClaudeModelSetting(model: string) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_meeting_notes_claude_model_setting", { model }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * The installed Claude Code's version, or why it can't be used.
+ */
+async getClaudeCodeVersion() : Promise<Result<string, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_claude_code_version") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async addMeetingNotesPrompt(name: string, prompt: string) : Promise<Result<LLMPrompt, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("add_meeting_notes_prompt", { name, prompt }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async updateMeetingNotesPrompt(id: string, name: string, prompt: string) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("update_meeting_notes_prompt", { id, name, prompt }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async deleteMeetingNotesPrompt(id: string) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("delete_meeting_notes_prompt", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async setMeetingNotesSelectedPrompt(id: string) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_meeting_notes_selected_prompt", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 /**
  * Whether this platform can tell when a meeting starts.
  */
@@ -1262,7 +1348,36 @@ meeting_system_audio?: boolean;
 /**
  * Write notes with the post-processing LLM once a meeting ends.
  */
-meeting_auto_notes?: boolean; meeting_auto_start?: MeetingAutoStart; meeting_auto_stop?: MeetingAutoStop; 
+meeting_auto_notes?: boolean; 
+/**
+ * How meeting notes are written; the instructions for the final notes
+ * request. See `meeting::notes`.
+ */
+meeting_notes_prompts?: LLMPrompt[]; 
+/**
+ * Falls back to the first of `meeting_notes_prompts` when unset or gone.
+ */
+meeting_notes_selected_prompt_id?: string | null; 
+/**
+ * Before writing notes, have the LLM work out the unnamed speakers' names
+ * from the conversation. See `meeting::names`.
+ */
+meeting_guess_speaker_names?: boolean; 
+/**
+ * How much context (in tokens) the post-processing model runs with, as
+ * set on its server. A meeting transcript that fits is sent whole for
+ * notes; a longer one is condensed in parts first.
+ */
+meeting_notes_context_tokens?: number; 
+/**
+ * What writes a meeting's notes unless the meeting says otherwise.
+ */
+meeting_notes_writer?: MeetingNotesWriter; 
+/**
+ * The model Claude Code writes notes with: an alias like "haiku" or a
+ * full model name.
+ */
+meeting_notes_claude_model?: string; meeting_auto_start?: MeetingAutoStart; meeting_auto_stop?: MeetingAutoStop; 
 /**
  * Apps full-auto never records or asks about.
  */
@@ -1325,7 +1440,11 @@ speakers_identified: boolean;
  * The app the meeting was held in, e.g. "Zoom", as detected or given by
  * the user.
  */
-app: string | null }
+app: string | null; 
+/**
+ * What writes this meeting's notes; the setting's choice when unset.
+ */
+notes_writer: MeetingNotesWriter | null }
 /**
  * Whether meetings start recording on their own when an app starts using the
  * microphone. See `meeting::auto`.
@@ -1376,6 +1495,19 @@ identifying_speakers: boolean;
 writing_notes: boolean }
 export type MeetingNotesEvent = { meeting_id: number; progress: NotesProgress }
 /**
+ * What writes meeting notes (and names speakers). See `meeting::notes`.
+ */
+export type MeetingNotesWriter = 
+/**
+ * The LLM set up for post-processing.
+ */
+"post_process" | 
+/**
+ * The Claude Code CLI, signed in with the user's Claude account. The
+ * transcript leaves the machine.
+ */
+"claude_code"
+/**
  * A question or notice about a detected meeting, for the prompt window.
  */
 export type MeetingPrompt = { 
@@ -1418,9 +1550,13 @@ export type MeetingSegmentEvent = { segment: MeetingSegment }
  */
 export type MeetingSpeaker = { speaker: number; 
 /**
- * Set once the user names them.
+ * Set once the user names them, or the LLM works it out.
  */
-name: string | null }
+name: string | null; 
+/**
+ * The name was worked out from the conversation, not given by the user.
+ */
+name_guessed: boolean }
 export type MeetingSpeakersEvent = { meeting_id: number; progress: SpeakersProgress }
 export type MeetingState = { phase: "idle" } | { phase: "recording"; meeting: Meeting } | 
 /**
@@ -1461,6 +1597,10 @@ sha256: string | null } } |
 "Local"
 export type ModelUnloadTimeout = "never" | "immediately" | "min_2" | "min_5" | "min_10" | "min_15" | "hour_1" | "sec_15"
 export type NotesProgress = 
+/**
+ * Working out the unnamed speakers' names from the conversation.
+ */
+{ step: "naming" } | 
 /**
  * `done` of `total` requests to the LLM have finished.
  */

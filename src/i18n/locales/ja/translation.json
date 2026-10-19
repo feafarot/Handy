@@ -463,6 +463,40 @@
         "selectToEdit": "上からプロンプトを選択して、詳細を表示・編集します。",
         "createFirst": "上の「新しいプロンプトを作成」をクリックして、最初の後処理プロンプトを作成してください。"
       },
+      "meetingNotes": {
+        "title": "会議メモ",
+        "guessNames": {
+          "label": "話者の名前を推測",
+          "description": "メモを書く前に、会話（自己紹介、あいさつ、名前で呼びかけられた質問など）から他の参加者の名前をモデルに推測させます。名前は会議ページでいつでも修正できます。"
+        },
+        "writer": {
+          "title": "メモの作成に使うもの",
+          "description": "話者の名前付けと会議メモの作成を行うもの。会議ごとにそのページで別のものを選べます。",
+          "postProcess": "後処理モデル",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Claude モデル",
+            "description": "Claude Code がメモを書くモデルです。Haiku は高速でメモには十分です。Sonnet と Opus は遅く、プランの使用量も多くなります。"
+          },
+          "checking": "Claude Code を探しています…",
+          "found": "{{version}} が見つかりました。メモはサインイン中の Claude アカウントを使います。",
+          "missing": "Claude Code を利用できません: {{error}}",
+          "privacy": "文字起こしは Anthropic に送信されます。仕事の会議には会社が許可するアカウントを使い、機密の会議は後処理モデルのままにしてください。"
+        },
+        "contextSize": {
+          "title": "モデルのコンテキストサイズ",
+          "description": "後処理モデルがサーバーで設定されているコンテキスト量です（Ollama: Settings → Context length）。収まる会議はそのまま送信し、長い会議は先に分割して要約します。サーバーの上限より大きくすると文字起こしの一部が切り捨てられます。",
+          "option": "{{size}}Kトークン"
+        },
+        "prompt": {
+          "title": "メモのプロンプト",
+          "description": "モデルが会議メモを書く方法です。文字起こしはこの指示と一緒に送信されます。",
+          "tip": "文字起こしはこの指示の後に、発言ごとに \"[m:ss] Name: text\" の1行で続きます。\"Me\" はあなたです。",
+          "placeholder": "欲しいメモを説明してください：セクション、長さ、言語、形式。"
+        }
+      },
       "appContext": {
         "title": "アプリのコンテキスト",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "話者を識別できませんでした: {{error}}",
       "retry": "再試行",
       "none": "ほかの話者は見つかりませんでした。",
-      "rename": "この話者に名前を付ける"
+      "rename": "この話者に名前を付ける",
+      "guessed": "会話から推測した名前です。違っていたら編集してください。"
     },
     "autoNotes": {
       "label": "会議の終了時にメモを作成",
@@ -804,7 +839,14 @@
       "writingPart": "メモを作成しています… ({{done}}/{{total}})",
       "failed": "メモを作成できませんでした: {{error}}",
       "copy": "メモをコピー",
-      "empty": "まだメモはありません。"
+      "empty": "まだメモはありません。",
+      "naming": "誰が誰かを推測しています…",
+      "writer": {
+        "label": "この会議のメモを書くもの",
+        "default": "既定（{{writer}}）",
+        "postProcess": "後処理モデル",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "会議に使ったアプリ",
