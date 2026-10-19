@@ -463,6 +463,40 @@
         "selectToEdit": "Selecteer hierboven een prompt om de details te bekijken en te bewerken.",
         "createFirst": "Klik hierboven op 'Nieuwe prompt maken' om je eerste naverwerkingsprompt aan te maken."
       },
+      "meetingNotes": {
+        "title": "Vergadernotities",
+        "guessNames": {
+          "label": "Namen van sprekers raden",
+          "description": "Voordat de notities worden geschreven, leidt het model de namen van de andere deelnemers af uit het gesprek (voorstellen, begroetingen, bij naam aangesproken worden). Je kunt elke naam corrigeren op de vergaderpagina."
+        },
+        "writer": {
+          "title": "Notities schrijven met",
+          "description": "Wat de sprekers een naam geeft en de vergadernotities schrijft. Elke vergadering kan op haar eigen pagina iets anders kiezen.",
+          "postProcess": "Nabewerkingsmodel",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Claude-model",
+            "description": "Het model waarmee Claude Code de notities schrijft. Haiku is snel en ruim voldoende; Sonnet en Opus zijn trager en gebruiken meer van je abonnement."
+          },
+          "checking": "Claude Code zoeken…",
+          "found": "{{version}} gevonden. Notities gebruiken het Claude-account waarmee het is ingelogd.",
+          "missing": "Claude Code is niet beschikbaar: {{error}}",
+          "privacy": "Transcripten worden naar Anthropic gestuurd. Gebruik voor werkvergaderingen een account dat je bedrijf toestaat en houd vertrouwelijke vergaderingen op het nabewerkingsmodel."
+        },
+        "contextSize": {
+          "title": "Contextgrootte van het model",
+          "description": "Hoeveel context het nabewerkingsmodel heeft volgens de instellingen van de server (Ollama: Settings → Context length). Een vergadering die past, wordt in zijn geheel verstuurd; een langere wordt eerst in delen samengevat. Hoger instellen dan de server toestaat, knipt een deel van het transcript af.",
+          "option": "{{size}}K tokens"
+        },
+        "prompt": {
+          "title": "Prompt voor notities",
+          "description": "Hoe het model vergadernotities schrijft. Het transcript wordt samen met deze instructies verstuurd.",
+          "tip": "Het transcript volgt op deze instructies, één regel \"[m:ss] Name: text\" per beurt; \"Me\" ben jij.",
+          "placeholder": "Beschrijf de notities die je wilt: secties, lengte, taal, opmaak."
+        }
+      },
       "appContext": {
         "title": "App-context",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Kan de sprekers niet herkennen: {{error}}",
       "retry": "Opnieuw proberen",
       "none": "Geen andere sprekers gevonden.",
-      "rename": "Deze spreker een naam geven"
+      "rename": "Deze spreker een naam geven",
+      "guessed": "Geraden uit het gesprek. Pas het aan als het niet klopt."
     },
     "autoNotes": {
       "label": "Notities schrijven als een vergadering eindigt",
@@ -804,7 +839,14 @@
       "writingPart": "Notities worden geschreven… ({{done}}/{{total}})",
       "failed": "Kan de notities niet schrijven: {{error}}",
       "copy": "Notities kopiëren",
-      "empty": "Nog geen notities."
+      "empty": "Nog geen notities.",
+      "naming": "Uitzoeken wie wie is…",
+      "writer": {
+        "label": "Wat de notities van deze vergadering schrijft",
+        "default": "Standaard ({{writer}})",
+        "postProcess": "Nabewerkingsmodel",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "App waarin de vergadering plaatsvond",

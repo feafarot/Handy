@@ -10,6 +10,7 @@ import {
   Loader2,
   Mic,
   NotebookPen,
+  Sparkles,
   Square,
   Trash2,
   Users,
@@ -19,6 +20,7 @@ import {
   events,
   type Meeting,
   type MeetingDetail,
+  type MeetingNotesWriter,
   type MeetingSegment,
   type MeetingSpeaker,
   type MeetingState,
@@ -28,6 +30,7 @@ import {
 import { useSettings } from "@/hooks/useSettings";
 import { formatDateTime } from "@/utils/dateFormat";
 import { Button } from "../ui/Button";
+import { Dropdown } from "../ui/Dropdown";
 import { Input } from "../ui/Input";
 import { ToggleSwitch } from "../ui/ToggleSwitch";
 import { copyToClipboard } from "../settings/history/clipboard";
@@ -197,6 +200,56 @@ const AppField: React.FC<{
   );
 };
 
+/** What writes one meeting's notes: the setting's choice, or another. */
+const NotesWriterSelect: React.FC<{
+  meeting: Meeting;
+  onSaved?: (writer: MeetingNotesWriter | null) => void;
+}> = ({ meeting, onSaved }) => {
+  const { t } = useTranslation();
+  const { getSetting } = useSettings();
+  const [saving, setSaving] = useState(false);
+  const fallback = getSetting("meeting_notes_writer") ?? "post_process";
+  const name = (writer: MeetingNotesWriter) =>
+    writer === "claude_code"
+      ? t("meetings.notes.writer.claudeCode")
+      : t("meetings.notes.writer.postProcess");
+  const select = async (value: string) => {
+    const writer = value === "default" ? null : (value as MeetingNotesWriter);
+    setSaving(true);
+    const result = await commands.setMeetingNotesWriter(meeting.id, writer);
+    setSaving(false);
+    if (result.status === "ok") {
+      onSaved?.(writer);
+    } else {
+      toast.error(result.error);
+    }
+  };
+  return (
+    <div
+      className="flex items-center gap-1.5 min-w-0"
+      title={t("meetings.notes.writer.label")}
+    >
+      <NotebookPen className="w-3.5 h-3.5 text-text/50 shrink-0" />
+      <Dropdown
+        selectedValue={meeting.notes_writer ?? "default"}
+        options={[
+          {
+            value: "default",
+            label: t("meetings.notes.writer.default", {
+              writer: name(fallback),
+            }),
+          },
+          { value: "post_process", label: name("post_process") },
+          { value: "claude_code", label: name("claude_code") },
+        ]}
+        onSelect={select}
+        disabled={saving}
+        className="w-56"
+      />
+    </div>
+  );
+};
+
 interface RecorderProps {
   state: MeetingState;
   live: MeetingSegment[];
@@ -308,7 +361,10 @@ const Recorder: React.FC<RecorderProps> = ({ state, live }) => {
                 <Elapsed since={recording.started_at} />
               </span>
             </div>
-            <AppField meeting={recording} />
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+              <AppField meeting={recording} />
+              <NotesWriterSelect meeting={recording} />
+            </div>
           </div>
         ) : (
           <div className="flex items-center gap-2 text-sm text-text/70">
@@ -368,7 +424,7 @@ const SpeakerName: React.FC<{
       />
       <Input
         variant="compact"
-        className="w-36"
+        className={`w-36 ${speaker.name_guessed ? "italic" : ""}`}
         value={name}
         placeholder={t("meetings.speaker.numbered", {
           number: speaker.speaker,
@@ -377,8 +433,17 @@ const SpeakerName: React.FC<{
         onBlur={save}
         onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
         aria-label={t("meetings.speakers.rename")}
-        title={t("meetings.speakers.rename")}
+        title={
+          speaker.name_guessed
+            ? t("meetings.speakers.guessed")
+            : t("meetings.speakers.rename")
+        }
       />
+      {speaker.name_guessed && (
+        <span title={t("meetings.speakers.guessed")}>
+          <Sparkles className="w-3.5 h-3.5 text-text/40" />
+        </span>
+      )}
     </div>
   );
 };
@@ -465,7 +530,9 @@ const Notes: React.FC<{
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const writing =
-    progress?.step === "writing" || (progress === null && detail.writing_notes);
+    progress?.step === "naming" ||
+    progress?.step === "writing" ||
+    (progress === null && detail.writing_notes);
 
   const copy = async () => {
     if (detail.notes && (await copyToClipboard(detail.notes))) {
@@ -518,12 +585,14 @@ const Notes: React.FC<{
           <div className="flex items-center gap-2 text-sm text-text/60">
             <Loader2 className="w-4 h-4 animate-spin" />
             <span>
-              {progress?.step === "writing" && progress.total > 1
-                ? t("meetings.notes.writingPart", {
-                    done: progress.done,
-                    total: progress.total,
-                  })
-                : t("meetings.notes.writing")}
+              {progress?.step === "naming"
+                ? t("meetings.notes.naming")
+                : progress?.step === "writing" && progress.total > 1
+                  ? t("meetings.notes.writingPart", {
+                      done: progress.done,
+                      total: progress.total,
+                    })
+                  : t("meetings.notes.writing")}
             </span>
           </div>
         ) : progress?.step === "failed" ? (
@@ -663,7 +732,7 @@ const MeetingView: React.FC<{ id: number; onBack: () => void }> = ({
       setDetail({
         ...detail,
         speakers: detail.speakers.map((s) =>
-          s.speaker === speaker ? { ...s, name } : s,
+          s.speaker === speaker ? { ...s, name, name_guessed: false } : s,
         ),
       });
     }
@@ -704,12 +773,20 @@ const MeetingView: React.FC<{ id: number; onBack: () => void }> = ({
             onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
             aria-label={t("meetings.recorder.titleLabel")}
           />
-          <AppField
-            meeting={meeting}
-            onSaved={(app) =>
-              setDetail({ ...detail, meeting: { ...meeting, app } })
-            }
-          />
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <AppField
+              meeting={meeting}
+              onSaved={(app) =>
+                setDetail({ ...detail, meeting: { ...meeting, app } })
+              }
+            />
+            <NotesWriterSelect
+              meeting={meeting}
+              onSaved={(notes_writer) =>
+                setDetail({ ...detail, meeting: { ...meeting, notes_writer } })
+              }
+            />
+          </div>
           <div className="flex items-center justify-between gap-2">
             <p className="text-xs text-text/60">{meetingMeta(meeting)}</p>
             <div className="flex items-center gap-1">

@@ -463,6 +463,40 @@
         "selectToEdit": "Pilih prompt di atas untuk melihat dan mengedit detailnya.",
         "createFirst": "Klik 'Buat Prompt Baru' di atas untuk membuat prompt pascaproses pertama Anda."
       },
+      "meetingNotes": {
+        "title": "Catatan Rapat",
+        "guessNames": {
+          "label": "Tebak Nama Pembicara",
+          "description": "Sebelum menulis catatan, model menyimpulkan nama peserta lain dari percakapan (perkenalan, sapaan, ditanya dengan menyebut nama). Anda bisa mengoreksi nama apa pun di halaman rapat."
+        },
+        "writer": {
+          "title": "Tulis catatan dengan",
+          "description": "Yang menamai pembicara dan menulis catatan rapat. Tiap rapat bisa memilih lain di halamannya.",
+          "postProcess": "Model pascapemrosesan",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Model Claude",
+            "description": "Model yang dipakai Claude Code untuk menulis catatan. Haiku cepat dan cukup untuk catatan; Sonnet dan Opus lebih lambat dan memakai lebih banyak kuota paket Anda."
+          },
+          "checking": "Mencari Claude Code…",
+          "found": "Ditemukan {{version}}. Catatan memakai akun Claude yang sedang masuk di sana.",
+          "missing": "Claude Code tidak tersedia: {{error}}",
+          "privacy": "Transkrip dikirim ke Anthropic. Untuk rapat kerja, gunakan akun yang diizinkan perusahaan Anda, dan tetap gunakan model pascapemrosesan untuk rapat rahasia."
+        },
+        "contextSize": {
+          "title": "Ukuran Konteks Model",
+          "description": "Seberapa besar konteks model pascapemrosesan sesuai pengaturan servernya (Ollama: Settings → Context length). Rapat yang muat dikirim utuh; yang lebih panjang diringkas per bagian dulu. Nilai di atas batas server akan memotong sebagian transkrip.",
+          "option": "{{size}}K token"
+        },
+        "prompt": {
+          "title": "Prompt Catatan",
+          "description": "Cara model menulis catatan rapat. Transkrip dikirim bersama instruksi ini.",
+          "tip": "Transkrip menyusul setelah instruksi ini, satu baris \"[m:ss] Name: text\" per giliran bicara; \"Me\" adalah Anda.",
+          "placeholder": "Jelaskan catatan yang Anda inginkan: bagian, panjang, bahasa, format."
+        }
+      },
       "appContext": {
         "title": "Konteks Aplikasi",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Tidak dapat mengenali pembicara: {{error}}",
       "retry": "Coba lagi",
       "none": "Tidak ditemukan pembicara lain.",
-      "rename": "Beri nama pembicara ini"
+      "rename": "Beri nama pembicara ini",
+      "guessed": "Ditebak dari percakapan. Ubah jika salah."
     },
     "autoNotes": {
       "label": "Tulis catatan saat rapat selesai",
@@ -804,7 +839,14 @@
       "writingPart": "Menulis catatan… ({{done}}/{{total}})",
       "failed": "Tidak dapat menulis catatan: {{error}}",
       "copy": "Salin catatan",
-      "empty": "Belum ada catatan."
+      "empty": "Belum ada catatan.",
+      "naming": "Mencari tahu siapa siapa…",
+      "writer": {
+        "label": "Yang menulis catatan rapat ini",
+        "default": "Default ({{writer}})",
+        "postProcess": "Model pascapemrosesan",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "Aplikasi tempat rapat berlangsung",

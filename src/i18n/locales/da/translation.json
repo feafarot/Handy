@@ -463,6 +463,40 @@
         "selectToEdit": "Vælg en prompt ovenfor for at se og redigere dens detaljer.",
         "createFirst": "Klik på 'Opret ny prompt' ovenfor for at oprette din første efterbehandlingsprompt."
       },
+      "meetingNotes": {
+        "title": "Mødenoter",
+        "guessNames": {
+          "label": "Gæt talernes navne",
+          "description": "Før noterne skrives, lader modellen udlede de andre deltageres navne fra samtalen (præsentationer, hilsner, når nogen bliver spurgt ved navn). Du kan rette alle navne på mødesiden."
+        },
+        "writer": {
+          "title": "Skriv noter med",
+          "description": "Det, der navngiver talerne og skriver mødenoterne. Hvert møde kan vælge noget andet på sin side.",
+          "postProcess": "Efterbehandlingsmodel",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Claude-model",
+            "description": "Den model, Claude Code skriver noter med. Haiku er hurtig og rigeligt til noter; Sonnet og Opus er langsommere og bruger mere af dit abonnement."
+          },
+          "checking": "Leder efter Claude Code…",
+          "found": "Fandt {{version}}. Noterne bruger den Claude-konto, den er logget ind med.",
+          "missing": "Claude Code er ikke tilgængelig: {{error}}",
+          "privacy": "Transskriptioner sendes til Anthropic. Brug en konto, din virksomhed tillader, til arbejdsmøder, og hold fortrolige møder på efterbehandlingsmodellen."
+        },
+        "contextSize": {
+          "title": "Modellens kontekststørrelse",
+          "description": "Hvor meget kontekst efterbehandlingsmodellen kører med, som indstillet på dens server (Ollama: Settings → Context length). Et møde, der kan være der, sendes helt; et længere opsummeres først i dele. Sættes den højere, end serveren tillader, skæres en del af transskriptionen væk.",
+          "option": "{{size}}K tokens"
+        },
+        "prompt": {
+          "title": "Prompt til noter",
+          "description": "Hvordan modellen skriver mødenoter. Transskriptionen sendes sammen med disse instruktioner.",
+          "tip": "Transskriptionen kommer efter disse instruktioner, én \"[m:ss] Name: text\"-linje pr. replik; \"Me\" er dig.",
+          "placeholder": "Beskriv de noter, du vil have: afsnit, længde, sprog, format."
+        }
+      },
       "appContext": {
         "title": "App-kontekst",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Kunne ikke identificere talerne: {{error}}",
       "retry": "Prøv igen",
       "none": "Der blev ikke fundet andre talere.",
-      "rename": "Navngiv denne taler"
+      "rename": "Navngiv denne taler",
+      "guessed": "Gættet ud fra samtalen. Ret det, hvis det er forkert."
     },
     "autoNotes": {
       "label": "Skriv noter, når et møde slutter",
@@ -804,7 +839,14 @@
       "writingPart": "Skriver noter… ({{done}}/{{total}})",
       "failed": "Kunne ikke skrive noterne: {{error}}",
       "copy": "Kopiér noter",
-      "empty": "Ingen noter endnu."
+      "empty": "Ingen noter endnu.",
+      "naming": "Finder ud af, hvem der er hvem…",
+      "writer": {
+        "label": "Hvad der skriver dette mødes noter",
+        "default": "Standard ({{writer}})",
+        "postProcess": "Efterbehandlingsmodel",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "Appen, mødet blev holdt i",

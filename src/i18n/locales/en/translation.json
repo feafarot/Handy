@@ -463,6 +463,40 @@
         "selectToEdit": "Select a prompt above to view and edit its details.",
         "createFirst": "Click 'Create New Prompt' above to create your first post-processing prompt."
       },
+      "meetingNotes": {
+        "title": "Meeting Notes",
+        "guessNames": {
+          "label": "Guess Speaker Names",
+          "description": "Before writing notes, let the model work out the other participants' names from the conversation (introductions, greetings, being asked something by name). You can correct any name on the meeting page."
+        },
+        "writer": {
+          "title": "Write Notes With",
+          "description": "What names the speakers and writes meeting notes. Each meeting can pick differently on its page.",
+          "postProcess": "Post-processing model",
+          "claudeCode": "Claude Code"
+        },
+        "claude": {
+          "model": {
+            "title": "Claude Model",
+            "description": "The model Claude Code writes notes with. Haiku is fast and plenty for notes; Sonnet and Opus are slower and use more of your plan."
+          },
+          "checking": "Looking for Claude Code…",
+          "found": "Found {{version}}. Notes use the Claude account it is signed in with.",
+          "missing": "Claude Code isn't available: {{error}}",
+          "privacy": "Transcripts are sent to Anthropic. Use an account your company allows for work meetings, and keep confidential meetings on the post-processing model."
+        },
+        "contextSize": {
+          "title": "Model Context Size",
+          "description": "How much context the post-processing model runs with, as set on its server (Ollama: Settings → Context length). A meeting that fits is sent to the model whole; a longer one is summarized in parts first. Setting this higher than the server allows cuts off part of the transcript.",
+          "option": "{{size}}K tokens"
+        },
+        "prompt": {
+          "title": "Notes Prompt",
+          "description": "How the model writes meeting notes. The transcript is sent along with these instructions.",
+          "tip": "The transcript follows these instructions, one \"[m:ss] Name: text\" line per turn; \"Me\" is you.",
+          "placeholder": "Describe the notes you want: sections, length, language, format."
+        }
+      },
       "appContext": {
         "title": "App Context",
         "enabled": {
@@ -790,7 +824,8 @@
       "failed": "Couldn't identify the speakers: {{error}}",
       "retry": "Try again",
       "none": "No other speakers were found.",
-      "rename": "Name this speaker"
+      "rename": "Name this speaker",
+      "guessed": "Guessed from the conversation. Edit it if it's wrong."
     },
     "autoNotes": {
       "label": "Write Notes When a Meeting Ends",
@@ -804,7 +839,14 @@
       "writingPart": "Writing notes… ({{done}}/{{total}})",
       "failed": "Couldn't write the notes: {{error}}",
       "copy": "Copy notes",
-      "empty": "No notes yet."
+      "empty": "No notes yet.",
+      "naming": "Working out who's who…",
+      "writer": {
+        "label": "What writes this meeting's notes",
+        "default": "Default ({{writer}})",
+        "postProcess": "Post-processing model",
+        "claudeCode": "Claude Code"
+      }
     },
     "app": {
       "label": "App the meeting was held in",

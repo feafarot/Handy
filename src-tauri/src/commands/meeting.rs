@@ -1,6 +1,8 @@
 use crate::meeting::auto::{MeetingAutoStarter, MeetingPrompt, MeetingPromptAnswer};
 use crate::meeting::{Meeting, MeetingDetail, MeetingManager, MeetingState};
-use crate::settings::{self, MeetingAutoStart, MeetingAutoStop, MeetingBlockedApp};
+use crate::settings::{
+    self, LLMPrompt, MeetingAutoStart, MeetingAutoStop, MeetingBlockedApp, MeetingNotesWriter,
+};
 use std::sync::Arc;
 use tauri::{AppHandle, State};
 use tauri_plugin_opener::OpenerExt;
@@ -146,6 +148,150 @@ pub fn change_meeting_system_audio_setting(app: AppHandle, enabled: bool) -> Res
 pub fn change_meeting_auto_notes_setting(app: AppHandle, enabled: bool) -> Result<(), String> {
     let mut settings = settings::get_settings(&app);
     settings.meeting_auto_notes = enabled;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn change_meeting_guess_speaker_names_setting(
+    app: AppHandle,
+    enabled: bool,
+) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    settings.meeting_guess_speaker_names = enabled;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+/// Sets what writes a meeting's notes; `None` follows the setting.
+#[tauri::command]
+#[specta::specta]
+pub fn set_meeting_notes_writer(
+    meetings: State<'_, Arc<MeetingManager>>,
+    id: i64,
+    writer: Option<MeetingNotesWriter>,
+) -> Result<(), String> {
+    meetings
+        .set_notes_writer(id, writer)
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn change_meeting_notes_writer_setting(
+    app: AppHandle,
+    writer: MeetingNotesWriter,
+) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    settings.meeting_notes_writer = writer;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn change_meeting_notes_claude_model_setting(
+    app: AppHandle,
+    model: String,
+) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    settings.meeting_notes_claude_model = model.trim().to_string();
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+/// The installed Claude Code's version, or why it can't be used.
+#[tauri::command]
+#[specta::specta]
+pub async fn get_claude_code_version() -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(crate::meeting::claude_code_version)
+        .await
+        .map_err(|e| e.to_string())?
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn change_meeting_notes_context_tokens_setting(
+    app: AppHandle,
+    tokens: u32,
+) -> Result<(), String> {
+    if tokens < 2048 {
+        return Err("The context must be at least 2048 tokens".to_string());
+    }
+    let mut settings = settings::get_settings(&app);
+    settings.meeting_notes_context_tokens = tokens;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn add_meeting_notes_prompt(
+    app: AppHandle,
+    name: String,
+    prompt: String,
+) -> Result<LLMPrompt, String> {
+    let mut settings = settings::get_settings(&app);
+    let new_prompt = LLMPrompt {
+        id: format!("meeting_prompt_{}", chrono::Utc::now().timestamp_millis()),
+        name,
+        prompt,
+    };
+    settings.meeting_notes_prompts.push(new_prompt.clone());
+    settings::write_settings(&app, settings);
+    Ok(new_prompt)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn update_meeting_notes_prompt(
+    app: AppHandle,
+    id: String,
+    name: String,
+    prompt: String,
+) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    let existing = settings
+        .meeting_notes_prompts
+        .iter_mut()
+        .find(|p| p.id == id)
+        .ok_or_else(|| format!("Prompt with id '{id}' not found"))?;
+    existing.name = name;
+    existing.prompt = prompt;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn delete_meeting_notes_prompt(app: AppHandle, id: String) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    if settings.meeting_notes_prompts.len() <= 1 {
+        return Err("Cannot delete the last prompt".to_string());
+    }
+    let original_len = settings.meeting_notes_prompts.len();
+    settings.meeting_notes_prompts.retain(|p| p.id != id);
+    if settings.meeting_notes_prompts.len() == original_len {
+        return Err(format!("Prompt with id '{id}' not found"));
+    }
+    if settings.meeting_notes_selected_prompt_id.as_ref() == Some(&id) {
+        settings.meeting_notes_selected_prompt_id =
+            settings.meeting_notes_prompts.first().map(|p| p.id.clone());
+    }
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn set_meeting_notes_selected_prompt(app: AppHandle, id: String) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    if !settings.meeting_notes_prompts.iter().any(|p| p.id == id) {
+        return Err(format!("Prompt with id '{id}' not found"));
+    }
+    settings.meeting_notes_selected_prompt_id = Some(id);
     settings::write_settings(&app, settings);
     Ok(())
 }

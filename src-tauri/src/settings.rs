@@ -160,6 +160,35 @@ pub enum MeetingAutoStart {
     Full,
 }
 
+/// What writes meeting notes (and names speakers). See `meeting::notes`.
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Type, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum MeetingNotesWriter {
+    /// The LLM set up for post-processing.
+    #[default]
+    PostProcess,
+    /// The Claude Code CLI, signed in with the user's Claude account. The
+    /// transcript leaves the machine.
+    ClaudeCode,
+}
+
+impl MeetingNotesWriter {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::PostProcess => "post_process",
+            Self::ClaudeCode => "claude_code",
+        }
+    }
+
+    pub fn parse(value: &str) -> Option<Self> {
+        match value {
+            "post_process" => Some(Self::PostProcess),
+            "claude_code" => Some(Self::ClaudeCode),
+            _ => None,
+        }
+    }
+}
+
 /// What happens to a meeting recorded because it was detected once its app
 /// has let go of the microphone for a while.
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Type, Default)]
@@ -588,6 +617,29 @@ pub struct AppSettings {
     /// Write notes with the post-processing LLM once a meeting ends.
     #[serde(default = "default_meeting_auto_notes")]
     pub meeting_auto_notes: bool,
+    /// How meeting notes are written; the instructions for the final notes
+    /// request. See `meeting::notes`.
+    #[serde(default = "default_meeting_notes_prompts")]
+    pub meeting_notes_prompts: Vec<LLMPrompt>,
+    /// Falls back to the first of `meeting_notes_prompts` when unset or gone.
+    #[serde(default)]
+    pub meeting_notes_selected_prompt_id: Option<String>,
+    /// Before writing notes, have the LLM work out the unnamed speakers' names
+    /// from the conversation. See `meeting::names`.
+    #[serde(default = "default_meeting_guess_speaker_names")]
+    pub meeting_guess_speaker_names: bool,
+    /// How much context (in tokens) the post-processing model runs with, as
+    /// set on its server. A meeting transcript that fits is sent whole for
+    /// notes; a longer one is condensed in parts first.
+    #[serde(default = "default_meeting_notes_context_tokens")]
+    pub meeting_notes_context_tokens: u32,
+    /// What writes a meeting's notes unless the meeting says otherwise.
+    #[serde(default)]
+    pub meeting_notes_writer: MeetingNotesWriter,
+    /// The model Claude Code writes notes with: an alias like "haiku" or a
+    /// full model name.
+    #[serde(default = "default_meeting_notes_claude_model")]
+    pub meeting_notes_claude_model: String,
     #[serde(default)]
     pub meeting_auto_start: MeetingAutoStart,
     #[serde(default)]
@@ -672,6 +724,48 @@ fn default_meeting_system_audio() -> bool {
 
 fn default_meeting_auto_notes() -> bool {
     true
+}
+
+fn default_meeting_guess_speaker_names() -> bool {
+    true
+}
+
+/// What local servers commonly default to.
+fn default_meeting_notes_context_tokens() -> u32 {
+    4096
+}
+
+fn default_meeting_notes_claude_model() -> String {
+    "haiku".to_string()
+}
+
+pub const DEFAULT_MEETING_NOTES_PROMPT_ID: &str = "default_meeting_notes";
+
+pub fn default_meeting_notes_prompts() -> Vec<LLMPrompt> {
+    vec![LLMPrompt {
+        id: DEFAULT_MEETING_NOTES_PROMPT_ID.to_string(),
+        name: "Meeting Notes".to_string(),
+        prompt: "Write the notes in Markdown with these sections, leaving out any that would be empty:
+
+## Summary
+Two to four sentences: what the meeting was about and what came out of it.
+
+## Discussion
+Bullet points for the main topics, with the key facts, numbers and arguments.
+
+## Decisions
+Bullet points.
+
+## Action items
+One bullet per task: \"- **Owner**: task (due date if one was given)\".
+
+## Open questions
+Bullet points.
+
+Use the speakers' names as the transcript gives them. Write in the language the meeting was held in. \
+Leave out small talk. Do not add anything the transcript does not say."
+            .to_string(),
+    }]
 }
 
 fn default_vad_enabled() -> bool {
@@ -1080,6 +1174,12 @@ pub fn get_default_settings() -> AppSettings {
         app_context_preload: false,
         meeting_system_audio: default_meeting_system_audio(),
         meeting_auto_notes: default_meeting_auto_notes(),
+        meeting_notes_prompts: default_meeting_notes_prompts(),
+        meeting_notes_selected_prompt_id: None,
+        meeting_guess_speaker_names: default_meeting_guess_speaker_names(),
+        meeting_notes_context_tokens: default_meeting_notes_context_tokens(),
+        meeting_notes_writer: MeetingNotesWriter::default(),
+        meeting_notes_claude_model: default_meeting_notes_claude_model(),
         meeting_auto_start: MeetingAutoStart::default(),
         meeting_auto_stop: MeetingAutoStop::default(),
         meeting_auto_start_blocklist: Vec::new(),
@@ -1112,6 +1212,18 @@ impl AppSettings {
         self.post_process_providers
             .iter_mut()
             .find(|provider| provider.id == provider_id)
+    }
+
+    /// The instructions meeting notes are written with: the selected prompt,
+    /// else the first one, else the built-in default.
+    pub fn meeting_notes_prompt(&self) -> String {
+        self.meeting_notes_selected_prompt_id
+            .as_ref()
+            .and_then(|id| self.meeting_notes_prompts.iter().find(|p| &p.id == id))
+            .or_else(|| self.meeting_notes_prompts.first())
+            .map(|p| p.prompt.clone())
+            .filter(|prompt| !prompt.trim().is_empty())
+            .unwrap_or_else(|| default_meeting_notes_prompts().remove(0).prompt)
     }
 }
 
@@ -1370,6 +1482,27 @@ pub fn get_recording_retention_period(app: &AppHandle) -> RecordingRetentionPeri
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn meeting_notes_prompt_falls_back_to_the_first_then_the_default() {
+        let mut settings = get_default_settings();
+        let default = settings.meeting_notes_prompt();
+        assert!(default.contains("## Action items"));
+
+        settings.meeting_notes_prompts.push(LLMPrompt {
+            id: "short".into(),
+            name: "Short".into(),
+            prompt: "Three bullets.".into(),
+        });
+        settings.meeting_notes_selected_prompt_id = Some("short".into());
+        assert_eq!(settings.meeting_notes_prompt(), "Three bullets.");
+
+        settings.meeting_notes_selected_prompt_id = Some("gone".into());
+        assert_eq!(settings.meeting_notes_prompt(), default);
+
+        settings.meeting_notes_prompts.clear();
+        assert_eq!(settings.meeting_notes_prompt(), default);
+    }
 
     #[test]
     fn stored_binding_returns_the_requested_binding() {

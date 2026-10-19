@@ -10,12 +10,15 @@
 //! touches through `TranscriptionManager::transcribe`.
 //!
 //! Once a meeting ends, the other participants are told apart (see
-//! `speakers`) and notes are written (see `notes`), in the background.
+//! `speakers`), named from the conversation (see `names`) and notes are
+//! written (see `notes`), in the background.
 //!
 //! Meetings can also start (and stop) on their own when an app starts using
 //! the microphone; see `auto`.
 
 pub mod auto;
+mod claude;
+mod names;
 mod notes;
 mod segmenter;
 mod speakers;
@@ -39,7 +42,7 @@ use tauri_specta::Event;
 use crate::audio_toolkit::{SileroVad, VoiceActivityDetector};
 use crate::managers::audio::AudioRecordingManager;
 use crate::managers::transcription::TranscriptionManager;
-use crate::settings::get_settings;
+use crate::settings::{get_settings, MeetingNotesWriter};
 use segmenter::{samples_to_ms, Segmenter, Utterance};
 use store::MeetingStore;
 pub use store::{Meeting, MeetingDetail, MeetingSegment, Source};
@@ -56,6 +59,11 @@ const BLEED_MIN_OVERLAP: f32 = 0.6;
 const TRANSCRIBE_ATTEMPTS: usize = 3;
 /// Whether a platform can record system audio, for the UI.
 pub const SYSTEM_AUDIO_SUPPORTED: bool = system_audio::SUPPORTED;
+
+/// The installed Claude Code's version, for the settings page.
+pub fn claude_code_version() -> Result<String> {
+    claude::version()
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, Type)]
 #[serde(tag = "phase", rename_all = "lowercase")]
@@ -101,6 +109,8 @@ pub struct MeetingSpeakersEvent {
 #[derive(Clone, Debug, Serialize, Deserialize, Type)]
 #[serde(tag = "step", rename_all = "lowercase")]
 pub enum NotesProgress {
+    /// Working out the unnamed speakers' names from the conversation.
+    Naming,
     /// `done` of `total` requests to the LLM have finished.
     Writing {
         done: u32,
@@ -230,7 +240,10 @@ impl MeetingManager {
             }
             let settings = get_settings(&manager.app);
             if settings.meeting_auto_notes {
-                match notes::Llm::from_settings(&settings) {
+                let ready = manager
+                    .finished_meeting(meeting_id)
+                    .and_then(|meeting| notes::Llm::for_meeting(&settings, &meeting));
+                match ready {
                     Ok(_) => manager.run_notes(meeting_id),
                     Err(e) => info!("Not writing notes for meeting {meeting_id}: {e}"),
                 }
@@ -255,8 +268,8 @@ impl MeetingManager {
     /// Writes a finished meeting's notes in the background, replacing any
     /// written before; progress arrives as `MeetingNotesEvent`s.
     pub fn write_notes(self: &Arc<Self>, meeting_id: i64) -> Result<()> {
-        self.finished_meeting(meeting_id)?;
-        notes::Llm::from_settings(&get_settings(&self.app))?;
+        let meeting = self.finished_meeting(meeting_id)?;
+        notes::Llm::for_meeting(&get_settings(&self.app), &meeting)?;
         self.spawn("meeting-notes", move |manager| {
             manager.run_notes(meeting_id)
         })
@@ -339,14 +352,12 @@ impl MeetingManager {
         if !self.claim(meeting_id, Task::Notes) {
             return;
         }
-        let result = notes::write(&self.app, &self.store, meeting_id, |progress| {
-            self.emit_notes(
-                meeting_id,
-                NotesProgress::Writing {
-                    done: progress.done,
-                    total: progress.total,
-                },
-            )
+        let result = notes::write(&self.app, &self.store, meeting_id, |step| match step {
+            notes::Step::NamingSpeakers => self.emit_notes(meeting_id, NotesProgress::Naming),
+            notes::Step::SpeakersNamed => self.emit_speakers(meeting_id, SpeakersProgress::Done),
+            notes::Step::Writing { done, total } => {
+                self.emit_notes(meeting_id, NotesProgress::Writing { done, total })
+            }
         });
         self.release(meeting_id, Task::Notes);
         let progress = match result {
@@ -403,6 +414,24 @@ impl MeetingManager {
 
     pub fn rename(&self, meeting_id: i64, title: &str) -> Result<()> {
         self.store.rename(meeting_id, title)
+    }
+
+    /// Sets what writes the meeting's notes; `None` follows the setting.
+    pub fn set_notes_writer(
+        &self,
+        meeting_id: i64,
+        writer: Option<MeetingNotesWriter>,
+    ) -> Result<()> {
+        self.store.set_notes_writer(meeting_id, writer)?;
+        let mut state = self.lock_state();
+        if let State::Recording(session) = &mut *state {
+            if session.meeting.id == meeting_id {
+                session.meeting.notes_writer = writer;
+                drop(state);
+                self.emit_state();
+            }
+        }
+        Ok(())
     }
 
     /// Sets the app the meeting was held in; an empty or missing name means
