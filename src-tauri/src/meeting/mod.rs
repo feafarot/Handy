@@ -399,6 +399,16 @@ impl MeetingManager {
         self.store.rename_speaker(meeting_id, speaker, name)
     }
 
+    /// Folds one speaker into another, for when identification told one
+    /// person apart as two. Not while identification runs: its result would
+    /// replace the speakers anyway.
+    pub fn merge_speakers(&self, meeting_id: i64, from: u32, into: u32) -> Result<()> {
+        if self.is_running(meeting_id, Task::Speakers) {
+            return Err(anyhow!("the speakers are still being identified"));
+        }
+        self.store.merge_speakers(meeting_id, from, into)
+    }
+
     pub fn list(&self) -> Result<Vec<Meeting>> {
         self.store.list()
     }

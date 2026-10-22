@@ -790,6 +790,7 @@ pub fn run(cli_args: CliArgs) {
             commands::meeting::delete_meeting,
             commands::meeting::identify_meeting_speakers,
             commands::meeting::rename_meeting_speaker,
+            commands::meeting::merge_meeting_speakers,
             commands::meeting::write_meeting_notes,
             commands::meeting::open_meeting_folder,
             commands::meeting::is_meeting_system_audio_supported,

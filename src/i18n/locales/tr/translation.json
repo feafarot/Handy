@@ -807,7 +807,11 @@
       "retry": "Tekrar dene",
       "none": "Başka konuşmacı bulunamadı.",
       "rename": "Bu konuşmacıya ad ver",
-      "guessed": "Konuşmadan tahmin edildi. Yanlışsa düzenleyin."
+      "guessed": "Konuşmadan tahmin edildi. Yanlışsa düzenleyin.",
+      "merge": "{{speaker}} adlı konuşmacıyı başka bir konuşmacıyla birleştir",
+      "mergeHint": "Başka bir konuşmacıyla aynı kişi mi? Birleştirin.",
+      "mergeInto": "{{speaker}} ile birleştir…",
+      "mergeError": "Konuşmacılar birleştirilemedi: {{error}}"
     },
     "autoNotes": {
       "label": "Toplantı bitince not yaz",

@@ -807,7 +807,11 @@
       "retry": "Thử lại",
       "none": "Không tìm thấy người nói nào khác.",
       "rename": "Đặt tên cho người nói này",
-      "guessed": "Được đoán từ cuộc trò chuyện. Hãy sửa nếu sai."
+      "guessed": "Được đoán từ cuộc trò chuyện. Hãy sửa nếu sai.",
+      "merge": "Gộp {{speaker}} với người nói khác",
+      "mergeHint": "Cùng một người với người nói khác? Hãy gộp họ lại.",
+      "mergeInto": "Gộp {{speaker}} với…",
+      "mergeError": "Không thể gộp người nói: {{error}}"
     },
     "autoNotes": {
       "label": "Viết ghi chú khi cuộc họp kết thúc",

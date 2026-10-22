@@ -807,7 +807,11 @@
       "retry": "Prøv igen",
       "none": "Der blev ikke fundet andre talere.",
       "rename": "Navngiv denne taler",
-      "guessed": "Gættet ud fra samtalen. Ret det, hvis det er forkert."
+      "guessed": "Gættet ud fra samtalen. Ret det, hvis det er forkert.",
+      "merge": "Slå {{speaker}} sammen med en anden taler",
+      "mergeHint": "Samme person som en anden taler? Slå dem sammen.",
+      "mergeInto": "Slå {{speaker}} sammen med…",
+      "mergeError": "Talerne kunne ikke slås sammen: {{error}}"
     },
     "autoNotes": {
       "label": "Skriv noter, når et møde slutter",

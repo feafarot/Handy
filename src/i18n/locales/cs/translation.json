@@ -807,7 +807,11 @@
       "retry": "Zkusit znovu",
       "none": "Žádní další mluvčí nebyli nalezeni.",
       "rename": "Pojmenovat tohoto mluvčího",
-      "guessed": "Odhadnuto z konverzace. Pokud je špatně, upravte ho."
+      "guessed": "Odhadnuto z konverzace. Pokud je špatně, upravte ho.",
+      "merge": "Sloučit {{speaker}} s jiným mluvčím",
+      "mergeHint": "Stejná osoba jako jiný mluvčí? Slučte je.",
+      "mergeInto": "Sloučit {{speaker}} s…",
+      "mergeError": "Mluvčí se nepodařilo sloučit: {{error}}"
     },
     "autoNotes": {
       "label": "Psát poznámky po skončení schůzky",

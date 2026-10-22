@@ -807,7 +807,11 @@
       "retry": "Erneut versuchen",
       "none": "Keine weiteren Sprecher gefunden.",
       "rename": "Diesen Sprecher benennen",
-      "guessed": "Aus dem Gespräch erraten. Bearbeite ihn, falls er falsch ist."
+      "guessed": "Aus dem Gespräch erraten. Bearbeite ihn, falls er falsch ist.",
+      "merge": "{{speaker}} mit einem anderen Sprecher zusammenführen",
+      "mergeHint": "Dieselbe Person wie ein anderer Sprecher? Führe sie zusammen.",
+      "mergeInto": "{{speaker}} zusammenführen mit…",
+      "mergeError": "Die Sprecher konnten nicht zusammengeführt werden: {{error}}"
     },
     "autoNotes": {
       "label": "Notizen nach dem Meeting schreiben",

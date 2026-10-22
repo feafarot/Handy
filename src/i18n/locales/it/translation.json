@@ -807,7 +807,11 @@
       "retry": "Riprova",
       "none": "Nessun altro interlocutore trovato.",
       "rename": "Dai un nome a questo interlocutore",
-      "guessed": "Dedotto dalla conversazione. Modificalo se è sbagliato."
+      "guessed": "Dedotto dalla conversazione. Modificalo se è sbagliato.",
+      "merge": "Unisci {{speaker}} a un altro parlante",
+      "mergeHint": "È la stessa persona di un altro parlante? Uniscili.",
+      "mergeInto": "Unisci {{speaker}} a…",
+      "mergeError": "Impossibile unire i parlanti: {{error}}"
     },
     "autoNotes": {
       "label": "Scrivi le note a fine riunione",

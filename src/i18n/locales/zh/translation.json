@@ -807,7 +807,11 @@
       "retry": "重试",
       "none": "未找到其他发言人。",
       "rename": "为此发言人命名",
-      "guessed": "从对话中猜测。如有错误请修改。"
+      "guessed": "从对话中猜测。如有错误请修改。",
+      "merge": "将 {{speaker}} 合并到其他发言人",
+      "mergeHint": "与其他发言人是同一个人？合并他们。",
+      "mergeInto": "将 {{speaker}} 合并到…",
+      "mergeError": "无法合并发言人：{{error}}"
     },
     "autoNotes": {
       "label": "会议结束时撰写纪要",

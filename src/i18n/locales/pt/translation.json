@@ -807,7 +807,11 @@
       "retry": "Tentar novamente",
       "none": "Nenhum outro orador encontrado.",
       "rename": "Dar nome a este orador",
-      "guessed": "Deduzido da conversa. Edite se estiver errado."
+      "guessed": "Deduzido da conversa. Edite se estiver errado.",
+      "merge": "Mesclar {{speaker}} com outro participante",
+      "mergeHint": "É a mesma pessoa que outro participante? Mescle-os.",
+      "mergeInto": "Mesclar {{speaker}} com…",
+      "mergeError": "Não foi possível mesclar os participantes: {{error}}"
     },
     "autoNotes": {
       "label": "Escrever notas quando a reunião terminar",

@@ -807,7 +807,11 @@
       "retry": "重試",
       "none": "找不到其他發言者。",
       "rename": "為此發言者命名",
-      "guessed": "從對話中猜測。如有錯誤請修改。"
+      "guessed": "從對話中猜測。如有錯誤請修改。",
+      "merge": "將 {{speaker}} 合併到其他發言者",
+      "mergeHint": "與其他發言者是同一個人？合併他們。",
+      "mergeInto": "將 {{speaker}} 合併到…",
+      "mergeError": "無法合併發言者：{{error}}"
     },
     "autoNotes": {
       "label": "會議結束時撰寫紀要",

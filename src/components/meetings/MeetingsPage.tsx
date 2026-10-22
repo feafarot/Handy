@@ -8,6 +8,7 @@ import {
   Copy,
   FolderOpen,
   Loader2,
+  Merge,
   Mic,
   NotebookPen,
   Sparkles,
@@ -403,11 +404,83 @@ const Recorder: React.FC<RecorderProps> = ({ state, live }) => {
   );
 };
 
+/**
+ * Button folding a speaker into one of the others, for when identification
+ * told one person apart as two. Opens a small list of the other speakers.
+ */
+const MergeSpeaker: React.FC<{
+  speaker: MeetingSpeaker;
+  others: MeetingSpeaker[];
+  onMerge: (into: number) => void;
+}> = ({ speaker, others, onMerge }) => {
+  const { t } = useTranslation();
+  const speakerLabel = useSpeakerLabel(others);
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const close = (event: MouseEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [open]);
+  const label = speaker.name ?? speakerLabel(speaker.speaker);
+  return (
+    <div className="relative" ref={menuRef}>
+      <button
+        type="button"
+        className="p-1 rounded text-text/40 hover:text-text hover:bg-mid-gray/20 transition-colors"
+        onClick={() => setOpen((open) => !open)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={t("meetings.speakers.merge", { speaker: label })}
+        title={t("meetings.speakers.mergeHint", { speaker: label })}
+      >
+        <Merge className="w-3.5 h-3.5" />
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute left-0 top-full mt-1 min-w-40 bg-background border border-mid-gray/80 rounded-md shadow-lg z-50 py-1"
+        >
+          <p className="px-2 py-1 text-xs text-text/50">
+            {t("meetings.speakers.mergeInto", { speaker: label })}
+          </p>
+          {others.map((other) => (
+            <button
+              key={other.speaker}
+              type="button"
+              role="menuitem"
+              className="w-full px-2 py-1 text-sm text-start flex items-center gap-1.5 hover:bg-logo-primary/10 transition-colors"
+              onClick={() => {
+                setOpen(false);
+                onMerge(other.speaker);
+              }}
+            >
+              <span
+                className={`w-2 h-2 rounded-full bg-current shrink-0 ${speakerColor(other.speaker)}`}
+              />
+              <span className="truncate">{speakerLabel(other.speaker)}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 /** Input naming one speaker, saved when it loses focus. */
 const SpeakerName: React.FC<{
   speaker: MeetingSpeaker;
+  others: MeetingSpeaker[];
   onRename: (name: string | null) => void;
-}> = ({ speaker, onRename }) => {
+  onMerge: (into: number) => void;
+}> = ({ speaker, others, onRename, onMerge }) => {
   const { t } = useTranslation();
   const [name, setName] = useState(speaker.name ?? "");
   useEffect(() => setName(speaker.name ?? ""), [speaker.name]);
@@ -444,6 +517,9 @@ const SpeakerName: React.FC<{
           <Sparkles className="w-3.5 h-3.5 text-text/40" />
         </span>
       )}
+      {others.length > 0 && (
+        <MergeSpeaker speaker={speaker} others={others} onMerge={onMerge} />
+      )}
     </div>
   );
 };
@@ -454,7 +530,8 @@ const Speakers: React.FC<{
   progress: SpeakersProgress | null;
   onIdentify: () => void;
   onRename: (speaker: number, name: string | null) => void;
-}> = ({ detail, progress, onIdentify, onRename }) => {
+  onMerge: (speaker: number, into: number) => void;
+}> = ({ detail, progress, onIdentify, onRename, onMerge }) => {
   const { t } = useTranslation();
   const { meeting, speakers } = detail;
   if (!meeting.system_audio) {
@@ -514,7 +591,9 @@ const Speakers: React.FC<{
         <SpeakerName
           key={speaker.speaker}
           speaker={speaker}
+          others={speakers.filter((s) => s.speaker !== speaker.speaker)}
           onRename={(name) => onRename(speaker.speaker, name)}
+          onMerge={(into) => onMerge(speaker.speaker, into)}
         />
       ))}
     </div>
@@ -738,6 +817,34 @@ const MeetingView: React.FC<{ id: number; onBack: () => void }> = ({
     }
   };
 
+  const mergeSpeakers = async (speaker: number, into: number) => {
+    const result = await commands.mergeMeetingSpeakers(
+      meeting.id,
+      speaker,
+      into,
+    );
+    if (result.status === "ok") {
+      // Mirror the store: the segments move over, and a nameless target
+      // takes the merged speaker's name.
+      const from = detail.speakers.find((s) => s.speaker === speaker);
+      setDetail({
+        ...detail,
+        segments: detail.segments.map((s) =>
+          s.speaker === speaker ? { ...s, speaker: into } : s,
+        ),
+        speakers: detail.speakers
+          .filter((s) => s.speaker !== speaker)
+          .map((s) =>
+            s.speaker === into && s.name === null && from?.name != null
+              ? { ...s, name: from.name, name_guessed: from.name_guessed }
+              : s,
+          ),
+      });
+    } else {
+      toast.error(t("meetings.speakers.mergeError", { error: result.error }));
+    }
+  };
+
   const remove = async () => {
     if (!confirmDelete) {
       setConfirmDelete(true);
@@ -834,6 +941,7 @@ const MeetingView: React.FC<{ id: number; onBack: () => void }> = ({
             progress={progress}
             onIdentify={identify}
             onRename={renameSpeaker}
+            onMerge={mergeSpeakers}
           />
         </div>
       </div>

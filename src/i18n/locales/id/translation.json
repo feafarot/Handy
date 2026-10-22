@@ -807,7 +807,11 @@
       "retry": "Coba lagi",
       "none": "Tidak ditemukan pembicara lain.",
       "rename": "Beri nama pembicara ini",
-      "guessed": "Ditebak dari percakapan. Ubah jika salah."
+      "guessed": "Ditebak dari percakapan. Ubah jika salah.",
+      "merge": "Gabungkan {{speaker}} dengan pembicara lain",
+      "mergeHint": "Orang yang sama dengan pembicara lain? Gabungkan mereka.",
+      "mergeInto": "Gabungkan {{speaker}} dengan…",
+      "mergeError": "Tidak dapat menggabungkan pembicara: {{error}}"
     },
     "autoNotes": {
       "label": "Tulis catatan saat rapat selesai",

@@ -807,7 +807,11 @@
       "retry": "Försök igen",
       "none": "Inga andra talare hittades.",
       "rename": "Namnge den här talaren",
-      "guessed": "Gissat från samtalet. Redigera det om det är fel."
+      "guessed": "Gissat från samtalet. Redigera det om det är fel.",
+      "merge": "Slå ihop {{speaker}} med en annan talare",
+      "mergeHint": "Samma person som en annan talare? Slå ihop dem.",
+      "mergeInto": "Slå ihop {{speaker}} med…",
+      "mergeError": "Det gick inte att slå ihop talarna: {{error}}"
     },
     "autoNotes": {
       "label": "Skriv anteckningar när ett möte slutar",

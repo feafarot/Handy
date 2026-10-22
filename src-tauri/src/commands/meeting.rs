@@ -108,6 +108,21 @@ pub fn rename_meeting_speaker(
         .map_err(|e| e.to_string())
 }
 
+/// Folds speaker `speaker` into speaker `into`, when identification told one
+/// person apart as two.
+#[tauri::command]
+#[specta::specta]
+pub fn merge_meeting_speakers(
+    meetings: State<'_, Arc<MeetingManager>>,
+    id: i64,
+    speaker: u32,
+    into: u32,
+) -> Result<(), String> {
+    meetings
+        .merge_speakers(id, speaker, into)
+        .map_err(|e| e.to_string())
+}
+
 #[tauri::command]
 #[specta::specta]
 pub fn delete_meeting(meetings: State<'_, Arc<MeetingManager>>, id: i64) -> Result<(), String> {

@@ -2,7 +2,7 @@
 //! the history database (separate so its migrations never interleave with
 //! history's), plus each meeting's audio under `meetings/<id>/`.
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use log::{info, warn};
 use rusqlite::{params, Connection, OptionalExtension};
 use rusqlite_migration::{Migrations, M};
@@ -478,6 +478,50 @@ impl MeetingStore {
         Ok(())
     }
 
+    /// Folds speaker `from` into speaker `into` when identification told one
+    /// person apart as two: `from`'s segments move over and `from` is dropped.
+    /// `into` keeps its name, or takes `from`'s if it had none.
+    pub fn merge_speakers(&self, meeting_id: i64, from: u32, into: u32) -> Result<()> {
+        if from == into {
+            bail!("a speaker can't be merged into themselves");
+        }
+        let mut connection = self.connection();
+        let transaction = connection.transaction()?;
+        let name_of = |speaker: u32| -> Result<Option<(Option<String>, bool)>> {
+            Ok(transaction
+                .query_row(
+                    "SELECT name, name_guessed FROM meeting_speakers
+                     WHERE meeting_id = ?1 AND speaker = ?2",
+                    params![meeting_id, speaker],
+                    |row| Ok((row.get::<_, Option<String>>(0)?, row.get::<_, bool>(1)?)),
+                )
+                .optional()?)
+        };
+        let Some(from_name) = name_of(from)? else {
+            bail!("speaker {from} doesn't exist");
+        };
+        let Some(into_name) = name_of(into)? else {
+            bail!("speaker {into} doesn't exist");
+        };
+        transaction.execute(
+            "UPDATE meeting_segments SET speaker = ?1 WHERE meeting_id = ?2 AND speaker = ?3",
+            params![into, meeting_id, from],
+        )?;
+        if into_name.0.is_none() && from_name.0.is_some() {
+            transaction.execute(
+                "UPDATE meeting_speakers SET name = ?1, name_guessed = ?2
+                 WHERE meeting_id = ?3 AND speaker = ?4",
+                params![from_name.0, from_name.1, meeting_id, into],
+            )?;
+        }
+        transaction.execute(
+            "DELETE FROM meeting_speakers WHERE meeting_id = ?1 AND speaker = ?2",
+            params![meeting_id, from],
+        )?;
+        transaction.commit()?;
+        Ok(())
+    }
+
     /// Names speakers from the conversation; one the user has named in the
     /// meantime keeps their name.
     pub fn set_guessed_names(&self, meeting_id: i64, names: &[(u32, String)]) -> Result<()> {
@@ -668,6 +712,35 @@ mod tests {
         assert_eq!(names, [(Some("Sam"), true), (Some("Dana"), false)]);
         store.rename_speaker(meeting.id, 1, Some("Sam")).unwrap();
         assert!(!store.get(meeting.id).unwrap().unwrap().speakers[0].name_guessed);
+
+        // Merging moves the segments over, drops the merged speaker, and keeps
+        // the target's name; a nameless target takes the merged speaker's name.
+        assert!(store.merge_speakers(meeting.id, 2, 2).is_err());
+        assert!(store.merge_speakers(meeting.id, 3, 2).is_err());
+        store.rename_speaker(meeting.id, 2, None).unwrap();
+        store.merge_speakers(meeting.id, 1, 2).unwrap();
+        let detail = store.get(meeting.id).unwrap().unwrap();
+        let labelled: Vec<_> = detail
+            .segments
+            .iter()
+            .map(|s| (s.text.as_str(), s.speaker))
+            .collect();
+        assert_eq!(
+            labelled,
+            [
+                ("first", None),
+                ("second", Some(2)),
+                ("a", Some(2)),
+                ("b", Some(2))
+            ]
+        );
+        let speakers: Vec<_> = detail
+            .speakers
+            .iter()
+            .map(|s| (s.speaker, s.name.as_deref(), s.name_guessed))
+            .collect();
+        assert_eq!(speakers, [(2, Some("Sam"), false)]);
+        assert!(store.merge_speakers(meeting.id, 1, 2).is_err());
         assert_eq!(detail.notes, None);
         store.set_notes(meeting.id, "## Summary").unwrap();
         let detail = store.get(meeting.id).unwrap().unwrap();

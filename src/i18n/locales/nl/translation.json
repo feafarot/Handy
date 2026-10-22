@@ -807,7 +807,11 @@
       "retry": "Opnieuw proberen",
       "none": "Geen andere sprekers gevonden.",
       "rename": "Deze spreker een naam geven",
-      "guessed": "Geraden uit het gesprek. Pas het aan als het niet klopt."
+      "guessed": "Geraden uit het gesprek. Pas het aan als het niet klopt.",
+      "merge": "{{speaker}} samenvoegen met een andere spreker",
+      "mergeHint": "Dezelfde persoon als een andere spreker? Voeg ze samen.",
+      "mergeInto": "{{speaker}} samenvoegen met…",
+      "mergeError": "De sprekers konden niet worden samengevoegd: {{error}}"
     },
     "autoNotes": {
       "label": "Notities schrijven als een vergadering eindigt",

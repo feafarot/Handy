@@ -807,7 +807,11 @@
       "retry": "Try again",
       "none": "No other speakers were found.",
       "rename": "Name this speaker",
-      "guessed": "Guessed from the conversation. Edit it if it's wrong."
+      "guessed": "Guessed from the conversation. Edit it if it's wrong.",
+      "merge": "Merge {{speaker}} into another speaker",
+      "mergeHint": "Same person as another speaker? Merge them.",
+      "mergeInto": "Merge {{speaker}} into…",
+      "mergeError": "Couldn't merge the speakers: {{error}}"
     },
     "autoNotes": {
       "label": "Write Notes When a Meeting Ends",

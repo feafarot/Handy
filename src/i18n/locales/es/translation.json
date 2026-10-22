@@ -807,7 +807,11 @@
       "retry": "Reintentar",
       "none": "No se encontraron otros hablantes.",
       "rename": "Poner nombre a este hablante",
-      "guessed": "Deducido de la conversación. Edítalo si es incorrecto."
+      "guessed": "Deducido de la conversación. Edítalo si es incorrecto.",
+      "merge": "Fusionar {{speaker}} con otro hablante",
+      "mergeHint": "¿Es la misma persona que otro hablante? Fusiónalos.",
+      "mergeInto": "Fusionar {{speaker}} con…",
+      "mergeError": "No se pudieron fusionar los hablantes: {{error}}"
     },
     "autoNotes": {
       "label": "Escribir notas al terminar la reunión",

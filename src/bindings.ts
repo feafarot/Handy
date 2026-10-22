@@ -1053,6 +1053,18 @@ async renameMeetingSpeaker(id: number, speaker: number, name: string | null) : P
 }
 },
 /**
+ * Folds speaker `speaker` into speaker `into`, when identification told one
+ * person apart as two.
+ */
+async mergeMeetingSpeakers(id: number, speaker: number, into: number) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("merge_meeting_speakers", { id, speaker, into }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Starts writing a meeting's notes; see `MeetingNotesEvent`.
  */
 async writeMeetingNotes(id: number) : Promise<Result<null, string>> {

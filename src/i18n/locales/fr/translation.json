@@ -807,7 +807,11 @@
       "retry": "Réessayer",
       "none": "Aucun autre intervenant trouvé.",
       "rename": "Nommer cet intervenant",
-      "guessed": "Deviné à partir de la conversation. Modifiez-le s'il est faux."
+      "guessed": "Deviné à partir de la conversation. Modifiez-le s'il est faux.",
+      "merge": "Fusionner {{speaker}} avec un autre intervenant",
+      "mergeHint": "Même personne qu'un autre intervenant ? Fusionnez-les.",
+      "mergeInto": "Fusionner {{speaker}} avec…",
+      "mergeError": "Impossible de fusionner les intervenants : {{error}}"
     },
     "autoNotes": {
       "label": "Rédiger des notes à la fin de la réunion",

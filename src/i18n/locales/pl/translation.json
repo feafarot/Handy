@@ -807,7 +807,11 @@
       "retry": "Spróbuj ponownie",
       "none": "Nie znaleziono innych mówców.",
       "rename": "Nazwij tego mówcę",
-      "guessed": "Odgadnięte z rozmowy. Popraw, jeśli jest błędne."
+      "guessed": "Odgadnięte z rozmowy. Popraw, jeśli jest błędne.",
+      "merge": "Scal {{speaker}} z innym mówcą",
+      "mergeHint": "Ta sama osoba co inny mówca? Scal ich.",
+      "mergeInto": "Scal {{speaker}} z…",
+      "mergeError": "Nie udało się scalić mówców: {{error}}"
     },
     "autoNotes": {
       "label": "Pisz notatki po zakończeniu spotkania",

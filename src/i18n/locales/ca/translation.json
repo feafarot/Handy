@@ -807,7 +807,11 @@
       "retry": "Torna-ho a provar",
       "none": "No s'han trobat altres parlants.",
       "rename": "Posa nom a aquest parlant",
-      "guessed": "Deduït de la conversa. Edita'l si és incorrecte."
+      "guessed": "Deduït de la conversa. Edita'l si és incorrecte.",
+      "merge": "Fusiona {{speaker}} amb un altre parlant",
+      "mergeHint": "És la mateixa persona que un altre parlant? Fusiona'ls.",
+      "mergeInto": "Fusiona {{speaker}} amb…",
+      "mergeError": "No s'han pogut fusionar els parlants: {{error}}"
     },
     "autoNotes": {
       "label": "Escriu notes quan acabi la reunió",
