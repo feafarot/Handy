@@ -9,13 +9,16 @@
 //! transcript that fits is sent whole; a longer one is cut into parts, each
 //! part condensed on its own, and the condensed parts merged into the notes.
 
+use std::sync::Arc;
+
 use anyhow::{anyhow, Result};
-use log::info;
-use tauri::AppHandle;
+use log::{debug, info, warn};
+use tauri::{AppHandle, Manager};
 
 use super::claude::{self, ClaudeCode};
 use super::names;
 use super::store::{Meeting, MeetingDetail, MeetingSegment, MeetingStore, Source};
+use crate::dictionary::{self, DictionaryManager, DictionarySource};
 use crate::settings::{
     get_settings, AppSettings, MeetingNotesWriter, PostProcessProvider,
     APPLE_INTELLIGENCE_PROVIDER_ID,
@@ -45,6 +48,12 @@ having in the final meeting notes: topics with their key facts and numbers, deci
 (who, what, by when) and open questions. Use short bullet points and the speakers' names as given; \
 \"Me\" is the person who recorded the meeting. Write in the language the meeting was held in. \
 Do not add anything the text does not say. Reply with the bullet points only.";
+
+/// Asks for the dictionary words in the finished notes; the reply is checked
+/// against the notes before anything is kept.
+const TERMS: &str = "From the meeting notes below, list the people's names, company and product names, \
+abbreviations and technical terms that a speech recognizer could misspell, each spelled as in the notes. \
+Leave out everyday words. Reply with a JSON array of strings only, [] if there are none.";
 
 /// How far writing the notes has got.
 pub enum Step {
@@ -176,13 +185,18 @@ pub fn write(
         return Err(anyhow!("nothing was transcribed in this meeting"));
     }
 
-    if settings.meeting_guess_speaker_names
-        && name_speakers(&llm, store, &detail, max_chars, &on_step)?
-    {
-        detail = store
-            .get(meeting_id)?
-            .ok_or_else(|| anyhow!("no meeting {meeting_id}"))?;
-        on_step(Step::SpeakersNamed);
+    if settings.meeting_guess_speaker_names {
+        let named = name_speakers(&llm, store, &detail, max_chars, &on_step)?;
+        if !named.is_empty() {
+            detail = store
+                .get(meeting_id)?
+                .ok_or_else(|| anyhow!("no meeting {meeting_id}"))?;
+            on_step(Step::SpeakersNamed);
+            if settings.dictionary_suggest_from_meetings {
+                let names: Vec<String> = named.into_iter().map(|(_, name)| name).collect();
+                suggest_words(app, &names, &meeting_origin(&detail.meeting));
+            }
+        }
     }
 
     let mut parts = pack(&transcript_lines(&detail), max_chars);
@@ -203,8 +217,11 @@ pub fn write(
     }
     on_step(Step::Writing { done, total });
     let source = parts.pop().unwrap_or_default();
+    let dictionary_block = dictionary::prompt_block(&settings.custom_words)
+        .map(|block| format!("\n\n{block}"))
+        .unwrap_or_default();
     let instructions = format!(
-        "{NOTES_PREAMBLE}\n\n{}\n\nReply with the notes only.",
+        "{NOTES_PREAMBLE}{dictionary_block}\n\n{}\n\nReply with the notes only.",
         settings.meeting_notes_prompt().trim()
     );
     let notes = llm.ask(&instructions, source)?;
@@ -213,18 +230,72 @@ pub fn write(
         "Meeting {meeting_id}: notes written in {} request(s)",
         done + 1
     );
+
+    if settings.dictionary_suggest_from_meetings {
+        match llm.ask(TERMS, notes.clone()) {
+            Ok(reply) => {
+                let terms = dictionary::learner::filter_terms(
+                    &parse_terms(&reply),
+                    Some(&notes),
+                    dictionary::MAX_TERMS_PER_SUGGESTION,
+                );
+                suggest_words(app, &terms, &meeting_origin(&detail.meeting));
+            }
+            Err(e) => debug!("Meeting {meeting_id}: asking for dictionary terms failed: {e:#}"),
+        }
+    }
     Ok(())
 }
 
-/// Names the speakers without a name from the conversation; true if any got
-/// one.
+/// What a word learned from a meeting is attributed to in the review list.
+fn meeting_origin(meeting: &Meeting) -> String {
+    let title = meeting.title.trim();
+    if title.is_empty() {
+        "meeting".to_string()
+    } else {
+        format!("meeting: {title}")
+    }
+}
+
+fn suggest_words(app: &AppHandle, words: &[String], origin: &str) {
+    if words.is_empty() {
+        return;
+    }
+    let Some(dictionary) = app.try_state::<Arc<DictionaryManager>>() else {
+        return;
+    };
+    if let Err(e) = dictionary.suggest(words, DictionarySource::Suggested, origin) {
+        warn!("Dictionary: saving words from a meeting failed: {e:#}");
+    }
+}
+
+/// The strings of the JSON array in `reply`, if it holds one.
+fn parse_terms(reply: &str) -> Vec<String> {
+    let (Some(start), Some(end)) = (reply.find('['), reply.rfind(']')) else {
+        return Vec::new();
+    };
+    if end < start {
+        return Vec::new();
+    }
+    serde_json::from_str::<Vec<serde_json::Value>>(&reply[start..=end])
+        .map(|values| {
+            values
+                .into_iter()
+                .filter_map(|v| v.as_str().map(str::to_string))
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+/// Names the speakers without a name from the conversation; the names that
+/// were given.
 fn name_speakers(
     llm: &Llm,
     store: &MeetingStore,
     detail: &MeetingDetail,
     max_chars: usize,
     on_step: &impl Fn(Step),
-) -> Result<bool> {
+) -> Result<Vec<(u32, String)>> {
     let unnamed: Vec<u32> = detail
         .speakers
         .iter()
@@ -232,7 +303,7 @@ fn name_speakers(
         .map(|s| s.speaker)
         .collect();
     if unnamed.is_empty() {
-        return Ok(false);
+        return Ok(Vec::new());
     }
     on_step(Step::NamingSpeakers);
     let taken: Vec<String> = detail
@@ -251,10 +322,10 @@ fn name_speakers(
         unnamed.len()
     );
     if names.is_empty() {
-        return Ok(false);
+        return Ok(Vec::new());
     }
     store.set_guessed_names(detail.meeting.id, &names)?;
-    Ok(true)
+    Ok(names)
 }
 
 /// Who said a segment, as the LLM should read it.
@@ -402,6 +473,16 @@ mod tests {
                 "[1:15] Dana: Fine.",
             ]
         );
+    }
+
+    #[test]
+    fn terms_are_read_from_a_json_array_in_the_reply() {
+        assert_eq!(
+            parse_terms("Sure: [\"Grafana\", \"Sinead\"]"),
+            vec!["Grafana".to_string(), "Sinead".to_string()]
+        );
+        assert!(parse_terms("no list here").is_empty());
+        assert!(parse_terms("[1, 2]").is_empty());
     }
 
     #[test]

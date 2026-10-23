@@ -17,7 +17,8 @@
     "history": "History",
     "debug": "Debug",
     "about": "About",
-    "meetings": "Meetings"
+    "meetings": "Meetings",
+    "dictionary": "Dictionary"
   },
   "onboarding": {
     "subtitle": "To get started, choose a transcription model",
@@ -760,6 +761,75 @@
     "learnMore": "How to fix",
     "recorderBlocked": "Can't record shortcuts right now — macOS Secure Input is blocking key events. Resolve the Secure Input warning first.",
     "dismiss": "Dismiss"
+  },
+  "dictionary": {
+    "title": "Dictionary",
+    "description": "Names, abbreviations and terms the speech model and the post-processing LLM should spell right. It grows on its own from your corrections, your dictations and your meetings.",
+    "addPlaceholder": "Add a word or search",
+    "add": "Add",
+    "import": "Import",
+    "copyAll": "Copy all",
+    "copied": "Copied {{count}} words",
+    "clear": "Clear all",
+    "clearConfirmTitle": "Clear the dictionary?",
+    "clearConfirmDescription": "Every word goes, including dismissed suggestions, which may then be proposed again.",
+    "cancel": "Cancel",
+    "close": "Close",
+    "importTitle": "Import words",
+    "importDescription": "One word per line, or separated by commas.",
+    "importPlaceholder": "Grafana, Sinead, k8s",
+    "importAction": "Add {{count}} words",
+    "added": "Added {{count}} words",
+    "nothingAdded": "Nothing new to add",
+    "duplicate": "\"{{word}}\" is already in the dictionary",
+    "suggestions": "Suggestions",
+    "suggestionsDescription": "Words found in your dictations, corrections and meetings. Accept the ones you want the speech model to know.",
+    "acceptAll": "Accept all",
+    "dismissAll": "Dismiss all",
+    "accept": "Accept",
+    "dismiss": "Dismiss",
+    "words": "Words",
+    "wordCount_one": "{{count}} word",
+    "wordCount_other": "{{count}} words",
+    "empty": "No words yet. Add the names and terms you dictate most, or let the dictionary learn them.",
+    "noMatches": "No words match \"{{query}}\"",
+    "edit": "Edit",
+    "remove": "Remove",
+    "review": "Move back to suggestions",
+    "source": {
+      "manual": "added by you",
+      "learned": "learned from a correction",
+      "suggested": "suggested"
+    },
+    "origin": "from {{origin}}",
+    "usedTimes_one": "used once",
+    "usedTimes_other": "used {{count}} times",
+    "budgetWarning": "Whisper models read only the first ~550 characters of the word list. The most important words (yours first, then the recently used) go first; the rest only help the LLM and fuzzy correction.",
+    "learnedToast": "Dictionary: learned {{words}}",
+    "suggestedToast": "Dictionary: {{count}} new suggestions to review",
+    "settings": {
+      "title": "Learning",
+      "autoAccept": {
+        "label": "Accept new words automatically",
+        "description": "Learned and suggested words become active right away. Off, they wait in Suggestions for your review."
+      },
+      "learnFromEdits": {
+        "label": "Learn from your corrections",
+        "description": "After a dictation is pasted, watch the field for a while and pick up the words you retype. Only the corrected words are kept."
+      },
+      "learnFromEditsUnsupported": {
+        "label": "Learn from your corrections",
+        "description": "Not available on this platform yet."
+      },
+      "suggestFromLlm": {
+        "label": "Suggest terms from dictations",
+        "description": "With post-processing on, the LLM also lists the names and terms it saw in each dictation."
+      },
+      "suggestFromMeetings": {
+        "label": "Suggest terms from meetings",
+        "description": "Speakers' names and the terms found while writing meeting notes."
+      }
+    }
   },
   "meetings": {
     "title": "Meetings",

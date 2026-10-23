@@ -652,6 +652,33 @@ pub struct AppSettings {
     /// Apps full-auto never records or asks about.
     #[serde(default)]
     pub meeting_auto_start_blocklist: Vec<MeetingBlockedApp>,
+    /// Learned and suggested dictionary words become active right away
+    /// instead of waiting for review. See `dictionary`.
+    #[serde(default)]
+    pub dictionary_auto_accept: bool,
+    /// Watch the field a dictation was pasted into and learn the words the
+    /// user corrects. Needs platform support (Windows so far).
+    #[serde(default = "default_dictionary_learn_from_edits")]
+    pub dictionary_learn_from_edits: bool,
+    /// Ask the post-processing LLM for the uncommon names and terms it saw
+    /// in each dictation.
+    #[serde(default = "default_dictionary_suggest_from_llm")]
+    pub dictionary_suggest_from_llm: bool,
+    /// Propose meeting speakers' names and the terms the notes LLM finds.
+    #[serde(default = "default_dictionary_suggest_from_meetings")]
+    pub dictionary_suggest_from_meetings: bool,
+}
+
+fn default_dictionary_learn_from_edits() -> bool {
+    true
+}
+
+fn default_dictionary_suggest_from_llm() -> bool {
+    true
+}
+
+fn default_dictionary_suggest_from_meetings() -> bool {
+    true
 }
 
 fn default_model() -> String {
@@ -1212,6 +1239,10 @@ pub fn get_default_settings() -> AppSettings {
         meeting_auto_start: MeetingAutoStart::default(),
         meeting_auto_stop: MeetingAutoStop::default(),
         meeting_auto_start_blocklist: Vec::new(),
+        dictionary_auto_accept: false,
+        dictionary_learn_from_edits: default_dictionary_learn_from_edits(),
+        dictionary_suggest_from_llm: default_dictionary_suggest_from_llm(),
+        dictionary_suggest_from_meetings: default_dictionary_suggest_from_meetings(),
     }
 }
 

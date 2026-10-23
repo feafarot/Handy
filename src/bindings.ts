@@ -1242,6 +1242,129 @@ async isLaptop() : Promise<Result<boolean, string>> {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+async listDictionary() : Promise<Result<DictionaryEntry[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_dictionary") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Adds words the user typed; returns the ones that were new.
+ */
+async addDictionaryWords(words: string[]) : Promise<Result<string[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("add_dictionary_words", { words }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Adds the words of a pasted list (commas, semicolons or newlines).
+ */
+async importDictionaryText(text: string) : Promise<Result<string[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("import_dictionary_text", { text }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * The active words, one per line.
+ */
+async exportDictionaryText() : Promise<Result<string, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("export_dictionary_text") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async renameDictionaryEntry(id: number, word: string) : Promise<Result<DictionaryEntry, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("rename_dictionary_entry", { id, word }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async removeDictionaryEntry(id: number) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("remove_dictionary_entry", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Accepts (`active`) or dismisses a suggestion, or puts a word back under
+ * review.
+ */
+async setDictionaryEntryStatus(id: number, status: DictionaryStatus) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_dictionary_entry_status", { id, status }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Accepts or dismisses every pending suggestion; returns how many.
+ */
+async resolvePendingDictionaryEntries(status: DictionaryStatus) : Promise<Result<number, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("resolve_pending_dictionary_entries", { status }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async clearDictionary() : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("clear_dictionary") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async isDictionaryEditLearningSupported() : Promise<boolean> {
+    return await TAURI_INVOKE("is_dictionary_edit_learning_supported");
+},
+async changeDictionaryAutoAcceptSetting(enabled: boolean) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_dictionary_auto_accept_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeDictionaryLearnFromEditsSetting(enabled: boolean) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_dictionary_learn_from_edits_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeDictionarySuggestFromLlmSetting(enabled: boolean) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_dictionary_suggest_from_llm_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeDictionarySuggestFromMeetingsSetting(enabled: boolean) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_dictionary_suggest_from_meetings_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
@@ -1249,6 +1372,7 @@ async isLaptop() : Promise<Result<boolean, string>> {
 
 
 export const events = __makeEvents__<{
+dictionaryUpdatedEvent: DictionaryUpdatedEvent,
 historyUpdatePayload: HistoryUpdatePayload,
 meetingNotesEvent: MeetingNotesEvent,
 meetingPromptEvent: MeetingPromptEvent,
@@ -1258,6 +1382,7 @@ meetingStateEvent: MeetingStateEvent,
 streamPhaseEvent: StreamPhaseEvent,
 streamTextEvent: StreamTextEvent
 }>({
+dictionaryUpdatedEvent: "dictionary-updated-event",
 historyUpdatePayload: "history-update-payload",
 meetingNotesEvent: "meeting-notes-event",
 meetingPromptEvent: "meeting-prompt-event",
@@ -1418,7 +1543,76 @@ meeting_notes_claude_model?: string; meeting_auto_start?: MeetingAutoStart; meet
 /**
  * Apps full-auto never records or asks about.
  */
-meeting_auto_start_blocklist?: MeetingBlockedApp[] }
+meeting_auto_start_blocklist?: MeetingBlockedApp[];
+/**
+ * Learned and suggested dictionary words become active right away
+ * instead of waiting for review. See `dictionary`.
+ */
+dictionary_auto_accept?: boolean;
+/**
+ * Watch the field a dictation was pasted into and learn the words the
+ * user corrects. Needs platform support (Windows so far).
+ */
+dictionary_learn_from_edits?: boolean;
+/**
+ * Ask the post-processing LLM for the uncommon names and terms it saw
+ * in each dictation.
+ */
+dictionary_suggest_from_llm?: boolean;
+/**
+ * Propose meeting speakers' names and the terms the notes LLM finds.
+ */
+dictionary_suggest_from_meetings?: boolean }
+export type DictionaryEntry = { id: number; word: string; source: DictionarySource; status: DictionaryStatus;
+/**
+ * Where a learned or suggested word was found, for the review list.
+ */
+origin: string | null;
+/**
+ * Unix milliseconds.
+ */
+created_at: number; updated_at: number; last_used_at: number | null;
+/**
+ * How many dictations the word has appeared in since it was added.
+ */
+use_count: number }
+/**
+ * Where an entry came from.
+ */
+export type DictionarySource =
+/**
+ * Typed in by the user.
+ */
+"manual" |
+/**
+ * Picked up from the user correcting a pasted dictation.
+ */
+"learned" |
+/**
+ * Proposed by the LLM from a dictation or a meeting.
+ */
+"suggested"
+/**
+ * Whether an entry takes part in transcription.
+ */
+export type DictionaryStatus =
+/**
+ * Given to the speech model and the LLM.
+ */
+"active" |
+/**
+ * Waiting for the user to accept or dismiss it.
+ */
+"pending" |
+/**
+ * Rejected by the user; never proposed again.
+ */
+"dismissed"
+/**
+ * Fired after any change to the dictionary. `added` names the words that
+ * were just learned or suggested, if any, so the UI can mention them.
+ */
+export type DictionaryUpdatedEvent = { added: string[]; pending: number; active: number }
 export type AudioDevice = { index: string; name: string; is_default: boolean }
 export type AutoSubmitKey = "enter" | "ctrl_enter" | "cmd_enter"
 export type AvailableAccelerators = { transcribe: string[]; gpu_devices: GpuDeviceOption[] }

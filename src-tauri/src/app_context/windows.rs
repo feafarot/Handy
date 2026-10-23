@@ -69,7 +69,7 @@ pub struct Window {
 /// Keeps the process-wide MTA alive so the worker thread can use COM (UI
 /// Automation) and WinRT (OCR) without initializing COM itself, and so the
 /// cached OCR engine stays valid between captures.
-fn ensure_mta() -> bool {
+pub(crate) fn ensure_mta() -> bool {
     static MTA: OnceLock<bool> = OnceLock::new();
     *MTA.get_or_init(|| match unsafe { CoIncrementMTAUsage() } {
         Ok(_) => true,

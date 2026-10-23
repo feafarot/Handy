@@ -48,10 +48,12 @@ mod platform {
     }
 }
 
+/// Text cleanup other accessibility readers share.
+pub(crate) use capture::clean_text;
 pub use capture::{AppContext, CaptureOptions};
 /// Process and window lookups other features share.
 #[cfg(target_os = "windows")]
-pub(crate) use windows::{file_description, process_image_path, window_title};
+pub(crate) use windows::{ensure_mta, file_description, process_image_path, window_title};
 
 use log::{debug, warn};
 use std::sync::atomic::{AtomicBool, Ordering};

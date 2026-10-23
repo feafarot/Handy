@@ -3,6 +3,7 @@ use crate::app_context::{self, AppContext, CaptureOptions, CaptureSession};
 use crate::apple_intelligence;
 use crate::audio_feedback::{play_feedback_sound, play_feedback_sound_blocking, SoundType};
 use crate::audio_toolkit::VadPolicy;
+use crate::dictionary::{self, DictionaryManager, DictionarySource};
 use crate::managers::audio::{recording_error_type, AudioRecordingManager};
 use crate::managers::history::HistoryManager;
 use crate::managers::model::ModelManager;
@@ -96,6 +97,16 @@ impl TranscribeAction {
 
 /// Field name for structured output JSON schema
 const TRANSCRIPTION_FIELD: &str = "transcription";
+/// Field the LLM lists uncommon terms in, when the dictionary asks for them.
+const TERMS_FIELD: &str = "terms";
+
+/// Asks the LLM to name the words worth adding to the dictionary. Phrased so
+/// a term has to come from the transcription itself; the reply is checked
+/// against the output anyway (see `dictionary::learner::filter_terms`).
+const TERMS_INSTRUCTION: &str = "Also fill \"terms\" with the proper nouns, people's names, product names, \
+abbreviations and technical terms from this transcription that a speech recognizer could misspell, each \
+spelled the way it appears in your output. Leave out everyday words and anything not in the transcription. \
+Use an empty list when there are none.";
 
 /// Strip invisible Unicode characters that some LLMs may insert
 pub(crate) fn strip_invisible_chars(s: &str) -> String {
@@ -115,16 +126,29 @@ pub(crate) fn strip_think_block(s: &str) -> &str {
     s
 }
 
-/// Build a system prompt from the user's prompt template.
-/// Removes `${output}` placeholder since the transcription is sent as the user message.
-/// The app context, when captured, follows the prompt so the prompt stays a
-/// stable prefix that a local server can reuse across dictations.
-fn build_system_prompt(prompt_template: &str, app_context: Option<&str>) -> String {
-    let prompt = prompt_template.replace("${output}", "").trim().to_string();
-    match app_context {
-        Some(app_context) => format!("{prompt}\n\n{app_context}"),
-        None => prompt,
-    }
+/// Build a system prompt from the user's prompt template (with the
+/// `${output}` placeholder removed, since the transcription is sent as the
+/// user message), the dictionary, the terms request and the app context.
+/// The parts that change least come first, so the prompt stays a stable
+/// prefix that a local server can reuse across dictations.
+fn build_system_prompt(
+    prompt_template: Option<&str>,
+    dictionary: Option<&str>,
+    terms_instruction: Option<&str>,
+    app_context: Option<&str>,
+) -> String {
+    let prompt = prompt_template.map(|p| p.replace("${output}", "").trim().to_string());
+    [
+        prompt.as_deref(),
+        dictionary,
+        terms_instruction,
+        app_context,
+    ]
+    .into_iter()
+    .flatten()
+    .filter(|part| !part.trim().is_empty())
+    .collect::<Vec<_>>()
+    .join("\n\n")
 }
 
 /// Returns `true` when a transcription has no meaningful content to
@@ -167,6 +191,10 @@ struct PostProcessRequest {
     prompt: String,
     api_key: String,
     disable_reasoning: bool,
+    /// The dictionary as a prompt block, when it has words.
+    dictionary: Option<String>,
+    /// Ask the LLM to list the uncommon terms it saw (structured output only).
+    suggest_terms: bool,
 }
 
 impl PostProcessRequest {
@@ -238,19 +266,48 @@ impl PostProcessRequest {
             prompt,
             api_key,
             disable_reasoning,
+            dictionary: dictionary::prompt_block(&settings.custom_words),
+            suggest_terms: settings.dictionary_suggest_from_llm,
         })
     }
 
+    /// Whether the request asks the LLM for dictionary terms: only structured
+    /// output has a field to put them in.
+    fn asks_for_terms(&self) -> bool {
+        self.suggest_terms && self.provider.supports_structured_output
+    }
+
     /// The system message `post_process_transcription` sends for this app
-    /// context. Structured-output requests already carry the prompt as the
-    /// system message, so the context is appended to it; legacy requests put
-    /// prompt and transcription in the user message, so the context is the
-    /// whole system message. Cache priming must send exactly this.
-    fn context_system_prompt(&self, app_context: &str) -> String {
+    /// context. Structured-output requests carry the prompt as the system
+    /// message, with the dictionary and context after it; legacy requests put
+    /// prompt and transcription in the user message, so the system message is
+    /// only the dictionary and context. Cache priming must send exactly this.
+    fn system_prompt(&self, app_context: Option<&str>) -> String {
         if self.provider.supports_structured_output {
-            build_system_prompt(&self.prompt, Some(app_context))
+            build_system_prompt(
+                Some(&self.prompt),
+                self.dictionary.as_deref(),
+                self.asks_for_terms().then_some(TERMS_INSTRUCTION),
+                app_context,
+            )
         } else {
-            app_context.to_string()
+            build_system_prompt(None, self.dictionary.as_deref(), None, app_context)
+        }
+    }
+}
+
+/// What post-processing produced.
+struct PostProcessOutcome {
+    text: String,
+    /// Terms the LLM proposed for the dictionary, unchecked.
+    terms: Vec<String>,
+}
+
+impl PostProcessOutcome {
+    fn text_only(text: String) -> Self {
+        Self {
+            text,
+            terms: Vec::new(),
         }
     }
 }
@@ -259,7 +316,7 @@ async fn post_process_transcription(
     settings: &AppSettings,
     transcription: &str,
     app_context: Option<&AppContext>,
-) -> Option<String> {
+) -> Option<PostProcessOutcome> {
     if is_blank_transcription(transcription) {
         debug!("Post-processing skipped because the transcription is empty");
         return None;
@@ -272,6 +329,7 @@ async fn post_process_transcription(
         prompt,
         api_key,
         disable_reasoning,
+        ..
     } = &request;
     let app_context = app_context.map(AppContext::to_prompt);
 
@@ -285,10 +343,7 @@ async fn post_process_transcription(
     if provider.supports_structured_output {
         debug!("Using structured outputs for provider '{}'", provider.id);
 
-        let system_prompt = match &app_context {
-            Some(app_context) => request.context_system_prompt(app_context),
-            None => build_system_prompt(prompt, None),
-        };
+        let system_prompt = request.system_prompt(app_context.as_deref());
         let user_content = transcription.to_string();
 
         // Handle Apple Intelligence separately since it uses native Swift APIs
@@ -318,7 +373,7 @@ async fn post_process_transcription(
                                 "Apple Intelligence post-processing succeeded. Output length: {} chars",
                                 result.len()
                             );
-                            Some(result)
+                            Some(PostProcessOutcome::text_only(result))
                         }
                     }
                     Err(err) => {
@@ -336,15 +391,25 @@ async fn post_process_transcription(
         }
 
         // Define JSON schema for transcription output
+        let mut properties = serde_json::json!({
+            (TRANSCRIPTION_FIELD): {
+                "type": "string",
+                "description": "The cleaned and processed transcription text"
+            }
+        });
+        let mut required = vec![TRANSCRIPTION_FIELD];
+        if request.asks_for_terms() {
+            properties[TERMS_FIELD] = serde_json::json!({
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Names, abbreviations and technical terms from the transcription a speech recognizer could misspell"
+            });
+            required.push(TERMS_FIELD);
+        }
         let json_schema = serde_json::json!({
             "type": "object",
-            "properties": {
-                (TRANSCRIPTION_FIELD): {
-                    "type": "string",
-                    "description": "The cleaned and processed transcription text"
-                }
-            },
-            "required": [TRANSCRIPTION_FIELD],
+            "properties": properties,
+            "required": required,
             "additionalProperties": false
         });
 
@@ -368,15 +433,32 @@ async fn post_process_transcription(
                             json.get(TRANSCRIPTION_FIELD).and_then(|t| t.as_str())
                         {
                             let result = strip_invisible_chars(transcription_value);
+                            let terms: Vec<String> = json
+                                .get(TERMS_FIELD)
+                                .and_then(|t| t.as_array())
+                                .map(|terms| {
+                                    terms
+                                        .iter()
+                                        .filter_map(|t| t.as_str())
+                                        .map(str::to_string)
+                                        .collect()
+                                })
+                                .unwrap_or_default();
                             debug!(
-                                "Structured output post-processing succeeded for provider '{}'. Output length: {} chars",
+                                "Structured output post-processing succeeded for provider '{}'. Output length: {} chars, {} term(s) proposed",
                                 provider.id,
-                                result.len()
+                                result.len(),
+                                terms.len()
                             );
-                            return Some(result);
+                            return Some(PostProcessOutcome {
+                                text: result,
+                                terms,
+                            });
                         } else {
                             error!("Structured output response missing 'transcription' field");
-                            return Some(strip_invisible_chars(content));
+                            return Some(PostProcessOutcome::text_only(strip_invisible_chars(
+                                content,
+                            )));
                         }
                     }
                     Err(e) => {
@@ -384,7 +466,9 @@ async fn post_process_transcription(
                             "Failed to parse structured output JSON: {}. Returning raw content.",
                             e
                         );
-                        return Some(strip_invisible_chars(content));
+                        return Some(PostProcessOutcome::text_only(strip_invisible_chars(
+                            content,
+                        )));
                     }
                 }
             }
@@ -406,14 +490,17 @@ async fn post_process_transcription(
     let processed_prompt = prompt.replace("${output}", transcription);
     debug!("Processed prompt length: {} chars", processed_prompt.len());
 
-    // The app context, if any, goes in as the system message: the prompt
-    // usually opens with the transcription, so this is the only stable prefix.
+    // The dictionary and app context, if any, go in as the system message:
+    // the prompt usually opens with the transcription, so this is the only
+    // stable prefix.
+    let system_prompt = request.system_prompt(app_context.as_deref());
+    let system_prompt = (!system_prompt.is_empty()).then_some(system_prompt);
     match crate::llm_client::send_chat_completion(
         provider,
         api_key.clone(),
         model,
         processed_prompt,
-        app_context,
+        system_prompt,
         *disable_reasoning,
     )
     .await
@@ -425,7 +512,7 @@ async fn post_process_transcription(
                 provider.id,
                 content.len()
             );
-            Some(content)
+            Some(PostProcessOutcome::text_only(content))
         }
         Ok(None) => {
             error!("LLM API response has no content");
@@ -464,11 +551,25 @@ pub(crate) async fn process_transcription_output(
             Some(session) => session.finish().await,
             None => None,
         };
-        if let Some(processed_text) =
+        if let Some(outcome) =
             post_process_transcription(&settings, &final_text, app_context.as_ref()).await
         {
-            post_processed_text = Some(processed_text.clone());
-            final_text = processed_text;
+            post_processed_text = Some(outcome.text.clone());
+            final_text = outcome.text;
+            if !outcome.terms.is_empty() {
+                if let Some(dictionary) = app.try_state::<Arc<DictionaryManager>>() {
+                    let terms = dictionary::learner::filter_terms(
+                        &outcome.terms,
+                        Some(&final_text),
+                        dictionary::MAX_TERMS_PER_SUGGESTION,
+                    );
+                    if let Err(e) =
+                        dictionary.suggest(&terms, DictionarySource::Suggested, "dictation")
+                    {
+                        warn!("Dictionary: saving suggested terms failed: {e:#}");
+                    }
+                }
+            }
 
             if let Some(prompt_id) = &settings.post_process_selected_prompt_id {
                 if let Some(prompt) = settings
@@ -480,6 +581,10 @@ pub(crate) async fn process_transcription_output(
                 }
             }
         }
+    }
+
+    if let Some(dictionary) = app.try_state::<Arc<DictionaryManager>>() {
+        dictionary.record_uses(&final_text);
     }
 
     ProcessedTranscription {
@@ -501,7 +606,7 @@ fn app_context_preload(settings: &AppSettings) -> Option<app_context::Preload> {
     }
 
     Some(Box::new(move |context: &AppContext| {
-        let system_prompt = request.context_system_prompt(&context.to_prompt());
+        let system_prompt = request.system_prompt(Some(&context.to_prompt()));
         Some(tauri::async_runtime::spawn(async move {
             let started = Instant::now();
             match crate::llm_client::prime_prompt_cache(
@@ -897,6 +1002,9 @@ impl ShortcutAction for TranscribeAction {
                                 let paste_time = Instant::now();
                                 let final_text = processed.final_text;
                                 let rm_for_paste = Arc::clone(&rm);
+                                let learn_from_edits = get_settings(&ah)
+                                    .dictionary_learn_from_edits
+                                    && dictionary::edit_monitor::supported();
                                 // Taken before the paste thread exists, and so
                                 // before the next session can start.
                                 let session = RECORDING_SESSION.load(Ordering::SeqCst);
@@ -915,11 +1023,26 @@ impl ShortcutAction for TranscribeAction {
                                             return;
                                         }
 
+                                        let pasted = learn_from_edits.then(|| final_text.clone());
                                         match utils::paste(final_text, ah_clone.clone()) {
-                                            Ok(()) => debug!(
-                                                "Text pasted successfully in {:?}",
-                                                paste_time.elapsed()
-                                            ),
+                                            Ok(()) => {
+                                                debug!(
+                                                    "Text pasted successfully in {:?}",
+                                                    paste_time.elapsed()
+                                                );
+                                                // Watch what the user makes of
+                                                // it, until the next dictation.
+                                                if let Some(pasted) = pasted {
+                                                    dictionary::edit_monitor::start(
+                                                        ah_clone.clone(),
+                                                        pasted,
+                                                        move || {
+                                                            RECORDING_SESSION.load(Ordering::SeqCst)
+                                                                == session
+                                                        },
+                                                    );
+                                                }
+                                            }
                                             Err(e) => {
                                                 error!("Failed to paste transcription: {}", e);
                                                 let _ = ah_clone.emit("paste-error", ());

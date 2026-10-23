@@ -396,7 +396,36 @@ impl MeetingManager {
 
     pub fn rename_speaker(&self, meeting_id: i64, speaker: u32, name: Option<&str>) -> Result<()> {
         let name = name.map(str::trim).filter(|name| !name.is_empty());
-        self.store.rename_speaker(meeting_id, speaker, name)
+        self.store.rename_speaker(meeting_id, speaker, name)?;
+        // A name the user typed for a participant is one they will dictate.
+        if let Some(name) = name {
+            if get_settings(&self.app).dictionary_suggest_from_meetings {
+                if let Some(dictionary) = self
+                    .app
+                    .try_state::<Arc<crate::dictionary::DictionaryManager>>()
+                {
+                    let origin = self
+                        .store
+                        .get(meeting_id)
+                        .ok()
+                        .flatten()
+                        .map(|detail| detail.meeting.title)
+                        .filter(|title| !title.trim().is_empty())
+                        .map_or_else(
+                            || "meeting".to_string(),
+                            |title| format!("meeting: {title}"),
+                        );
+                    if let Err(e) = dictionary.suggest(
+                        &[name.to_string()],
+                        crate::dictionary::DictionarySource::Suggested,
+                        &origin,
+                    ) {
+                        warn!("Dictionary: saving a speaker name failed: {e:#}");
+                    }
+                }
+            }
+        }
+        Ok(())
     }
 
     /// Folds one speaker into another, for when identification told one

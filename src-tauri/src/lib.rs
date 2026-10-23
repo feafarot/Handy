@@ -10,6 +10,7 @@ mod chinese_script;
 pub mod cli;
 mod clipboard;
 mod commands;
+mod dictionary;
 pub mod engine_supervisor;
 mod helpers;
 mod input;
@@ -211,6 +212,10 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     let meeting_manager = Arc::new(
         meeting::MeetingManager::new(app_handle).expect("Failed to initialize meeting manager"),
     );
+    let dictionary_manager = Arc::new(
+        dictionary::DictionaryManager::new(app_handle)
+            .expect("Failed to initialize dictionary manager"),
+    );
 
     // Add managers to Tauri's managed state
     app_handle.manage(recording_manager.clone());
@@ -218,6 +223,7 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(transcription_manager.clone());
     app_handle.manage(history_manager.clone());
     app_handle.manage(meeting_manager);
+    app_handle.manage(dictionary_manager);
     let meeting_auto_starter = Arc::new(meeting::auto::MeetingAutoStarter::new(app_handle));
     meeting_auto_starter.spawn();
     app_handle.manage(meeting_auto_starter);
@@ -812,6 +818,20 @@ pub fn run(cli_args: CliArgs) {
             commands::meeting::change_meeting_auto_start_blocklist_setting,
             commands::meeting::get_meeting_prompt,
             commands::meeting::answer_meeting_prompt,
+            commands::dictionary::list_dictionary,
+            commands::dictionary::add_dictionary_words,
+            commands::dictionary::import_dictionary_text,
+            commands::dictionary::export_dictionary_text,
+            commands::dictionary::rename_dictionary_entry,
+            commands::dictionary::remove_dictionary_entry,
+            commands::dictionary::set_dictionary_entry_status,
+            commands::dictionary::resolve_pending_dictionary_entries,
+            commands::dictionary::clear_dictionary,
+            commands::dictionary::is_dictionary_edit_learning_supported,
+            commands::dictionary::change_dictionary_auto_accept_setting,
+            commands::dictionary::change_dictionary_learn_from_edits_setting,
+            commands::dictionary::change_dictionary_suggest_from_llm_setting,
+            commands::dictionary::change_dictionary_suggest_from_meetings_setting,
             helpers::clamshell::is_laptop,
         ])
         .events(collect_events![
@@ -823,6 +843,7 @@ pub fn run(cli_args: CliArgs) {
             meeting::MeetingSpeakersEvent,
             meeting::MeetingNotesEvent,
             meeting::auto::MeetingPromptEvent,
+            dictionary::DictionaryUpdatedEvent,
         ]);
 
     #[cfg(debug_assertions)] // <- Only export on non-release builds

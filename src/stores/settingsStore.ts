@@ -201,6 +201,14 @@ const settingUpdaters: {
     commands.changeMeetingAutoStartBlocklistSetting(
       value as MeetingBlockedApp[],
     ),
+  dictionary_auto_accept: (value) =>
+    commands.changeDictionaryAutoAcceptSetting(value as boolean),
+  dictionary_learn_from_edits: (value) =>
+    commands.changeDictionaryLearnFromEditsSetting(value as boolean),
+  dictionary_suggest_from_llm: (value) =>
+    commands.changeDictionarySuggestFromLlmSetting(value as boolean),
+  dictionary_suggest_from_meetings: (value) =>
+    commands.changeDictionarySuggestFromMeetingsSetting(value as boolean),
   log_level: (value) => commands.setLogLevel(value as any),
   app_language: (value) => commands.changeAppLanguageSetting(value as string),
   theme: (value) => commands.changeThemeSetting(value as string),

@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
+  BookA,
   Cog,
   FlaskConical,
   History,
@@ -22,6 +23,7 @@ import {
   ModelsSettings,
 } from "./settings";
 import { MeetingsPage } from "./meetings/MeetingsPage";
+import { DictionaryPage } from "./dictionary/DictionaryPage";
 
 export type SidebarSection = keyof typeof SECTIONS_CONFIG;
 
@@ -57,6 +59,12 @@ export const SECTIONS_CONFIG = {
     labelKey: "sidebar.meetings",
     icon: Users,
     component: MeetingsPage,
+    enabled: () => true,
+  },
+  dictionary: {
+    labelKey: "sidebar.dictionary",
+    icon: BookA,
+    component: DictionaryPage,
     enabled: () => true,
   },
   models: {
